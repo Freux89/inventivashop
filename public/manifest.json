@@ -1,0 +1,17 @@
+{
+    "name": "Grostore",
+    "short_name": "Grostore",
+    "start_url": "/",
+    "background_color": "#6777ef",
+    "description": "Grostore",
+    "display": "fullscreen",
+    "theme_color": "#6eb356",
+    "icons": [
+        {
+            "src": "pwa.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
