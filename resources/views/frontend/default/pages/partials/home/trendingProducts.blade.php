@@ -1,10 +1,5 @@
 <section class="pt-8 pb-100 bg-white position-relative overflow-hidden z-1 trending-products-area">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/garlic.png') }}" alt="garlic"
-        class="position-absolute garlic z--1" data-parallax='{"y": 100}'>
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/carrot.png') }}" alt="carrot"
-        class="position-absolute carrot z--1" data-parallax='{"y": -100}'>
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/mashrom.png') }}" alt="mashrom"
-        class="position-absolute mashrom z--1" data-parallax='{"x": 100}'>
+    
     <div class="container">
         <div class="row align-items-center">
             <div class="col-xl-5">

@@ -23,6 +23,8 @@ use App\Http\Controllers\Frontend\RefundsController;
 use App\Http\Controllers\Frontend\RewardPointsController;
 use App\Http\Controllers\Frontend\WalletController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\App;
+use PHPUnit\TextUI\XmlConfiguration\Group;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,10 +67,18 @@ Route::get('/categories', [HomeController::class, 'allCategories'])->name('home.
 
 # products
 
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
-Route::post('/products/get-variation-info', [ProductController::class, 'getVariationInfo'])->name('products.getVariationInfo');
-Route::post('/products/show-product-info', [ProductController::class, 'showInfo'])->name('products.showInfo');
+# product listing in group prefix
+// Route::group(['prefix' =>'{language}'], function () {
+
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+// });
+    Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+    Route::post('/products/get-variation-info', [ProductController::class, 'getVariationInfo'])->name('products.getVariationInfo');
+    Route::post('/products/show-product-info', [ProductController::class, 'showInfo'])->name('products.showInfo');
+
+
+
+
 
 
 # carts

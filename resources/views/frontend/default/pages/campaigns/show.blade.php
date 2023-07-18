@@ -49,13 +49,7 @@
 
     <!--campaign section start-->
     <section class="pb-100 pt-80 position-relative overflow-hidden z-1 trending-products-area">
-        <img src="{{ staticAsset('frontend/default/assets/img/shapes/garlic.png') }}" alt="garlic"
-            class="position-absolute garlic z--1" data-parallax='{"y": 100}'>
-        <img src="{{ staticAsset('frontend/default/assets/img/shapes/carrot.png') }}" alt="carrot"
-            class="position-absolute carrot z--1" data-parallax='{"y": -100}'>
-        <img src="{{ staticAsset('frontend/default/assets/img/shapes/mashrom.png') }}" alt="mashrom"
-            class="position-absolute mashrom z--1" data-parallax='{"x": 100}'>
-
+       
         <div class="container">
             <div class="row justify-content-center g-4 mt-5">
                 @php
