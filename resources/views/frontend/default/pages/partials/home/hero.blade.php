@@ -1,11 +1,5 @@
 <section class="gshop-hero pt-120 bg-white position-relative z-1 overflow-hidden">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/leaf-shadow.png') }}" alt="leaf"
-        class="position-absolute leaf-shape z--1 rounded-circle d-none d-lg-inline">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/mango.png') }}" alt="mango"
-        class="position-absolute mango z--1" data-parallax='{"y": -120}'>
-
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/hero-circle-sm.png') }}" alt="circle"
-        class="position-absolute hero-circle circle-sm z--1 d-none d-md-inline">
+    
 
     <div class="container">
         <div class="gshop-hero-slider swiper">
@@ -37,8 +31,7 @@
                                     <img src="{{ uploadedAsset($slider->image) }}" alt=""
                                         class="img-fluid position-absolute end-0 top-50 hero-img">
 
-                                    <img src="{{ staticAsset('frontend/default/assets/img/shapes/hero-circle-lg.png') }}"
-                                        alt="circle shape" class="img-fluid hero-circle">
+                                   
                                 </div>
                             </div>
                         </div>

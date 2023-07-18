@@ -16,6 +16,7 @@ class ProductController extends Controller
     # product listing
     public function index(Request $request)
     {
+        
         $searchKey = null;
         $per_page = 9;
         $sort_by = $request->sort_by ? $request->sort_by : "new";

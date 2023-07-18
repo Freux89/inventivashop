@@ -137,7 +137,7 @@ if (!function_exists('localize')) {
     # add / return localization 
     function localize($key, $lang = null)
     {
-       // cacheClear();
+        //cacheClear();
         if ($lang == null) {
             $lang = App::getLocale();
         }

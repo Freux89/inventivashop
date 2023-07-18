@@ -1,37 +1,14 @@
 <div class="footer-curve position-relative overflow-hidden">
-    <span class="position-absolute section-curve-wrapper top-0 h-100"
-        data-background="{{ staticAsset('frontend/default/assets/img/shapes/section-curve.png') }}"></span>
+    
 </div>
 
 <footer class="gshop-footer position-relative pt-8 bg-dark z-1 overflow-hidden">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/tomato.svg') }}" alt="tomato"
-        class="position-absolute z--1 tomato vector-shape">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/pata-lg.svg') }}" alt="pata"
-        class="position-absolute z--1 pata-lg vector-shape">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/pata-xs.svg') }}" alt="pata"
-        class="position-absolute z--1 pata-xs vector-shape">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/frame-circle.svg') }}" alt="frame"
-        class="position-absolute z--1 frame-circle vector-shape">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/leaf.svg') }}" alt="leaf"
-        class="position-absolute z--1 leaf vector-shape">
-    <!--shape right -->
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/leaf.svg') }}" alt="pata"
-        class="position-absolute leaf-2 z--1 vector-shape">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/pata-xs.svg') }}" alt="pata"
-        class="position-absolute pata-xs-2 z--1 vector-shape">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/tomato-slice.svg') }}" alt="tomato slice"
-        class="position-absolute tomato-slice vector-shape z--1">
-    <img src="{{ staticAsset('frontend/default/assets/img/shapes/tomato-half.svg') }}" alt="tomato"
-        class="position-absolute tomato-half z--1 vector-shape">
+    
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-xl-5 col-lg-6">
                 <div class="gshop_subscribe_form text-center">
-                    <h4 class="text-white gshop-title">{{ localize('Subscribe to the us') }}<mark
-                            class="p-0 position-relative text-secondary bg-transparent"> {{ localize('New Arrivals') }}
-                            <img src="{{ staticAsset('frontend/default/assets/img/shapes/border-line.svg') }}"
-                                alt="border line" class="position-absolute border-line"></mark><br
-                            class="d-none d-sm-block">{{ localize('& Other Information.') }}</h4>
+                    <h4 class="text-white gshop-title">{{ localize('Subscribe to our newsletter') }}</h4>
                     <form class="mt-5 d-flex align-items-center bg-white rounded subscribe_form"
                         action="{{ route('subscribe.store') }}" method="POST">
                         @csrf
