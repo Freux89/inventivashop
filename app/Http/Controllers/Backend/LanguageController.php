@@ -7,6 +7,7 @@ use App\Models\Language;
 use App\Models\Localization;
 use Illuminate\Http\Request;
 use Cache;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 class LanguageController extends Controller
 {
@@ -25,8 +26,21 @@ class LanguageController extends Controller
     # change the language
     public function changeLanguage(Request $request)
     {
-        $request->session()->put('locale', $request->locale);
-        return true;
+        $locale = $request->locale;
+        $url = $request->url; // Ricevi l'URL dalla chiamata AJAX
+    
+        if (!array_key_exists($locale, LaravelLocalization::getSupportedLocales())) {
+            return response()->json(['error' => 'Unsupported language'], 400);
+        }
+    
+        $request->session()->put('locale', $locale);
+        LaravelLocalization::setLocale($locale);
+    
+        // Usa l'URL ricevuto per generare l'URL localizzato
+        return response()->json([
+            'success' => true,
+            'url' => LaravelLocalization::getLocalizedURL($locale, $url),
+        ]);
     }
 
     # language list

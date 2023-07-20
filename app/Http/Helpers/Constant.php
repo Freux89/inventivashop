@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ApiCurrencyMiddleWare;
 use App\Models\Coupon;
 use App\Models\CouponUsage;
 use App\Models\Localization;
@@ -64,7 +65,7 @@ if (!function_exists('clearOrderSession')) {
 }
 
 if (!function_exists('csrfToken')) {
-    #  Get the CSRF token value. 
+    #  Get the CSRF token value.
     function csrfToken()
     {
         $session = app('session');
@@ -117,8 +118,19 @@ if (!function_exists('staticAsset')) {
     }
 }
 
+if (!function_exists('staticAssetApi')) {
+    # return path for static assets
+    function staticAssetApi($path, $secure = null)
+    {
+        if (str_contains(url('/'), '.test') || str_contains(url('/'), 'http://127.0.0.1:')) {
+            return app('url')->asset('' . $path, $secure);
+        }
+        return app('url')->asset('public/' . $path, $secure);
+    }
+}
+
 if (!function_exists('uploadedAsset')) {
-    #  Generate an asset path for the uploaded files. 
+    #  Generate an asset path for the uploaded files.
     function uploadedAsset($fileId)
     {
         $mediaFile = MediaManager::find($fileId);
@@ -132,25 +144,63 @@ if (!function_exists('uploadedAsset')) {
     }
 }
 
+if (!function_exists('uploadedAssetes')) {
+    #  Generate an asset path for the uploaded files.
+    function uploadedAssetes($ids)
+    {
+        $ids = explode(",", $ids);
+
+        $assets = [];
+        $mediaFiles = MediaManager::whereIn('id', $ids)->get();
+
+        if ($mediaFiles) {
+
+            foreach ($mediaFiles as $file) {
+                if (str_contains(url('/'), '.test') || str_contains(url('/'), 'http://127.0.0.1:')) {
+                    $assets[] = app('url')->asset('' . $file->media_file);
+                }
+                $assets[] = app('url')->asset('public/' . $file->media_file);
+            }
+        }
+        return $assets;
+    }
+}
+
+if (!function_exists('productStock')) {
+    #  get product stock
+    function productStock($product)
+    {
+
+        $isVariantProduct = 0;
+        $stock = 0;
+        if ($product->variations()->count() > 1) {
+            $isVariantProduct = 1;
+        } else {
+            $stock = $product->variations[0]->product_variation_stock ? $product->variations[0]->product_variation_stock->stock_qty : 0;
+        }
+        return $stock;
+    }
+}
+
+
 
 if (!function_exists('localize')) {
-    # add / return localization 
+    # add / return localization
     function localize($key, $lang = null)
     {
-        //cacheClear();
         if ($lang == null) {
             $lang = App::getLocale();
         }
 
         $t_key = preg_replace('/[^A-Za-z0-9\_]/', '', str_replace(' ', '_', strtolower($key)));
 
-        $localization_default = Cache::rememberForever('localizations-' . env('DEFAULT_LANGUAGE', 'en'), function () {
-            return Localization::where('lang_key', env('DEFAULT_LANGUAGE', 'en'))->pluck('t_value', 't_key');
+        $localization_english = Cache::rememberForever('localizations-en', function () {
+            return Localization::where('lang_key', 'en')->pluck('t_value', 't_key');
         });
 
-        if (!isset($localization_default[$t_key])) {
+        if (!isset($localization_english[$t_key])) {
             # add new localization
-            newLocalization(env('DEFAULT_LANGUAGE', 'en'), $t_key, $key);
+            newLocalization('en', $t_key, $key);
         }
 
         # return user session lang
@@ -162,7 +212,7 @@ if (!function_exists('localize')) {
             return trim($localization_user[$t_key]);
         }
 
-        return trim(__($t_key));
+        return isset($localization_english[$t_key]) ? trim($localization_english[$t_key]) : $key;
     }
 }
 
@@ -230,7 +280,7 @@ if (!function_exists('getFileType')) {
             "mkv"       =>  "video",
             "wmv"       =>  "video",
 
-            // image 
+            // image
             "png"       =>  "image",
             "svg"       =>  "image",
             "gif"       =>  "image",
@@ -238,7 +288,7 @@ if (!function_exists('getFileType')) {
             "jpeg"      =>  "image",
             "webp"      =>  "image",
 
-            // document 
+            // document
             "doc"       =>  "document",
             "txt"       =>  "document",
             "docx"      =>  "document",
@@ -250,7 +300,7 @@ if (!function_exists('getFileType')) {
             "xls"       =>  "document",
             "xlsx"      =>  "document",
 
-            // archive  
+            // archive
             "zip"       =>  "archive",
             "rar"       =>  "archive",
             "7z"        =>  "archive"
@@ -260,7 +310,7 @@ if (!function_exists('getFileType')) {
 }
 
 if (!function_exists('fileDelete')) {
-    # file delete 
+    # file delete
     function fileDelete($file)
     {
         if (File::exists('public/' . $file)) {
@@ -316,11 +366,16 @@ if (!function_exists('renderStarRatingFront')) {
 }
 
 if (!function_exists('formatPrice')) {
-    //formats price - truncate price to 1M, 2K if activated by admin 
+
+    //formats price - truncate price to 1M, 2K if activated by admin
     function formatPrice($price, $truncate = false, $forceTruncate = false, $addSymbol = true, $numberFormat = true)
+
     {
         // convert amount equal to local currency
-        if (Session::has('currency_code') && Session::has('local_currency_rate')) {
+        if (request()->hasHeader('Currency-Code')) {
+            $price = floatval($price) / (floatval(env('DEFAULT_CURRENCY_RATE')) || 1);
+            $price = floatval($price) * floatval(ApiCurrencyMiddleWare::currencyData()->rate);
+        } else if (Session::has('currency_code') && Session::has('local_currency_rate')) {
             $price = floatval($price) / (floatval(env('DEFAULT_CURRENCY_RATE')) || 1);
             $price = floatval($price) * floatval(Session::get('local_currency_rate'));
         }
@@ -352,9 +407,13 @@ if (!function_exists('formatPrice')) {
 
         if ($addSymbol) {
             // currency symbol
-            $symbol             = Session::has('currency_symbol')           ? Session::get('currency_symbol')           : env('DEFAULT_CURRENCY_SYMBOL');
-            $symbolAlignment    = Session::has('currency_symbol_alignment') ? Session::get('currency_symbol_alignment') : env('DEFAULT_CURRENCY_SYMBOL_ALIGNMENT');
-
+            if (request()->hasHeader('Currency-Code')) {
+                $symbol             =   ApiCurrencyMiddleWare::currencyData()->symbol;
+                $symbolAlignment    =    ApiCurrencyMiddleWare::currencyData()->alignment;
+            } else {
+                $symbol             = Session::has('currency_symbol')           ? Session::get('currency_symbol')           : env('DEFAULT_CURRENCY_SYMBOL');
+                $symbolAlignment    = Session::has('currency_symbol_alignment') ? Session::get('currency_symbol_alignment') : env('DEFAULT_CURRENCY_SYMBOL_ALIGNMENT');
+            }
             if ($symbolAlignment == 0) {
                 return $symbol . $price;
             } else if ($symbolAlignment == 1) {
@@ -367,7 +426,31 @@ if (!function_exists('formatPrice')) {
                 return $price . ' ' .  $symbol;
             }
         }
+        return $price;
+    }
+}
 
+if (!function_exists('apiProductPrice')) {
+    //formats price - truncate price to 1M, 2K if activated by admin
+    function apiProductPrice($product)
+    {
+        $price = "00";
+        if (productBasePrice($product) == discountedProductBasePrice($product)) {
+            if (productBasePrice($product) == productMaxPrice($product)) {
+                $price = formatPrice(productBasePrice($product));
+            } else {
+                $price = formatPrice(productBasePrice($product)) .
+                    "-"
+                    . formatPrice(productMaxPrice($product));
+            }
+        } else {
+            if (discountedProductBasePrice($product) == discountedProductMaxPrice($product))
+                $price = formatPrice(discountedProductBasePrice($product));
+            else
+                $price = formatPrice(discountedProductBasePrice($product)) .
+                    "-"
+                    . formatPrice(discountedProductMaxPrice($product));
+        }
         return $price;
     }
 }
@@ -714,6 +797,10 @@ if (!function_exists('getCoupon')) {
     // get coupon code from  cookie
     function getCoupon()
     {
+
+        if (request()->hasHeader("Coupon-Code")) {
+            return request()->header("Coupon-Code");
+        }
         if (isset($_COOKIE["coupon_code"])) {
             return $_COOKIE["coupon_code"];
         }
@@ -783,14 +870,14 @@ if (!function_exists('checkCouponValidityForCheckout')) {
     // check coupon validity For Checkout
     function checkCouponValidityForCheckout($carts)
     {
-        if (isset($_COOKIE["coupon_code"])) {
+        if (getCoupon() != '') {
             $date = strtotime(date('d-m-Y H:i:s'));
-            $coupon = Coupon::where('code', $_COOKIE["coupon_code"])->first();
+            $coupon = Coupon::where('code', getCoupon())->first();
             if ($coupon) {
                 # total coupon usage
                 $totalCouponUsage = CouponUsage::where('coupon_code', $coupon->code)->sum('usage_count');
                 if ($totalCouponUsage == $coupon->total_usage_limit) {
-                    # coupon usage limit reached  
+                    # coupon usage limit reached
                     removeCoupon();
                     return [
                         'status'    => false,
@@ -817,7 +904,7 @@ if (!function_exists('checkCouponValidityForCheckout')) {
                         # check if coupon is for categories or products
                         if ($coupon->product_ids || $coupon->category_ids) {
                             if (!validateCouponForProductsAndCategories($carts, $coupon)) {
-                                # coupon not valid for your cart items  
+                                # coupon not valid for your cart items
                                 removeCoupon();
                                 return [
                                     'status'    => false,
@@ -870,7 +957,7 @@ if (!function_exists('checkCouponValidityForCheckout')) {
 }
 
 if (!function_exists('getTotalTax')) {
-    // get Total Tax from 
+    // get Total Tax from
     function getTotalTax($carts)
     {
         $tax = 0;
@@ -952,7 +1039,7 @@ if (!function_exists('orderOutForDeliveryStatus')) {
 }
 
 if (!function_exists('orderDeliveredStatus')) {
-    // order Delivered Status 
+    // order Delivered Status
     function orderDeliveredStatus()
     {
         return "delivered";
@@ -960,7 +1047,7 @@ if (!function_exists('orderDeliveredStatus')) {
 }
 
 if (!function_exists('orderCancelledStatus')) {
-    // order cancelled Status 
+    // order cancelled Status
     function orderCancelledStatus()
     {
         return "cancelled";

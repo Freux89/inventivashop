@@ -55,16 +55,18 @@
 
     // change language
     function changeLocaleLanguage(e) {
-        var locale = e.dataset.flag;
-        $.post("{{ route('backend.changeLanguage') }}", {
-            _token: '{{ csrf_token() }}',
-            locale: locale
-        }, function(data) {
-            setTimeout(() => {
-                location.reload();
-            }, 300);
-        });
-    }
+    var locale = e.dataset.flag;
+    $.post("{{ route('backend.changeLanguage') }}", {
+        _token: '{{ csrf_token() }}',
+        locale: locale,
+        url: window.location.href // Passa l'URL corrente
+    }, function(data) {
+        if (data.success) {
+            // Reindirizza all'URL localizzato
+            window.location.href = data.url;
+        }
+    });
+}
 
     // change currency
     function changeLocaleCurrency(e) {
