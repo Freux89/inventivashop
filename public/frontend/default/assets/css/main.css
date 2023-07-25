@@ -23729,7 +23729,7 @@ body {
     }
 }
 .gshop-navbar-right::before {
-    left: -37px;
+    left: 0;
 }
 @media (max-width: 991.98px) {
     .gshop-navbar-right::before {
@@ -25255,8 +25255,9 @@ body {
 }
 .gstore-breadcrumb {
     padding: 115px 0 120px;
-    background-color: rgba(110, 179, 86, 0.13);
+    background-color: #f1efef;
 }
+
 .gstore-breadcrumb .bg-shape {
     bottom: -1px;
 }
@@ -26034,6 +26035,7 @@ body {
 }
 [data-bs-theme="dark"] .gstore-breadcrumb {
     padding: 115px 0 65px;
+    background-color: #191d28;
 }
 [data-bs-theme="dark"] .subscribe_form .form-control {
     border-color: #fff;
@@ -28247,4 +28249,14 @@ blockquote::before {
     .coupon-row .copyBtn {
         border-radius: 4px;
     }
+}
+
+.logo-dark,.logo-light{
+    display:none;
+}
+[data-bs-theme="dark"] .logo-dark{
+    display:block;
+}
+[data-bs-theme="light"] .logo-light{
+    display:block;
 }

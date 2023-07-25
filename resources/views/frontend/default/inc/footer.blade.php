@@ -92,7 +92,7 @@
                     <div class="logo-wrapper text-center">
                         <a href="{{ route('home') }}" class="logo"><img
                                 src="{{ uploadedAsset(getSetting('footer_logo')) }}" alt="footer logo"
-                                class="img-fluid"></a>
+                                class="img-fluid" width="200"></a>
                     </div>
                 </div>
                 <div class="col-lg-4">

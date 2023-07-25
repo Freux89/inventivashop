@@ -190,6 +190,7 @@
                     ["color", ["color"]],
                     ["insert", ["link", "picture", "video"]],
                     ["view", ["undo", "redo"]],
+                    ['codeview', ['codeview']],
                 ] :
                 buttons;
             placeholder = !placeholder ? "" : placeholder;

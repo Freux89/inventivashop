@@ -69,10 +69,10 @@
 
     <span class="sidebar-spacer d-block my-4 opacity-50"></span>
 
-    <div class="label-input-field mt-6">
-        <label>{{ 'Add Tips For Deliveryman?' }}</label>
+    <!-- <div class="label-input-field mt-6">
+        <label>{{ localize('Add Tips For Deliveryman?') }}</label>
         <input type="number" name="tips" value="0" min="0" step="0.001">
-    </div>
+    </div> -->
 
     <button type="submit" class="btn btn-primary btn-md rounded mt-6 w-100">{{ localize('Place Order') }}</button>
 </div>
