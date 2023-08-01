@@ -34808,10 +34808,10 @@ input[type="search"]::-webkit-search-results-decoration {
     z-index: 9;
     border: none;
 }
-.tt-tb-dropdown .dropdown-menu a {
+.tt-tb-dropdown .dropdown-menu a,.tt-tb-dropdown .dropdown-menu button {
     font-size: 0.765625rem;
 }
-.tt-tb-dropdown .dropdown-menu a svg {
+.tt-tb-dropdown .dropdown-menu a svg,.tt-tb-dropdown .dropdown-menu button svg {
     width: 14px;
 }
 .tt-tb-dropdown .dropdown-menu a:hover {
@@ -36742,4 +36742,14 @@ button.note-btn.dropdown-toggle:after {
 }
 [data-bs-theme="dark"] .tt-media-wrap .tt-media-item {
     background-color: #212b36;
+}
+
+.logo-dark,.logo-light{
+    display:none;
+}
+[data-bs-theme="dark"] .logo-dark{
+    display:block;
+}
+[data-bs-theme="light"] .logo-light{
+    display:block;
 }

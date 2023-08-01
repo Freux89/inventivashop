@@ -535,6 +535,9 @@ class ProductsController extends Controller
     # delete product
     public function delete($id)
     {
-        #
+        $product = Product::findOrFail($id);
+        $product->delete();
+        flash(localize('Product has been deleted successfully'))->success();
+        return back();
     }
 }

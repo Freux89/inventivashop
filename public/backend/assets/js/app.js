@@ -259,4 +259,27 @@ jQuery(function ($) {
             });
         }
     });
+
+// Your script starts here
+var deleteForm;
+
+// Intercepts the click on the delete button
+$(document).on('click', '.delete-button', function(event) {
+    event.preventDefault();
+
+    var id = $(this).data('id');
+    deleteForm = document.getElementById('deleteForm-' + id);
+
+    $('#delete-modal').modal('show');
+});
+
+// Sends the delete request when the user confirms the deletion
+$('#delete-link').click(function(event) {
+    event.preventDefault();
+
+    if (deleteForm) {
+        deleteForm.submit();
+    }
+});
+
 });

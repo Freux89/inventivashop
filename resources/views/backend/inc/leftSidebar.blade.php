@@ -2,7 +2,8 @@
     <div class="tt-brand">
         <a href="{{ route('admin.dashboard') }}" class="tt-brand-link">
             <!-- <img src="{{ uploadedAsset(getSetting('favicon')) }}" class="tt-brand-favicon ms-1" alt="favicon" /> -->
-            <img src="{{ uploadedAsset(getSetting('admin_panel_logo')) }}" class="tt-brand-logo ms-2" width="175" alt="logo" />
+            <img src="{{ uploadedAsset(getSetting('admin_panel_logo')) }}" class="tt-brand-logo ms-2 logo-light" width="175" alt="logo" />
+            <img src="{{ asset('public/frontend/default/assets/img/logo-dark.svg') }}" width="175" alt="logo" class="tt-brand-logo ms-2 logo-dark">
         </a>
         <a href="javascript:void(0);" class="tt-toggle-sidebar">
             <span><i data-feather="chevron-left"></i></span>

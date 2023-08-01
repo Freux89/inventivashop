@@ -144,7 +144,7 @@ Route::group(
             Route::post('/update-product', [ProductsController::class, 'update'])->name('admin.products.update');
             Route::post('/update-featured-product', [ProductsController::class, 'updateFeatured'])->name('admin.products.updateFeatureStatus');
             Route::post('/update-published-product', [ProductsController::class, 'updatePublishedStatus'])->name('admin.products.updatePublishedStatus');
-            Route::get('/delete-product/{id}', [ProductsController::class, 'delete'])->name('admin.products.delete');
+            Route::delete('/delete-product/{id}', [ProductsController::class, 'delete'])->name('admin.products.delete');
 
             # categories 
             Route::get('/category', [CategoriesController::class, 'index'])->name('admin.categories.index');
@@ -162,7 +162,7 @@ Route::group(
             Route::get('/variations/edit/{id}', [VariationsController::class, 'edit'])->name('admin.variations.edit');
             Route::post('/variations/update', [VariationsController::class, 'update'])->name('admin.variations.update');
             Route::post('/variations/update-status', [VariationsController::class, 'updateStatus'])->name('admin.variations.updateStatus');
-            Route::get('/variations/delete/{id}', [VariationsController::class, 'delete'])->name('admin.variations.delete');
+            Route::delete('/variations/delete/{id}', [VariationsController::class, 'delete'])->name('admin.variations.delete');
 
             # variation values
             Route::get('/variations/{id}', [VariationValuesController::class, 'index'])->name('admin.variationValues.index');
