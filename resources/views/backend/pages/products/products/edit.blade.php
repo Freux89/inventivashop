@@ -187,7 +187,7 @@
                             <!--product tag end-->
 
                             <!--product brand and unit start-->
-                            <div class="row" id="section-4">
+                            <!-- <div class="row" id="section-4">
                                 <div class="col-lg-6">
                                     <div class="card mb-4">
                                         <div class="card-body">
@@ -224,7 +224,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <!--product brand and unit end-->
 
                             <!--product price sku and stock start-->
@@ -758,9 +758,9 @@
                                         <li>
                                             <a href="#section-tags">{{ localize('Product tags') }}</a>
                                         </li>
-                                        <li>
+                                        <!-- <li>
                                             <a href="#section-4">{{ localize('Product Brand & Unit') }}</a>
-                                        </li>
+                                        </li> -->
                                         <li>
                                             <a href="#section-5">{{ localize('Price, SKU, Stock & Variations') }}</a>
                                         </li>

@@ -756,12 +756,17 @@ if (!function_exists('getSubTotal')) {
         $amount = 0;
         if (count($carts) > 0) {
             foreach ($carts as $cart) {
-                $product    = $cart->product_variation->product;
-                $variation  = $cart->product_variation;
-
-                $discountedVariationPriceWithTax = variationDiscountedPrice($product, $variation, $addTax);
-                $price += (float) $discountedVariationPriceWithTax * $cart->qty;
+                if ($cart->product_variation && $cart->product_variation->product) {
+                    $product    = $cart->product_variation->product;
+                    $variation  = $cart->product_variation;
+                    $discountedVariationPriceWithTax = variationDiscountedPrice($product, $variation, $addTax);
+                    $price += (float) $discountedVariationPriceWithTax * $cart->qty;
+                } else {
+                    // Handle the case where the product or product variation does not exist
+                    // You could perhaps skip the calculation for this cart item, or show a message, etc.
+                }
             }
+            
 
             # calculate coupon discount
             if ($couponDiscount) {

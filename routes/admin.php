@@ -170,7 +170,7 @@ Route::group(
             Route::get('/variations-values/edit/{id}', [VariationValuesController::class, 'edit'])->name('admin.variationValues.edit');
             Route::post('/variations-values/update', [VariationValuesController::class, 'update'])->name('admin.variationValues.update');
             Route::post('/variations-values/update-status', [VariationValuesController::class, 'updateStatus'])->name('admin.variationValues.updateStatus');
-            Route::get('/variations-values/delete/{id}', [VariationValuesController::class, 'delete'])->name('admin.variationValues.delete');
+            Route::delete('/variations-values/delete/{id}', [VariationValuesController::class, 'delete'])->name('admin.variationValues.delete');
 
             # brands
             Route::get('/brands', [BrandsController::class, 'index'])->name('admin.brands.index');
@@ -186,7 +186,7 @@ Route::group(
             Route::get('/units/edit/{id}', [UnitsController::class, 'edit'])->name('admin.units.edit');
             Route::post('/units/update-unit', [UnitsController::class, 'update'])->name('admin.units.update');
             Route::post('/units/update-status', [UnitsController::class, 'updateStatus'])->name('admin.units.updateStatus');
-            Route::get('/units/delete/{id}', [UnitsController::class, 'delete'])->name('admin.units.delete');
+            Route::delete('/units/delete/{id}', [UnitsController::class, 'delete'])->name('admin.units.delete');
 
             # taxes
             Route::get('/taxes', [TaxesController::class, 'index'])->name('admin.taxes.index');

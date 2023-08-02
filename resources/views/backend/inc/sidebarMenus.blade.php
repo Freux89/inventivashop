@@ -57,19 +57,19 @@
                         </li>
                     @endcan
 
-                    @can('brands')
+                    <!-- @can('brands')
                         <li class="{{ areActiveRoutes(['admin.brands.index', 'admin.brands.edit'], 'tt-menu-item-active') }}">
                             <a href="{{ route('admin.brands.index') }}"
                                 class="{{ areActiveRoutes(['admin.brands.index', 'admin.brands.edit']) }}">{{ localize('All Brands') }}</a>
                         </li>
-                    @endcan
+                    @endcan -->
 
-                    @can('units')
+                    <!-- @can('units')
                         <li class="{{ areActiveRoutes(['admin.units.index', 'admin.units.edit'], 'tt-menu-item-active') }}">
                             <a href="{{ route('admin.units.index') }}"
                                 class="{{ areActiveRoutes(['admin.units.index']) }}">{{ localize('All Units') }}</a>
                         </li>
-                    @endcan
+                    @endcan -->
 
                     @can('taxes')
                         <li class="{{ areActiveRoutes(['admin.taxes.index', 'admin.taxes.edit'], 'tt-menu-item-active') }}">

@@ -111,6 +111,16 @@
                                                                         class="me-2"></i>{{ localize('Edit') }}
                                                                 </a>
                                                             @endcan
+                                                            @can('delete_products') <!-- Modifica questa linea con la regola di autorizzazione corretta -->
+                                            <form action="{{ route('admin.variationValues.delete', $variationValue->id) }}" method="POST" id="deleteForm-{{ $variationValue->id }}">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="button" class="dropdown-item delete-button" data-id="{{ $variationValue->id }}">
+                                                    <i data-feather="trash-2" class="me-2"></i>{{ localize('Delete') }}
+                                                </button>
+                                            </form>
+                                            @endcan
                                                         </div>
                                                     </div>
                                                 </td>
