@@ -6,22 +6,35 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductVariationInfoResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
-     */
+    
+    
+    public function __construct($resource)
+    {
+        parent::__construct($resource);
+    }
+
     public function toArray($request)
     {
+
+        $ids = array_map(function ($item) {
+            return $item['id'];
+        }, $this->resource);
+
+        $total_stock = array_reduce($this->resource, function($carry, $item) {
+            return $carry + ($item['product_variation_stock'] ? (int) $item['product_variation_stock']->stock_qty : 0);
+        }, 0);
+    
         return [
-            'id'                        =>  (int) $this->id,
+            'ids'                       =>  $ids,
+            'id'                        =>  (int) $this->resource[0]['id'],
             'price'                     =>  getViewRender('pages.partials.products.variation-pricing', [
-                'product'               =>  $this->product,
-                'price'                 =>  (float) variationPrice($this->product, $this),
-                'discounted_price'      =>  (float) variationDiscountedPrice($this->product, $this)
+                'product'               =>  $this->resource[0]['product'],
+                'price'                 =>  (float) variationPrice($this->resource[0]['product'], $this->resource),
+                'discounted_price'      =>  (float) variationDiscountedPrice($this->resource[0]['product'], $this->resource)
             ]),
-            'stock'                     =>  $this->product_variation_stock ? (int) $this->product_variation_stock->stock_qty : 0,
+            'stock'                     =>  $total_stock,
         ];
     }
+    
 }
+

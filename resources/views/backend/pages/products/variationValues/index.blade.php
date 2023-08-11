@@ -158,7 +158,22 @@
                                         <input class="form-control" type="text" id="name" name="name"
                                             placeholder="{{ localize('Type variation value name') }}" required>
                                     </div>
-
+                                    <div class="mb-4">
+                <label class="form-label">{{ localize('Image') }}</label>
+                <div class="tt-image-drop rounded">
+                    <span class="fw-semibold">{{ localize('Choose Image') }}</span>
+                    <div class="tt-product-thumb show-selected-files mt-3">
+                        <div class="avatar avatar-xl cursor-pointer choose-media"
+                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom"
+                            onclick="showMediaManager(this)" data-selection="single">
+                            <input type="hidden" name="image" value="">
+                            <div class="no-avatar rounded-circle">
+                                <span><i data-feather="plus"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                                     @if ($variation->id == 2)
                                         <div class="mb-4">
                                             <label for="name" class="form-label">{{ localize('Color Code') }}</label>

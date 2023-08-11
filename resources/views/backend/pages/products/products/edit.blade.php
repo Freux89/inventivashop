@@ -243,18 +243,17 @@
                                     </div>
 
                                     <!-- without variation start-->
-                                    <div class="noVariation"
-                                        @if ($product->has_variation) style="display:none;" @endif>
+                                    <div class="noVariation">
                                         @php
                                             $first_variation = $product->variations->first();
-                                            $price = !$product->has_variation ? $first_variation->price : 0;
-                                            $stock_qty = !$product->has_variation ? ($first_variation->product_variation_stock ? $first_variation->product_variation_stock->stock_qty : 0) : 1;
-                                            $sku = !$product->has_variation ? $first_variation->sku : null;
-                                            $code = !$product->has_variation ? $first_variation->code : null;
+                                            $price = $product->price;
+                                            $stock_qty = !$product->has_variation ? $product->stock_qty : 1;
+                                            $sku = null;
+                                            $code =  null;
                                         @endphp
 
                                         <div class="row g-3">
-                                            <div class="col-lg-3">
+                                            <div class="col-lg-6">
                                                 <div class="mb-3">
                                                     <label for="price"
                                                         class="form-label">{{ localize('Price') }}</label>
@@ -264,11 +263,10 @@
                                                         {{ !$product->has_variation ? 'required' : '' }}>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3">
+                                            <div class="col-lg-6">
                                                 <div class="mb-3">
-                                                    <label for="stock" class="form-label">{{ localize('Stock') }}
-                                                        <small
-                                                            class="text-warning">({{ localize("Default Location's Stock") }})</small>
+                                                    <label for="stock" class="form-label">{{ localize('Quantity') }}
+                                                        
                                                     </label>
                                                     <input type="number" id="stock"
                                                         placeholder="{{ localize('Stock qty') }}" name="stock"
@@ -277,27 +275,7 @@
 
                                                 </div>
                                             </div>
-                                            <div class="col-lg-3">
-                                                <div class="mb-3">
-                                                    <label for="sku"
-                                                        class="form-label">{{ localize('SKU') }}</label>
-                                                    <input type="text" id="sku"
-                                                        placeholder="{{ localize('Product sku') }}" name="sku"
-                                                        class="form-control" value="{{ $sku }}"
-                                                        {{ !$product->has_variation ? 'required' : '' }}>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-3">
-                                                <div class="mb-3">
-                                                    <label for="code"
-                                                        class="form-label">{{ localize('Code') }}</label>
-                                                    <input type="text" id="code"
-                                                        placeholder="{{ localize('Product code') }}" name="code"
-                                                        value="{{ $code }}" class="form-control"
-                                                        {{ !$product->has_variation ? 'required' : '' }}>
-                                                </div>
-                                            </div>
+                                            
                                         </div>
                                     </div>
                                     <!-- without variation start end-->
@@ -306,75 +284,12 @@
                                     <!--for variation row start-->
                                     <div class="hasVariation"
                                         @if (!$product->has_variation) style="display:none;" @endif>
-                                        @php
-                                            $sizes = \App\Models\VariationValue::where('variation_id', 1)->get();
-                                            $colors = \App\Models\VariationValue::where('variation_id', 2)->get();
-                                            
-                                            $selectedSizeIds = $product
-                                                ->variation_combinations()
-                                                ->where('variation_id', 1)
-                                                ->pluck('variation_value_id')
-                                                ->unique()
-                                                ->toArray();
-                                            
-                                            $selectedColorIds = $product
-                                                ->variation_combinations()
-                                                ->where('variation_id', 2)
-                                                ->pluck('variation_value_id')
-                                                ->unique()
-                                                ->toArray();
-                                        @endphp
+                                        <h5 class="mb-4">Varianti</h5>
 
-                                        <div class="row g-3">
-                                            <!-- size -->
-                                            @if (count($sizes) > 0)
-                                                <div class="col-lg-6">
-                                                    <div class="mb-3">
-                                                        <label for="product-thumb"
-                                                            class="form-label">{{ localize('Sizes') }}</label>
-                                                        <input type="hidden" name="chosen_variations[]" value="1">
-                                                        <select class="select2 form-control" multiple="multiple"
-                                                            data-placeholder="{{ localize('Select Sizes') }}"
-                                                            onchange="generateVariationCombinations()"
-                                                            name="option_1_choices[]">
-                                                            @foreach ($sizes as $size)
-                                                                <option value="{{ $size->id }}"
-                                                                    {{ in_array($size->id, $selectedSizeIds) ? 'selected' : '' }}>
-                                                                    {{ $size->collectLocalization('name') }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                            <!-- size end -->
+                                       
 
-                                            <!-- colors -->
-                                            @if (count($colors) > 0)
-                                                <div class="col-lg-6">
-                                                    <div class="mb-3">
-                                                        <label for="product-thumb"
-                                                            class="form-label">{{ localize('Colors') }}</label>
-                                                        <input type="hidden" name="chosen_variations[]" value="2">
-                                                        <select class="select2 form-control" multiple="multiple"
-                                                            data-placeholder="{{ localize('Select colors') }}"
-                                                            onchange="generateVariationCombinations()"
-                                                            name="option_2_choices[]">
-                                                            @foreach ($colors as $color)
-                                                                <option value="{{ $color->id }}"
-                                                                    {{ in_array($color->id, $selectedColorIds) ? 'selected' : '' }}>
-                                                                    {{ $color->collectLocalization('name') }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                            <!-- colors end -->
-                                        </div>
-
-                                        @foreach (generateVariationOptions(
-            $product->variation_combinations()->whereNotIn('variation_id', [1, 2])->get(),
-        ) as $key => $combination)
-                                            <div class="row g-3">
+                                        @foreach (generateVariationOptions($product->variation_combinations()->get(),) as $key => $combination)
+                                            <div class="row g-3 mb-2">
                                                 {{-- combination == variation --}}
                                                 <div class="col-lg-6">
                                                     <div class="variation-names">
@@ -387,8 +302,7 @@
                                                 <div class="col-lg-6">
                                                     <div class="variationvalues">
                                                         @php
-                                                            $variation_values = \App\Models\VariationValue::whereNotIn('variation_id', [1, 2])
-                                                                ->where('variation_id', $combination['id'])
+                                                            $variation_values = \App\Models\VariationValue::where('variation_id', $combination['id'])
                                                                 ->get();
                                                             $old_val = array_map(function ($val) {
                                                                 return $val['id'];

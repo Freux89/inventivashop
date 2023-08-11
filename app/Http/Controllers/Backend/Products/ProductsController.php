@@ -103,44 +103,51 @@ class ProductsController extends Controller
     }
 
     # generate variation combinations
-    public function generateVariationCombinations(Request $request)
-    {
+    public function generateVariationCombinations(Request $request) {
         $variations_and_values = array();
-
+    
+        $existing_variations = $request->input('variations', []); // Recupera le variazioni esistenti o un array vuoto se non ne esistono
+    
         if ($request->has('chosen_variations')) {
             $chosen_variations = $request->chosen_variations;
             sort($chosen_variations, SORT_NUMERIC);
-
+    
             foreach ($chosen_variations as $key => $option) {
-
                 $option_name = 'option_' . $option . '_choices'; # $option = variation_id
-                $value_ids = array();
-
+    
                 if ($request->has($option_name)) {
-
                     $variation_option_values = $request[$option_name];
                     sort($variation_option_values, SORT_NUMERIC);
-
+    
                     foreach ($variation_option_values as $item) {
-                        array_push($value_ids, $item);
+                        $combination_key = $option . ":" . $item . "/";
+                        
+                        // Cerca la combinazione corrispondente tra le variazioni esistenti
+                        $existing_data = null;
+                        foreach($existing_variations as $variation) {
+                            if ($variation['variation_key'] == $combination_key) {
+                                $existing_data = $variation;
+                                break;
+                            }
+                        }
+    
+                        $data_to_push = [$option => $item];
+                        
+                        if ($existing_data) {
+                            $data_to_push['data'] = $existing_data;
+                        }
+    
+                        array_push($variations_and_values, $data_to_push);
                     }
-                    $variations_and_values[$option] =  $value_ids;
                 }
             }
         }
-
-        $combinations = array(array());
-        foreach ($variations_and_values as $variation => $variation_values) {
-            $tempArray = array();
-            foreach ($combinations as $combination_item) {
-                foreach ($variation_values as $variation_value) {
-                    $tempArray[] = $combination_item + array($variation => $variation_value);
-                }
-            }
-            $combinations = $tempArray;
-        }
+    
+        $combinations = $variations_and_values;
+    
         return view('backend.pages.products.products.new_variation_combinations', compact('combinations'))->render();
     }
+
 
     # add new data
     public function store(Request $request)
@@ -301,6 +308,8 @@ class ProductsController extends Controller
         $variations = Variation::isActive()->whereNotIn('id', [1, 2])->get();
         $taxes = Tax::isActive()->get();
         $tags = Tag::all();
+
+        
         return view('backend.pages.products.products.edit', compact('product', 'categories', 'brands', 'units', 'variations', 'taxes', 'lang_key', 'tags'));
     }
 
@@ -331,7 +340,7 @@ class ProductsController extends Controller
             $product->thumbnail_image   = $request->image;
             $product->gallery_images   = $request->images;
             $product->size_guide        = $request->size_guide;
-
+            $product->price =  priceToUsd($request->price);
             # min-max price
             if ($request->has('is_variant') && $request->has('variations')) {
                 $product->min_price =  priceToUsd(min(array_column($request->variations, 'price')));
@@ -400,6 +409,10 @@ class ProductsController extends Controller
 
             $location = Location::where('is_default', 1)->first();
 
+            // Inserire qui la gestione delle varianti
+            // Inserire le varianti del prodotto se sono state inserite
+            // Oppure eliminare le varianti del prodotto se sono state cancellate
+
             if ($request->has('is_variant') && $request->has('variations')) {
 
                 $new_requested_variations = collect($request->variations);
@@ -421,6 +434,7 @@ class ProductsController extends Controller
                 foreach ($old_matched_variations as $variation) {
                     $p_variation              = ProductVariation::where('product_id', $product->id)->where('variation_key', $variation['variation_key'])->first();
                     $p_variation->price       = priceToUsd($variation['price']);
+                    $p_variation->price_change_type    = $variation['price_change_type'];
                     $p_variation->sku         = $variation['sku'];
                     $p_variation->code         = $variation['code'];
                     $p_variation->save();
@@ -442,6 +456,7 @@ class ProductsController extends Controller
                     $product_variation->product_id          = $product->id;
                     $product_variation->variation_key       = $variation['variation_key'];
                     $product_variation->price               = priceToUsd($variation['price']);
+                    $product_variation->price_change_type    = $variation['price_change_type'];
                     $product_variation->sku                 = $variation['sku'];
                     $product_variation->code                 = $variation['code'];
                     $product_variation->save();
@@ -498,6 +513,8 @@ class ProductsController extends Controller
                     $product_variation_stock->save();
                 }
             }
+
+            
         }
         # Product Localization
         $ProductLocalization = ProductLocalization::firstOrNew(['lang_key' => $request->lang_key, 'product_id' => $product->id]);

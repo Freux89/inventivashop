@@ -139,8 +139,9 @@
                         <div class="category-dropdown position-relative d-none d-md-inline-block">
 
                             <a href="javascript:void(0)" class="category-dropdown-btn fw-bold d-none d-sm-inline-block">{{ localize('Categories') }}<span class="ms-1"><i class="fa-solid fa-angle-down"></i></span></a>
-
+                           
                             <div class="category-dropdown-box scrollbar">
+                                
                                 <ul class="category-dropdown-menu">
                                     @php
                                     $categories = [];
@@ -166,7 +167,6 @@
                             <ul class="d-flex align-itmes-center justify-content-end">
                                 <li><a href="{{ route('home') }}">{{ localize('Home') }}</a></li>
                                 <li><a href="{{ route('products.index') }}">{{ localize('Products') }}</a></li>
-                                <li><a href="{{ route('home.campaigns') }}">{{ localize('Campaigns') }}</a>
                                 </li>
                                 <li><a href="{{ route('home.coupons') }}">{{ localize('Coupons') }}</a>
                                 </li>
@@ -250,20 +250,7 @@
                                 </div>
                             </div>
                             <div class="gshop-header-cart position-relative">
-                                @php
-                                $carts = [];
-                                if (Auth::check()) {
-                                $carts = App\Models\Cart::where('user_id', Auth::user()->id)
-                                ->where('location_id', session('stock_location_id'))
-                                ->get();
-                                } else {
-                                if (isset($_COOKIE['guest_user_id'])) {
-                                $carts = App\Models\Cart::where('guest_user_id', (int) $_COOKIE['guest_user_id'])
-                                ->where('location_id', session('stock_location_id'))
-                                ->get();
-                                }
-                                }
-                                @endphp
+                             
 
 
                                 <button type="button" class="header-icon">

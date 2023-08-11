@@ -45,8 +45,14 @@ class VariationsController extends Controller
     # variation store
     public function store(Request $request)
     {
+        $data = $request->validate([
+            'name' => 'required|string',
+            'display_type' => 'required|string',  // Add this line
+        ]);
+
         $variation = new Variation;
         $variation->name = $request->name;
+        $variation->display_type = $data['display_type']; 
 
         $variation->save();
 
@@ -75,10 +81,19 @@ class VariationsController extends Controller
     # update variation
     public function update(Request $request)
     {
+
+        $data = $request->validate([
+            'id' => 'required|integer',
+            'name' => 'required|string',
+            'lang_key' => 'required|string',
+            'display_type' => 'required|string',  
+        ]);
+
         $variation = Variation::findOrFail($request->id);
 
         if ($request->lang_key == env("DEFAULT_LANGUAGE")) {
             $variation->name = $request->name;
+            $variation->display_type = $data['display_type']; 
         }
 
         $variationLocalization = VariationLocalization::firstOrNew(['lang_key' => $request->lang_key, 'variation_id' => $variation->id]);

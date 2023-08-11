@@ -27,6 +27,7 @@ class CheckoutController extends Controller
     # checkout
     public function index()
     {
+       
         $carts = Cart::where('user_id', auth()->user()->id)->where('location_id', session('stock_location_id'))->get();
 
         if (count($carts) > 0) {

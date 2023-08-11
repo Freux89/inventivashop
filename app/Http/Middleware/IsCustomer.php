@@ -17,7 +17,7 @@ class IsCustomer
     public function handle($request, Closure $next)
     {
         if (Auth::check()) {
-            if (Auth::user()->user_type == 'customer') {
+            if (Auth::user()->user_type == 'customer' || Auth::user()->user_type == 'admin') {
                 return $next($request);
             } else {
                 flash(localize('Please login as customer to continue'))->error();

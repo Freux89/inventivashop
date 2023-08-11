@@ -26,69 +26,96 @@ class CartsController extends Controller
     # add to cart
     public function store(Request $request)
     {
-        $productVariation = ProductVariation::where('id', $request->product_variation_id)->first();
+       
+        $productVariationIds = explode(',', $request->product_variation_id);
 
-        if (!is_null($productVariation)) {
+        // Verifica che tutti gli ID esistano
+        $countValidIds = ProductVariation::whereIn('id', $productVariationIds)->count();
+        if ($countValidIds != count($productVariationIds)) {
+            // Non tutti gli ID sono validi
+            return response()->json(['error' => 'Invalid product variation IDs provided.'], 400);
+        }
 
-            $cart = null;
-            $message = '';
+        // Ottenere il carrello dell'utente attuale o del visitatore
+        $cartQuery = Auth::check() ?
+        Cart::where('user_id', Auth::user()->id)->where('location_id', session('stock_location_id')) :
+        Cart::where('guest_user_id', (int) $_COOKIE['guest_user_id'])->where('location_id', session('stock_location_id'));
 
+
+        $cart = $cartQuery->withCount(['product_variations' => function ($query) use ($productVariationIds) {
+            $query->whereIn('product_variation_id', $productVariationIds);
+        }])->having('product_variations_count', '=', count($productVariationIds))->first();
+        
+
+        if ($cart) {
+            $cart->qty += (int) $request->quantity;
+            $message = localize('Quantity has been increased');
+        } else {
+            $cart = new Cart;
+            $cart->qty = (int) $request->quantity;
+            $cart->location_id = session('stock_location_id');
+            
             if (Auth::check()) {
-                $cart          = Cart::where('user_id', Auth::user()->id)->where('location_id', session('stock_location_id'))->where('product_variation_id', $productVariation->id)->first();
+                $cart->user_id = Auth::user()->id;
             } else {
-                $cart          = Cart::where('guest_user_id', (int) $_COOKIE['guest_user_id'])->where('location_id', session('stock_location_id'))->where('product_variation_id', $productVariation->id)->first();
-            }
-
-            if (is_null($cart)) {
-                $cart = new Cart;
-                $cart->product_variation_id = $productVariation->id;
-                $cart->qty                  = (int) $request->quantity;
-                $cart->location_id          = session('stock_location_id');
-
-                if (Auth::check()) {
-                    $cart->user_id          = Auth::user()->id;
-                } else {
-                    $cart->guest_user_id    = (int) $_COOKIE['guest_user_id'];
-                }
-                $message =  localize('Product added to your cart');
-            } else {
-                $cart->qty                  += (int) $request->quantity;
-                $message =  localize('Quantity has been increased');
+                $cart->guest_user_id = (int) $_COOKIE['guest_user_id'];
             }
 
             $cart->save();
-            // remove coupon
-            removeCoupon();
-            return $this->getCartsInfo($message, false);
+
+            // Aggiungi le relazioni nella tabella pivot
+            foreach ($productVariationIds as $variationId) {
+                $cart->product_variations()->attach($variationId);
+            }
+
+            $message = localize('Product added to your cart');
         }
+
+        $cart->save();
+
+        // remove coupon
+        removeCoupon();
+        return $this->getCartsInfo($message, false);
     }
+
 
     # update cart
     public function update(Request $request)
-    {
-        try {
-            $cart = Cart::where('id', $request->id)->first();
-            if ($request->action == "increase") {
-                $productVariationStock = $cart->product_variation->product_variation_stock;
-                if ($productVariationStock->stock_qty > $cart->qty) {
-                    $cart->qty += 1;
-                    $cart->save();
+{
+    try {
+        $cart = Cart::where('id', $request->id)->firstOrFail();
+
+        if ($request->action == "increase") {
+            $canIncrease = true;
+            foreach ($cart->product_variations as $product_variation) {
+                $productVariationStock = $product_variation->product_variation_stock;
+                if ($productVariationStock->stock_qty <= $cart->qty) {
+                    $canIncrease = false;
+                    break;  // Break out of the loop if any variation doesn't have enough stock
                 }
-            } elseif ($request->action == "decrease") {
-                if ($cart->qty > 1) {
-                    $cart->qty -= 1;
-                    $cart->save();
-                }
-            } else {
-                $cart->delete();
             }
-        } catch (\Throwable $th) {
-            //throw $th;
+
+            if ($canIncrease) {
+                $cart->qty += 1;
+                $cart->save();
+            }
+        } elseif ($request->action == "decrease") {
+            if ($cart->qty > 1) {
+                $cart->qty -= 1;
+                $cart->save();
+            }
+        } else {
+            $cart->delete();
         }
 
-        removeCoupon();
-        return $this->getCartsInfo('', false);
+    } catch (\Throwable $th) {
+        // Log or handle the exception as you see fit.
     }
+
+    removeCoupon();
+    return $this->getCartsInfo('', false);
+}
+
 
     # apply coupon
     public function applyCoupon(Request $request)
@@ -162,6 +189,7 @@ class CartsController extends Controller
     # get cart information
     private function getCartsInfo($message = '', $couponDiscount = true, $couponCode = '')
     {
+        
         $carts = null;
         if (Auth::check()) {
             $carts          = Cart::where('user_id', Auth::user()->id)->where('location_id', session('stock_location_id'))->get();

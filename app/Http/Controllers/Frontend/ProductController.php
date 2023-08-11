@@ -87,7 +87,7 @@ class ProductController extends Controller
     # product show
     public function show($slug)
     {
-        $product                        = Product::where('slug', $slug)->first();
+        $product = Product::where('slug', $slug)->first();
 
         if (auth()->check() && auth()->user()->user_type == "admin") {
             // do nothing
@@ -107,6 +107,8 @@ class ProductController extends Controller
         if (getSetting('product_page_widgets') != null) {
             $product_page_widgets = json_decode(getSetting('product_page_widgets'));
         }
+    
+       
 
         return getView('pages.products.show', ['product' => $product, 'relatedProducts' => $relatedProducts, 'product_page_widgets' => $product_page_widgets]);
     }
@@ -115,19 +117,31 @@ class ProductController extends Controller
     public function showInfo(Request $request)
     {
         $product = Product::find($request->id);
+        
         return getView('pages.partials.products.product-view-box', ['product' => $product]);
     }
 
     # product variation info
     public function getVariationInfo(Request $request)
-    {
-        $variationKey = "";
-        foreach ($request->variation_id as $variationId) {
-            $fieldName      = 'variation_value_for_variation_' . $variationId;
-            $variationKey  .=  $variationId . ':' . $request[$fieldName] . '/';
-        }
-        $productVariation = ProductVariation::where('variation_key', $variationKey)->where('product_id', $request->product_id)->first();
+{
+    $product_id = $request->product_id;
+    $variation_ids = $request->variation_id;
 
-        return new ProductVariationInfoResource($productVariation);
+    $product_price = Product::find($product_id)->price;
+    $total_price = $product_price;
+    $productVariations = [];
+
+    foreach ($variation_ids as $key => $variationId) {
+        $fieldName = 'variation_value_for_variation_' . $variationId;
+        $variation_key = $variationId . ':' . $request[$fieldName] . '/';
+        $productVariation = ProductVariation::where('variation_key', $variation_key)->where('product_id', $product_id)->first();
+
+        if ($productVariation) {
+            $productVariations[] = $productVariation;
+        }
     }
+    
+    
+    return new ProductVariationInfoResource($productVariations);
+}
 }

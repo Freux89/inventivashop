@@ -34,6 +34,7 @@ if (!function_exists('getViewRender')) {
     # get view of theme with render
     function getViewRender($path, $data = [])
     {
+        
         return view('frontend.' . getTheme() . '.' . $path, $data)->render();
     }
 }
@@ -213,6 +214,24 @@ if (!function_exists('localize')) {
         }
 
         return isset($localization_english[$t_key]) ? trim($localization_english[$t_key]) : $key;
+    }
+}
+
+if (!function_exists('calculateVariationPrice')) {
+    function calculateVariationPrice($product_price, $productVariation)
+    {
+      
+        $price_change_type = $productVariation->price_change_type;
+        $price = $productVariation->price;
+
+        if ($price_change_type == 'replace') {
+            return $price;
+        } elseif ($price_change_type == 'amount') {
+            return $product_price + $price;
+        } elseif ($price_change_type == 'percentage') {
+            return $product_price + ($product_price * ($price / 100));
+        }
+        return $product_price;
     }
 }
 
@@ -474,7 +493,7 @@ if (!function_exists('productBasePrice')) {
     // min/base price of a product
     function productBasePrice($product, $formatted = false)
     {
-        $price = $product->min_price;
+        $price = $product->price;
         $tax = 0;
 
         foreach ($product->taxes as $productTax) {
@@ -494,7 +513,7 @@ if (!function_exists('discountedProductBasePrice')) {
     // min/base price of a product with discount
     function discountedProductBasePrice($product, $formatted = false)
     {
-        $price = $product->min_price;
+        $price = $product->price;
 
         $discount_applicable = false;
 
@@ -643,8 +662,10 @@ if (!function_exists('generateVariationOptions')) {
                 );
                 array_push($variationValues, $val);
             }
+            $variation = Variation::find($id);
             $data['id'] = $id;
-            $data['name'] = Variation::find($id)->collectLocalization('name');
+            $data['name'] = $variation->collectLocalization('name');
+            $data['display_type'] = $variation->display_type;
             $data['values'] = $variationValues;
 
             array_push($options, $data);
@@ -655,9 +676,15 @@ if (!function_exists('generateVariationOptions')) {
 
 if (!function_exists('variationPrice')) {
     // return price of a variation
-    function variationPrice($product, $variation)
+    function variationPrice($product, $variations)
     {
-        $price = $variation->price;
+        $price = $product->price;
+    
+        // Calcola il prezzo delle varianti
+        foreach ($variations as $variation) {
+            
+            $price = calculateVariationPrice($price, $variation);
+        }
 
         foreach ($product->taxes as $product_tax) {
             if ($product_tax->tax_type == 'percent') {
@@ -672,13 +699,18 @@ if (!function_exists('variationPrice')) {
 
 if (!function_exists('variationDiscountedPrice')) {
     // return discounted price of a variation
-    function variationDiscountedPrice($product, $variation, $addTax = true)
+    function variationDiscountedPrice($product, $variations, $addTax = true)
     {
-        $price = $variation->price;
-
+        $price = $product->price;
+    
+        // Calcola il prezzo delle varianti
+        foreach ($variations as $variation) {
+            
+            $price = calculateVariationPrice($price, $variation);
+        }
+    
         $discount_applicable = false;
-
-
+    
         if ($product->discount_start_date == null || $product->discount_end_date == null) {
             $discount_applicable = false;
         } elseif (
@@ -687,7 +719,7 @@ if (!function_exists('variationDiscountedPrice')) {
         ) {
             $discount_applicable = true;
         }
-
+    
         if ($discount_applicable) {
             if ($product->discount_type == 'percent') {
                 $price -= ($price * $product->discount_value) / 100;
@@ -695,7 +727,7 @@ if (!function_exists('variationDiscountedPrice')) {
                 $price -= $product->discount_value;
             }
         }
-
+    
         if ($addTax) {
             foreach ($product->taxes as $product_tax) {
                 if ($product_tax->tax_type == 'percent') {
@@ -705,7 +737,7 @@ if (!function_exists('variationDiscountedPrice')) {
                 }
             }
         }
-
+    
         return $price;
     }
 }
@@ -756,17 +788,16 @@ if (!function_exists('getSubTotal')) {
         $amount = 0;
         if (count($carts) > 0) {
             foreach ($carts as $cart) {
-                if ($cart->product_variation && $cart->product_variation->product) {
-                    $product    = $cart->product_variation->product;
-                    $variation  = $cart->product_variation;
-                    $discountedVariationPriceWithTax = variationDiscountedPrice($product, $variation, $addTax);
+                $productVariations = $cart->product_variations;
+                if (!$productVariations->isEmpty()) {
+                    $product = $productVariations->first()->product;  // Assuming that all variations belong to the same product
+                    $discountedVariationPriceWithTax = variationDiscountedPrice($product, $productVariations, $addTax);
                     $price += (float) $discountedVariationPriceWithTax * $cart->qty;
                 } else {
                     // Handle the case where the product or product variation does not exist
                     // You could perhaps skip the calculation for this cart item, or show a message, etc.
                 }
             }
-            
 
             # calculate coupon discount
             if ($couponDiscount) {
@@ -776,6 +807,7 @@ if (!function_exists('getSubTotal')) {
 
         return $price - $amount;
     }
+
 }
 
 if (!function_exists('setCoupon')) {
@@ -963,21 +995,16 @@ if (!function_exists('checkCouponValidityForCheckout')) {
 
 if (!function_exists('getTotalTax')) {
     // get Total Tax from
-    function getTotalTax($carts)
-    {
-        $tax = 0;
-        if ($carts) {
+   
 
-            foreach ($carts as $cart) {
-                $product    = $cart->product_variation->product;
-                $variation  = $cart->product_variation;
+function getTotalTax($carts)
+{
+    $IVA = getSetting('global_vat_rate') * 0.01;
+    $total = getSubTotal($carts, false, '', false); // Ottieni il totale escludendo tasse e sconti.
+    
+    return $total * $IVA;
+}
 
-                $variationTaxAmount = variationTaxAmount($product, $variation);
-                $tax += (float) $variationTaxAmount * $cart->qty;
-            }
-        }
-        return $tax;
-    }
 }
 
 if (!function_exists('getScheduledDeliveryType')) {

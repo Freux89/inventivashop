@@ -163,7 +163,7 @@
 
     // get selected variation information
     function getVariationInfo() {
-        if ($('.add-to-cart-form input[name=quantity]').val() > 0 && isValidForAddingToCart()) {
+        if ($('.add-to-cart-form input[name=quantity]').val()) {
             let data = $('.add-to-cart-form').serializeArray();
             $.ajax({
                 type: "POST",
@@ -175,18 +175,17 @@
                     $('.variation-pricing').removeClass('d-none');
                     $('.variation-pricing').html(response.data.price);
 
-                    $('.add-to-cart-form input[name=product_variation_id]').val(response.data
-                        .id);
-                    $('.add-to-cart-form input[name=quantity]').prop('max', response.data.stock);
+                    // $('.add-to-cart-form input[name=product_variation_id]').val(response.data
+                    //     .id);
+                    $('.add-to-cart-form input[name=product_variation_id]').val(response.data.ids.join(','));
 
-                    if (response.data.stock < 1) {
-                        $('.add-to-cart-btn').prop('disabled', true);
-                        $('.add-to-cart-btn .add-to-cart-text').html(TT.localize.outOfStock);
-                    } else {
+                  //  $('.add-to-cart-form input[name=quantity]').prop('max', response.data.stock);
+
+                    
                         $('.add-to-cart-btn').prop('disabled', false);
                         $('.add-to-cart-btn .add-to-cart-text').html(TT.localize.addToCart);
                         $('.qty-increase-decrease input[name=quantity]').val(1);
-                    }
+                    
                 }
             });
         }
@@ -201,9 +200,11 @@
             count++;
         });
 
-        if ($('.product-radio-btn input:radio:checked').length == count) {
-            return true;
-        }
+        var selectedOptions = $('.product-radio-btn input:radio:checked').length + $('select.product-select option:selected').length;
+
+    if (selectedOptions == count) {
+        return true;
+    }
 
         return false;
     }
@@ -211,7 +212,7 @@
     // cart func
     function cartFunc() {
         // on selection of variation
-        $('.product-radio-btn input').on('change', function() {
+        $('.product-radio-btn input,.product-select').on('change', function() {
             getVariationInfo();
         });
 

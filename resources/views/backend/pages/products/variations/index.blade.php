@@ -173,6 +173,14 @@
                                             placeholder="{{ localize('Type variation name') }}" required>
                                     </div>
 
+                                    <div class="mb-4">
+                <label for="display_type" class="form-label">{{ localize('Display Type') }}</label>
+                <select class="form-control" id="display_type" name="display_type" required>
+                    <option value="select">{{ localize('Campo Select') }}</option>
+                    <option value="image">{{ localize('Image') }}</option>
+                    <option value="color">{{ localize('Color') }}</option>
+                </select>
+            </div>
                                 </div>
                             </div>
                             <!-- variation info end-->

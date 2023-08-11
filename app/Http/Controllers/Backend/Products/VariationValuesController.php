@@ -43,12 +43,25 @@ class VariationValuesController extends Controller
     # variation value store
     public function store(Request $request)
     {
+
+        $data = $request->validate([
+            'name' => 'required|string',
+            'variation_id' => 'required|integer',
+            'color_code' => 'nullable|string',
+            'image' => 'nullable|integer',  
+        ]);
+
         $variationValue = new VariationValue;
-        $variationValue->name = $request->name;
-        $variationValue->variation_id = $request->variation_id;
-        if ($request->variation_id == 2) {
-            $variationValue->color_code = $request->color_code;
-        }
+        $variationValue->name = $data['name'];
+        $variationValue->variation_id = $data['variation_id'];
+        $variationValue->image = $data['image'];
+
+        // Commento perchè sembra un codice errato
+        // if ($request->variation_id == 2) {
+        //     $variationValue->color_code = $request->color_code;
+        // }
+
+
         $variationValue->save();
 
         $variationValueLocalization = VariationValueLocalization::firstOrNew(['lang_key' => env('DEFAULT_LANGUAGE'), 'variation_value_id' => $variationValue->id]);
@@ -77,16 +90,28 @@ class VariationValuesController extends Controller
     # update variation value
     public function update(Request $request)
     {
-        $variationValue = VariationValue::findOrFail($request->id);
 
-        if ($request->lang_key == env("DEFAULT_LANGUAGE")) {
-            $variationValue->name = $request->name;
-        }
-        $variationValue->variation_id = $request->variation_id;
+        $data = $request->validate([
+            'id' => 'required|integer',
+            'name' => 'required|string',
+            'variation_id' => 'required|integer',
+            'lang_key' => 'required|string',
+            'color_code' => 'nullable|string',
+            'image' => 'nullable|integer',  // Add this line
+        ]);
 
-        if ($request->variation_id == 2) {
-            $variationValue->color_code = $request->color_code;
+        $variationValue = VariationValue::findOrFail($data['id']);
+
+        if ($data['lang_key'] == env("DEFAULT_LANGUAGE")) {
+            $variationValue->name = $data['name'];
+            $variationValue->image = $data['image'];  // Add this line
         }
+    
+        $variationValue->variation_id = $data['variation_id'];
+    
+        // if ($data['variation_id'] == 2) {
+        //     $variationValue->color_code = $data['color_code'];
+        // }
 
         $variationValueLocalization = VariationValueLocalization::firstOrNew(['lang_key' => $request->lang_key, 'variation_value_id' => $variationValue->id]);
         $variationValueLocalization->name = $request->name;
