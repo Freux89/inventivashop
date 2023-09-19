@@ -293,7 +293,7 @@
 
 
     <!-- Blog Systems -->
-    @php
+    <!-- @php
         $blogActiveRoutes = ['admin.blogs.index', 'admin.blogs.create', 'admin.blogs.edit', 'admin.blogCategories.index', 'admin.blogCategories.edit'];
     @endphp
     @canany(['blogs', 'blog_categories'])
@@ -323,7 +323,7 @@
                 </ul>
             </div>
         </li>
-    @endcan
+    @endcan -->
 
     <!-- media manager -->
     @can('media_manager')

@@ -14,6 +14,12 @@ class OrderItem extends Model
         return $this->belongsTo(ProductVariation::class);
     }
 
+    public function product_variations()
+    {
+        return $this->belongsToMany(ProductVariation::class, 'order_item_product_variation');
+   
+    }
+
     public function location()
     {
         return $this->belongsTo(Location::class);

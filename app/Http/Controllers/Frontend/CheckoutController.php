@@ -83,14 +83,14 @@ class CheckoutController extends Controller
             }
 
             # check carts available stock -- todo::[update version] -> run this check while storing OrderItems
-            foreach ($carts as $cart) {
-                $productVariationStock = $cart->product_variation->product_variation_stock ? $cart->product_variation->product_variation_stock->stock_qty : 0;
-                if ($cart->qty > $productVariationStock) {
-                    $message = $cart->product_variation->product->collectLocalization('name') . ' ' . localize('is out of stock');
-                    flash($message)->error();
-                    return back();
-                }
-            }
+            // foreach ($carts as $cart) {
+            //     $productVariationStock = $cart->product_variation->product_variation_stock ? $cart->product_variation->product_variation_stock->stock_qty : 0;
+            //     if ($cart->qty > $productVariationStock) {
+            //         $message = $cart->product_variation->product->collectLocalization('name') . ' ' . localize('is out of stock');
+            //         flash($message)->error();
+            //         return back();
+            //     }
+            // }
 
             # create new order group
             $orderGroup                                     = new OrderGroup;
@@ -138,7 +138,8 @@ class CheckoutController extends Controller
             # order -> todo::[update version] make array for each vendor, create order in loop
             $order = new Order;
             $order->order_group_id  = $orderGroup->id;
-            $order->shop_id         = $carts[0]->product_variation->product->shop_id;
+            
+            $order->shop_id         = $carts[0]->product_variations->first()->product->shop_id;
             $order->user_id         = $userId;
             $order->location_id     = session('stock_location_id');
             if (getCoupon() != '') {
@@ -166,15 +167,18 @@ class CheckoutController extends Controller
             foreach ($carts as $cart) {
                 $orderItem                       = new OrderItem;
                 $orderItem->order_id             = $order->id;
-                $orderItem->product_variation_id = $cart->product_variation_id;
+                
                 $orderItem->qty                  = $cart->qty;
                 $orderItem->location_id     = session('stock_location_id');
-                $orderItem->unit_price           = variationDiscountedPrice($cart->product_variation->product, $cart->product_variation);
-                $orderItem->total_tax            = variationTaxAmount($cart->product_variation->product, $cart->product_variation);
+                $orderItem->unit_price           = variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations);
+                $orderItem->total_tax            = getTotalTax([$cart]);
                 $orderItem->total_price          = $orderItem->unit_price * $orderItem->qty;
                 $orderItem->save();
 
-                $product = $cart->product_variation->product;
+                $productVariationIds = $cart->product_variations->pluck('id')->toArray();
+                $orderItem->productVariations()->attach($productVariationIds);
+
+                $product = $cart->product_variations->first()->product;
                 $product->total_sale_count += $orderItem->qty;
 
                 # reward points
@@ -185,9 +189,9 @@ class CheckoutController extends Controller
 
                 // minus stock qty
                 try {
-                    $productVariationStock = $cart->product_variation->product_variation_stock;
-                    $productVariationStock->stock_qty -= $orderItem->qty;
-                    $productVariationStock->save();
+                    // $productVariationStock = $cart->product_variation->product_variation_stock;
+                    // $productVariationStock->stock_qty -= $orderItem->qty;
+                    // $productVariationStock->save();
                 } catch (\Throwable $th) {
                     //throw $th;
                 }

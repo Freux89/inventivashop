@@ -142,7 +142,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
     Route::post('/get-cities', [AddressController::class, 'getCities'])->name('address.getCities');
 
     # authenticated routes
-    Route::group(['prefix' => '', 'middleware' => ['customer', 'verified', 'isBanned']], function () {
+    Route::group(['prefix' => '', 'middleware' => ['customer', 'verified', 'isBanned','admin']], function () {
         # customer routes 
         Route::get('/customer-dashboard', [CustomerController::class, 'index'])->name('customers.dashboard');
         Route::get('/customer-order-history', [CustomerController::class, 'orderHistory'])->name('customers.orderHistory');
