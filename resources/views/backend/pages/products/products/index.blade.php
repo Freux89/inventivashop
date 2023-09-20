@@ -94,7 +94,7 @@
                                     {{ $key + 1 + ($products->currentPage() - 1) * $products->perPage() }}
                                 </td>
                                 <td>
-                                    <a href="{{ route('products.show', $product->slug) }}" class="d-flex align-items-center" target="_blank">
+                                    <a href="{{ route('admin.products.edit', ['id' => $product->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}" class="d-flex align-items-center">
                                         <div class="avatar avatar-sm">
                                             <img class="rounded-circle" src="{{ uploadedAsset($product->thumbnail_image) }}" alt="" onerror="this.onerror=null;this.src='{{ staticAsset('backend/assets/img/placeholder-thumb.png') }}';" />
                                         </div>
