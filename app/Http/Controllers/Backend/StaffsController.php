@@ -86,7 +86,8 @@ class StaffsController extends Controller
         }
 
         $user->save();
-        $user->assignRole(Role::findOrFail($request->role_id)->name);
+        $user->syncRoles([Role::findOrFail($request->role_id)->name]);
+
 
         flash(localize('Staff has been updated successfully'))->success();
         return redirect()->route('admin.staffs.index');
