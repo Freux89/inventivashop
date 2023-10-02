@@ -200,7 +200,7 @@
                             data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true"
                             aria-expanded="true">
                             <div class="avatar avatar-sm status-online">
-                                <img class="rounded-circle" src="{{ uploadedAsset(auth()->user()->avatar) }}"
+                                <img class="rounded-circle" src="{{ asset('public/backend/assets/img/avatar/4.jpg') }}"
                                     alt="avatar">
                             </div>
                         </a>
@@ -247,8 +247,6 @@
             <a href="index.html" class="tt-brand-link">
                 <img src="{{ uploadedAsset(getSetting('favicon')) }}" class="tt-brand-favicon ms-1"
                     alt="favicon" />
-                <img src="{{ uploadedAsset(getSetting('admin_panel_logo')) }}" class="tt-brand-logo ms-2"
-                    alt="logo" />
             </a>
         </div>
         <button class="btn-close" type="button" data-bs-dismiss="offcanvas"></button>

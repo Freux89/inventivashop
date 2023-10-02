@@ -8,6 +8,9 @@ use App\Models\Variation;
 use App\Models\VariationLocalization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\ProductVariation;
+use App\Models\ProductVariationCombination;
+use App\Models\ProductVariationStock;
 
 class VariationsController extends Controller
 {
@@ -118,11 +121,32 @@ class VariationsController extends Controller
     }
 
     # delete variation
+    // public function delete($id)
+    // {
+    //     $variation = Variation::findOrFail($id);
+    //     $variation->delete();
+    //     flash(localize('Variation has been deleted successfully'))->success();
+    //     return back();
+    // }
     public function delete($id)
-    {
-        $variation = Variation::findOrFail($id);
-        $variation->delete();
-        flash(localize('Variation has been deleted successfully'))->success();
-        return back();
+{
+    $variation = Variation::findOrFail($id);
+
+    // Trova e elimina le variazioni correlate in product_variations
+    $relatedProductVariations = ProductVariation::where('variation_key', 'like', $id . ':%')->orWhere('variation_key', 'like', '%:' . $id)->get();
+    foreach ($relatedProductVariations as $relatedProductVariation) {
+        $relatedProductVariation->delete();
     }
+
+    // Trova e elimina le combinazioni e gli stock correlati in product_variation_combinations e product_variation_stocks
+    $relatedProductVariationIds = $relatedProductVariations->pluck('id');
+    ProductVariationCombination::whereIn('product_variation_id', $relatedProductVariationIds)->delete();
+    ProductVariationStock::whereIn('product_variation_id', $relatedProductVariationIds)->delete();
+
+    // Elimina la variazione
+    $variation->delete();
+
+    flash(localize('Variation has been deleted successfully'))->success();
+    return back();
+}
 }

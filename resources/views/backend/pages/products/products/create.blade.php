@@ -140,7 +140,7 @@
                         <!--product tags end-->
 
                         <!--product brand and unit start-->
-                        <div class="row" id="section-4">
+                        <!-- <div class="row" id="section-4">
                             <div class="col-lg-6">
                                 <div class="card mb-4">
                                     <div class="card-body">
@@ -175,7 +175,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <!--product brand and unit end-->
 
                         <!--product price sku and stock start-->
@@ -497,7 +497,7 @@
 
                         <!--product sell target & status start-->
                         <div class="row g-3" id="section-9">
-                            <div class="col-lg-6">
+                            <!-- <div class="col-lg-6">
                                 <div class="card mb-4">
                                     <div class="card-body">
                                         <h5 class="mb-4">{{ localize('Sell Target') }}</h5>
@@ -507,8 +507,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6">
+                            </div> -->
+                            <div class="col-lg-12">
                                 <div class="card mb-4">
                                     <div class="card-body">
                                         <h5 class="mb-4">{{ localize('Product Status') }}</h5>

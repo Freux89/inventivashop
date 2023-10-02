@@ -326,7 +326,7 @@ Route::group(
             Route::post('/', [CouponsController::class, 'store'])->name('admin.coupons.store');
             Route::get('/update-coupon/{id}', [CouponsController::class, 'edit'])->name('admin.coupons.edit');
             Route::post('/update-coupon', [CouponsController::class, 'update'])->name('admin.coupons.update');
-            Route::get('/delete-coupon/{id}', [CouponsController::class, 'delete'])->name('admin.coupons.delete');
+            Route::delete('/delete-coupon/{id}', [CouponsController::class, 'delete'])->name('admin.coupons.delete');
         });
 
         # campaigns 
