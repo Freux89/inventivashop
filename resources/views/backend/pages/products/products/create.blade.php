@@ -182,7 +182,7 @@
                         <div class="card mb-4" id="section-5">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
-                                    <h5 class="mb-4">{{ localize('Price, Sku & Stock') }}</h5>
+                                    <h5 class="mb-4">{{ localize('Prezzo & Quanità') }}</h5>
                                     <div class="form-check form-switch">
                                         <label class="form-check-label fw-medium text-primary"
                                             for="is_variant">{{ localize('Has Variations?') }}</label>
@@ -194,7 +194,7 @@
                                 <!-- without variation start-->
                                 <div class="noVariation">
                                     <div class="row g-3">
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-6">
                                             <div class="mb-3">
                                                 <label for="price" class="form-label">{{ localize('Price') }}</label>
                                                 <input type="number" min="0" step="0.0001" id="price"
@@ -202,31 +202,15 @@
                                                     class="form-control" required>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-6">
                                             <div class="mb-3">
-                                                <label for="stock" class="form-label">{{ localize('Stock') }} <small
-                                                        class="text-warning">({{ localize('Default Location') }})</small></label>
+                                                <label for="stock" class="form-label">{{ localize('Quantità') }}</label>
                                                 <input type="number" id="stock"
                                                     placeholder="{{ localize('Stock qty') }}" name="stock"
                                                     class="form-control" required>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3">
-                                            <div class="mb-3">
-                                                <label for="sku" class="form-label">{{ localize('SKU') }}</label>
-                                                <input type="text" id="sku"
-                                                    placeholder="{{ localize('Product sku') }}" name="sku"
-                                                    class="form-control" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <div class="mb-3">
-                                                <label for="code" class="form-label">{{ localize('Code') }}</label>
-                                                <input type="text" id="code"
-                                                    placeholder="{{ localize('Product code') }}" name="code"
-                                                    class="form-control" required>
-                                            </div>
-                                        </div>
+                                       
                                     </div>
                                 </div>
                                 <!-- without variation start end-->
@@ -234,62 +218,13 @@
 
                                 <!--for variation row start-->
                                 <div class="hasVariation" style="display: none">
-                                    @php
-                                        $sizes = \App\Models\VariationValue::isActive()
-                                            ->where('variation_id', 1)
-                                            ->get();
-                                        
-                                        $colors = \App\Models\VariationValue::isActive()
-                                            ->where('variation_id', 2)
-                                            ->get();
-                                    @endphp
+                                   
 
-                                    <div class="row g-3">
-                                        <!-- size -->
-                                        @if (count($sizes) > 0)
-                                            <div class="col-lg-6">
-                                                <div class="mb-0">
-                                                    <label for="product-thumb"
-                                                        class="form-label">{{ localize('Sizes') }}</label>
-                                                    <input type="hidden" name="chosen_variations[]" value="1">
-                                                    <select class="select2 form-control" multiple="multiple"
-                                                        data-placeholder="{{ localize('Select Sizes') }}"
-                                                        onchange="generateVariationCombinations()"
-                                                        name="option_1_choices[]">
-                                                        @foreach ($sizes as $size)
-                                                            <option value="{{ $size->id }}">
-                                                                {{ $size->collectLocalization('name') }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        @endif
-                                        <!-- size end -->
-
-                                        <!-- colors -->
-                                        @if (count($colors) > 0)
-                                            <div class="col-lg-6">
-                                                <div class="mb-0">
-                                                    <label for="product-thumb"
-                                                        class="form-label">{{ localize('Colors') }}</label>
-                                                    <input type="hidden" name="chosen_variations[]" value="2">
-                                                    <select class="select2 form-control" multiple="multiple"
-                                                        data-placeholder="{{ localize('Select colors') }}"
-                                                        onchange="generateVariationCombinations()"
-                                                        name="option_2_choices[]">
-                                                        @foreach ($colors as $color)
-                                                            <option value="{{ $color->id }}">
-                                                                {{ $color->collectLocalization('name') }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        @endif
-                                        <!-- colors end -->
-                                    </div>
+                                    
 
                                     @if (count($variations) > 0)
-                                        <div class="row g-3 mt-1">
+                                    <h5 class="mb-4 mt-2">Varianti</h5>
+                                        <div class="row g-3">
                                             <div class="col-lg-6">
                                                 <div class="mb-0">
                                                     <label class="form-label">{{ localize('Select Variations') }}</label>
@@ -297,7 +232,7 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="mb-0">
-                                                    <label class="form-label">{{ localize('Select Values') }}</label>
+                                                    <label class="form-label">{{ localize('Seleziona Valore') }}</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -347,9 +282,9 @@
 
                                     <!-- size guide -->
                                     <div class="mt-3">
-                                        <label class="form-label">{{ localize('Product Size Guide') }}</label>
+                                        <label class="form-label">{{ localize('Guida alle varianti del prodotto') }}</label>
                                         <div class="tt-image-drop rounded">
-                                            <span class="fw-semibold">{{ localize('Choose Size Guide Image') }}</span>
+                                            <span class="fw-semibold">{{ localize('Seleziona immagine') }}</span>
                                             <!-- choose media -->
                                             <div class="tt-product-thumb show-selected-files mt-3">
                                                 <div class="avatar avatar-xl cursor-pointer choose-media"
@@ -475,7 +410,7 @@
                                             <div class="mb-0">
                                                 <label class="form-label">{{ $tax->name }}</label>
                                                 <input type="hidden" value="{{ $tax->id }}" name="tax_ids[]">
-                                                <input type="number" lang="en" min="0" value="0"
+                                                <input type="number" lang="en" min="0" value="22"
                                                     step="0.01" placeholder="{{ localize('Tax') }}" name="taxes[]"
                                                     class="form-control" required>
                                             </div>
@@ -602,10 +537,7 @@
                                         <a href="#section-tags">{{ localize('Product tags') }}</a>
                                     </li>
                                     <li>
-                                        <a href="#section-4">{{ localize('Product Brand & Unit') }}</a>
-                                    </li>
-                                    <li>
-                                        <a href="#section-5">{{ localize('Price, SKU, Stock & Variations') }}</a>
+                                        <a href="#section-5">{{ localize('Prezzo, Quantità & Variazioni') }}</a>
                                     </li>
                                     <li>
                                         <a href="#section-6">{{ localize('Product Discount') }}</a>
@@ -614,9 +546,6 @@
                                         <a href="#section-8">{{ localize('Product Taxes') }}</a>
                                     </li>
 
-                                    <li>
-                                        <a href="#section-9">{{ localize('Sell Target and Status') }}</a>
-                                    </li>
                                     <li>
                                         <a href="#section-10">{{ localize('SEO Meta Options') }}</a>
                                     </li>

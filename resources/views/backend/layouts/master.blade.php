@@ -17,6 +17,7 @@
     <!--build:css-->
     @include('backend.inc.styles')
     <!-- end build -->
+    @yield('extra-head')
 </head>
 
 <body>

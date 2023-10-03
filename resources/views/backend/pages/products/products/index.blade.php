@@ -38,19 +38,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-auto">
-                                    <div class="input-group">
-                                        <select class="form-select select2" name="brand_id">
-                                            <option value="">{{ localize('Select Brand') }}</option>
-                                            @foreach ($brands as $brand)
-                                            <option value="{{ $brand->id }}" @isset($brand_id) @if ($brand_id==$brand->id) selected @endif
-                                                @endisset>
-                                                {{ $brand->collectLocalization('name') }}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
+                               
                                 <div class="col-auto">
                                     <div class="input-group">
                                         <select class="form-select select2" name="is_published" data-minimum-results-for-search="Infinity">
@@ -80,7 +68,6 @@
                                 <th class="text-center">{{ localize('S/L') }}
                                 </th>
                                 <th>{{ localize('Product Name') }}</th>
-                                <th data-breakpoints="xs sm">{{ localize('Brand') }}</th>
                                 <th data-breakpoints="xs sm">{{ localize('Categories') }}</th>
                                 <th data-breakpoints="xs sm">{{ localize('Price') }}</th>
                                 <th data-breakpoints="xs sm md">{{ localize('Published') }}</th>
@@ -103,9 +90,6 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <span class="fs-sm">{{ optional($product->brand)->collectLocalization('name') }}</span>
-                                </td>
-                                <td>
                                     @forelse ($product->categories as $category)
                                     <span class="badge rounded-pill bg-secondary">{{ $category->collectLocalization('name') }}</span>
 
@@ -116,13 +100,9 @@
                                 <td>
                                     <div class="tt-tb-price fs-sm fw-bold">
                                         <span class="text-accent">
-                                            @if ($product->max_price != $product->min_price)
-                                            {{ formatPrice($product->min_price) }}
-                                            -
-                                            {{ formatPrice($product->max_price) }}
-                                            @else
-                                            {{ formatPrice($product->min_price) }}
-                                            @endif
+                                          
+                                            {{ formatPrice($product->price) }}
+                                           
                                         </span>
                                     </div>
                                 </td>

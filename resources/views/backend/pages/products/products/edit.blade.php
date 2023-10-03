@@ -231,7 +231,7 @@
                             <div class="card mb-4" id="section-5">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
-                                        <h5 class="mb-4">{{ localize('Price, Sku & Stock') }}
+                                        <h5 class="mb-4">{{ localize('Prezzo, Quantità') }}
                                         </h5>
                                         <div class="form-check form-switch">
                                             <label class="form-check-label fw-medium text-primary"
@@ -369,10 +369,10 @@
 
                                             <!-- size guide -->
                                             <div class="mt-4">
-                                                <label class="form-label">{{ localize('Product Size Guide') }}</label>
+                                                <label class="form-label">{{ localize('Guida alle varianti del prodotto') }}</label>
                                                 <div class="tt-image-drop rounded">
                                                     <span
-                                                        class="fw-semibold">{{ localize('Choose Size Guide Image') }}</span>
+                                                        class="fw-semibold">{{ localize('Seleziona immagine') }}</span>
                                                     <!-- choose media -->
                                                     <div class="tt-product-thumb show-selected-files mt-3">
                                                         <div class="avatar avatar-xl cursor-pointer choose-media"
@@ -532,7 +532,7 @@
                                                     <input type="hidden" value="{{ $tax->id }}" name="tax_ids[]">
                                                     <input type="number" lang="en" min="0" step="0.01"
                                                         placeholder="{{ localize('Tax') }}" name="taxes[]"
-                                                        class="form-control" required value="{{ $tax_value }}">
+                                                        class="form-control" required value="{{ old('taxes', $tax_value ?? 22) }}">
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
@@ -676,7 +676,7 @@
                                             <a href="#section-4">{{ localize('Product Brand & Unit') }}</a>
                                         </li> -->
                                         <li>
-                                            <a href="#section-5">{{ localize('Price, SKU, Stock & Variations') }}</a>
+                                            <a href="#section-5">{{ localize('Prezzo, Quantità & Varianti') }}</a>
                                         </li>
                                         <li>
                                             <a href="#section-6">{{ localize('Product Discount') }}</a>
@@ -685,9 +685,6 @@
                                             <a href="#section-8">{{ localize('Product Taxes') }}</a>
                                         </li>
 
-                                        <li>
-                                            <a href="#section-9">{{ localize('Sell Target and Status') }}</a>
-                                        </li>
                                         <li>
                                             <a href="#section-10">{{ localize('SEO Meta Options') }}</a>
                                         </li>

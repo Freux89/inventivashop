@@ -68,7 +68,7 @@ class ProductsController extends Controller
             ->get();
         $brands = Brand::isActive()->get();
         $units = Unit::isActive()->get();
-        $variations = Variation::isActive()->whereNotIn('id', [1, 2])->get();
+        $variations = Variation::isActive()->get();
         $taxes = Tax::isActive()->get();
         $tags = Tag::all();
         return view('backend.pages.products.products.create', compact('categories', 'brands', 'units', 'variations', 'taxes', 'tags'));
@@ -171,7 +171,7 @@ class ProductsController extends Controller
 
         $product->description       = $request->description;
         $product->short_description = $request->short_description;
-
+        $product->price =  priceToUsd($request->price);
         # min-max price
         if ($request->has('is_variant') && $request->has('variations')) {
             $product->min_price =  priceToUsd(min(array_column($request->variations, 'price')));
@@ -249,6 +249,7 @@ class ProductsController extends Controller
                 $product_variation->product_id  = $product->id;
                 $product_variation->variation_key        = $variation['variation_key'];
                 $product_variation->price       = priceToUsd($variation['price']);
+                $product_variation->price_change_type    = $variation['price_change_type'];
                 $product_variation->sku         = $variation['sku'];
                 $product_variation->code         = $variation['code'];
                 $product_variation->save();
@@ -305,7 +306,7 @@ class ProductsController extends Controller
             ->get();
         $brands = Brand::isActive()->get();
         $units = Unit::isActive()->get();
-        $variations = Variation::isActive()->whereNotIn('id', [1, 2])->get();
+        $variations = Variation::isActive()->get();
         $taxes = Tax::isActive()->get();
         $tags = Tag::all();
 
