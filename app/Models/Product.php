@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Auth;
 
 class Product extends Model
@@ -60,10 +61,28 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariation::class);
     }
-
+    public function getOrderedVariationsAttribute()
+    {
+        return $this->variations()
+        ->join('variations', DB::raw('SUBSTRING_INDEX(product_variations.variation_key, ":", 1)'), '=', 'variations.id')
+        ->orderBy('variations.position', 'asc')
+        ->select('product_variations.*')  // Assicurati di selezionare i campi desiderati
+        ->get();
+    }
     public function variation_combinations()
     {
         return $this->hasMany(ProductVariationCombination::class);
+    }
+
+    
+
+    public function getOrderedVariationCombinationsAttribute()
+    {
+        return $this->variation_combinations()
+            ->join('variations', 'product_variation_combinations.variation_id', '=', 'variations.id')
+            ->orderBy('variations.position', 'asc')
+            ->select('product_variation_combinations.*')
+            ->get();
     }
 
     public function taxes()

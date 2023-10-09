@@ -110,18 +110,30 @@ class ProductsController extends Controller
     
         if ($request->has('chosen_variations')) {
             $chosen_variations = $request->chosen_variations;
-            sort($chosen_variations, SORT_NUMERIC);
+            
+            // Ordina le varianti selezionate in base alla loro posizione
+            usort($chosen_variations, function($a, $b) {
+                $variationA = Variation::find($a);
+                $variationB = Variation::find($b);
+                return $variationA->position <=> $variationB->position;
+            });
     
             foreach ($chosen_variations as $key => $option) {
                 $option_name = 'option_' . $option . '_choices'; # $option = variation_id
     
                 if ($request->has($option_name)) {
                     $variation_option_values = $request[$option_name];
-                    sort($variation_option_values, SORT_NUMERIC);
+                    
+                    // Ordina i valori delle varianti selezionati in base alla loro posizione
+                    usort($variation_option_values, function($a, $b) use ($option) {
+                        $valueA = VariationValue::where('variation_id', $option)->where('id', $a)->first();
+                        $valueB = VariationValue::where('variation_id', $option)->where('id', $b)->first();
+                        return $valueA->position <=> $valueB->position;
+                    });
     
                     foreach ($variation_option_values as $item) {
                         $combination_key = $option . ":" . $item . "/";
-                        
+    
                         // Cerca la combinazione corrispondente tra le variazioni esistenti
                         $existing_data = null;
                         foreach($existing_variations as $variation) {
@@ -144,9 +156,10 @@ class ProductsController extends Controller
         }
     
         $combinations = $variations_and_values;
-    
+        
         return view('backend.pages.products.products.new_variation_combinations', compact('combinations'))->render();
     }
+    
 
 
     # add new data

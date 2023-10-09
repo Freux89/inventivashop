@@ -163,6 +163,7 @@ Route::group(
             Route::post('/variations/update', [VariationsController::class, 'update'])->name('admin.variations.update');
             Route::post('/variations/update-status', [VariationsController::class, 'updateStatus'])->name('admin.variations.updateStatus');
             Route::delete('/variations/delete/{id}', [VariationsController::class, 'delete'])->name('admin.variations.delete');
+            Route::post('/variations/update-positions', [VariationsController::class, 'updatePositions'])->name('admin.variations.positions');
 
             # variation values
             Route::get('/variations/{id}', [VariationValuesController::class, 'index'])->name('admin.variationValues.index');
@@ -171,6 +172,7 @@ Route::group(
             Route::post('/variations-values/update', [VariationValuesController::class, 'update'])->name('admin.variationValues.update');
             Route::post('/variations-values/update-status', [VariationValuesController::class, 'updateStatus'])->name('admin.variationValues.updateStatus');
             Route::delete('/variations-values/delete/{id}', [VariationValuesController::class, 'delete'])->name('admin.variationValues.delete');
+            Route::post('/variations-values/update-positions', [VariationValuesController::class, 'updatePositions'])->name('admin.variationValues.positions');
 
             # brands
             Route::get('/brands', [BrandsController::class, 'index'])->name('admin.brands.index');

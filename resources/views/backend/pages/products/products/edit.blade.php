@@ -288,7 +288,7 @@
 
                                        
 
-                                        @foreach (generateVariationOptions($product->variation_combinations()->get(),) as $key => $combination)
+                                        @foreach (generateVariationOptions($product->ordered_variation_combinations) as $key => $combination)
                                             <div class="row g-3 mb-2">
                                                 {{-- combination == variation --}}
                                                 <div class="col-lg-6">
@@ -361,7 +361,7 @@
                                                     @include(
                                                         'backend.pages.products.products.update_variation_combinations',
                                                         [
-                                                            'variations' => $product->variations,
+                                                            'variations' => $product->ordered_variations,
                                                         ]
                                                     )
                                                 @endif

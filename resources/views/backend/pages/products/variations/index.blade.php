@@ -3,7 +3,9 @@
 @section('title')
     {{ localize('Variations') }} {{ getSetting('title_separator') }} {{ getSetting('system_title') }}
 @endsection
-
+@section('extra-head')
+<script src="{{ staticAsset('backend/assets/js/vendors/Sortable.min.js') }}"></script>
+@endsection
 @section('contents')
     <section class="tt-section pt-4">
         <div class="container">
@@ -73,7 +75,7 @@
                                 <table class="table tt-footable border-top" data-use-parent-width="true">
                                     <thead>
                                         <tr>
-                                            <th class="text-center" width="7%">{{ localize('S/L') }}</th>
+                                            <th class="text-center" width="5%"></th>
                                             <th>{{ localize('Name') }}</th>
                                             <th data-breakpoints="xs sm">{{ localize('Active') }}</th>
                                             <th data-breakpoints="xs sm" class="text-end">
@@ -84,10 +86,8 @@
                                     <tbody>
 
                                         @foreach ($variations as $key => $variation)
-                                            <tr>
-                                                <td class="text-center">
-                                                    {{ $key + 1 + ($variations->currentPage() - 1) * $variations->perPage() }}
-                                                </td>
+                                            <tr data-id="{{ $variation->id }}">
+                                            <td class="handle"> <i class="fa-solid fa-bars"></i></td>
                                                 <td>
                                                     <a class="javascript:void(0);" class="d-flex align-items-center">
                                                         <h6 class="fs-sm mb-0">
@@ -144,16 +144,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                                <!--pagination start-->
-                                <div class="d-flex align-items-center justify-content-between px-4 pb-4">
-                                    <span>{{ localize('Showing') }}
-                                        {{ $variations->firstItem() }}-{{ $variations->lastItem() }} {{ localize('of') }}
-                                        {{ $variations->total() }} {{ localize('results') }}</span>
-                                    <nav>
-                                        {{ $variations->appends(request()->input())->links() }}
-                                    </nav>
-                                </div>
-                                <!--pagination end-->
+                                
 
                             </div>
                         </div>
@@ -250,6 +241,37 @@
         }
     </script>
 
-    
+<script>
+    // table-sort.js
+    document.addEventListener('DOMContentLoaded', (event) => {
+    const tableBody = document.querySelector('.table tbody');
+    const sortable = new Sortable(tableBody, {
+        handle: '.handle',  // Class name of the handle
+        animation: 150,  // Animation speed when sorting
+        onUpdate() {
+            const order = this.toArray();
+            // Send the new order to the server
+            fetch('{{ route("admin.variations.positions") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add your Laravel CSRF token here
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ positions: order })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log('Positions updated successfully');
+                } else {
+                    console.error('Failed to update positions');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    });
+});
 
+</script>
 @endsection

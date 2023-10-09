@@ -634,27 +634,47 @@ if (!function_exists('sellCountPercentage')) {
 if (!function_exists('generateVariationOptions')) {
     //  generate combinations based on variations
     function generateVariationOptions($options)
-    {
-        if (count($options) == 0) {
-            return $options;
-        }
-        $variation_ids = array();
-        foreach ($options as $option) {
+{
+    if (count($options) == 0) {
+        return $options;
+    }
 
-            $value_ids = array();
-            if (isset($variation_ids[$option->variation_id])) {
-                $value_ids = $variation_ids[$option->variation_id];
-            }
-            if (!in_array($option->variation_value_id, $value_ids)) {
-                array_push($value_ids, $option->variation_value_id);
-            }
-            $variation_ids[$option->variation_id] = $value_ids;
+    // Passo 1: Raccolta di tutti gli ID univoci dei valori di variante necessari
+    $value_ids = [];
+    foreach ($options as $option) {
+        $value_ids[] = $option->variation_value_id;
+    }
+    $value_ids = array_unique($value_ids);  // Rimuove duplicati
+
+    // Passo 2: Recupero di tutti i valori di variante associati a questi ID in una sola volta
+    $all_variation_values = VariationValue::whereIn('id', $value_ids)
+                                          ->orderBy('position', 'asc')
+                                          ->get()
+                                          ->keyBy('id');
+
+    $variation_ids = array();
+   
+    foreach ($options as $option) {
+        $value_ids = array();
+        if (isset($variation_ids[$option->variation_id])) {
+            $value_ids = $variation_ids[$option->variation_id];
         }
-        $options = array();
-        foreach ($variation_ids as $id => $values) {
-            $variationValues = array();
-            foreach ($values as $value) {
-                $variationValue = VariationValue::find($value);
+        if (!in_array($option->variation_value_id, $value_ids)) {
+            array_push($value_ids, $option->variation_value_id);
+        }
+        $variation_ids[$option->variation_id] = $value_ids;
+    }
+
+    $options = array();
+   
+    foreach ($variation_ids as $id => $values) {
+        $variationValues = array();
+        usort($values, function ($a, $b) use ($all_variation_values) {
+            return $all_variation_values[$a]->position <=> $all_variation_values[$b]->position;
+        });
+        foreach ($values as $value) {
+            if(isset($all_variation_values[$value])) {
+                $variationValue = $all_variation_values[$value];
                 $val = array(
                     'id'   => $value,
                     'name' => $variationValue->collectLocalization('name'),
@@ -662,16 +682,19 @@ if (!function_exists('generateVariationOptions')) {
                 );
                 array_push($variationValues, $val);
             }
-            $variation = Variation::find($id);
-            $data['id'] = $id;
-            $data['name'] = $variation->collectLocalization('name');
-            $data['display_type'] = $variation->display_type;
-            $data['values'] = $variationValues;
-
-            array_push($options, $data);
         }
-        return $options;
+        $variation = Variation::find($id);
+        $data['id'] = $id;
+        $data['name'] = $variation->collectLocalization('name');
+        $data['display_type'] = $variation->display_type;
+        $data['values'] = $variationValues;
+    
+        array_push($options, $data);
     }
+    
+    return $options;
+}
+
 }
 
 if (!function_exists('variationPrice')) {

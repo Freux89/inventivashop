@@ -1,5 +1,5 @@
-@if (count(generateVariationOptions($product->variation_combinations)) > 0)
-@foreach (generateVariationOptions($product->variation_combinations) as $variation)
+@if (count(generateVariationOptions($product->ordered_variation_combinations)) > 0)
+@foreach (generateVariationOptions($product->ordered_variation_combinations) as $variation)
 <input type="hidden" name="variation_id[]" value="{{ $variation['id'] }}" class="variation-for-cart">
 <input type="hidden" name="product_id" value="{{ $product->id }}">
 

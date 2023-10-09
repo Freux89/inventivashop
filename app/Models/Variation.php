@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\OrderByPositionScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App; 
@@ -11,6 +12,18 @@ class Variation extends Model
     use HasFactory;
 
     protected $with = ['variation_localizations'];
+
+    protected $fillable = [
+        'position',
+        // altri campi...
+    ];
+    
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new OrderByPositionScope);
+    }
 
     public function scopeIsActive($query)
     {

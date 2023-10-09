@@ -30,13 +30,14 @@ class VariationValuesController extends Controller
             flash(localize('Variation not found'))->error();
             return redirect()->route('admin.variations.index');
         }
-        $variationValues = VariationValue::where('variation_id', $variation->id)->oldest();
+        $variationValues = VariationValue::where('variation_id', $variation->id);
         if ($request->search != null) {
             $variationValues = $variationValues->where('name', 'like', '%' . $request->search . '%');
             $searchKey = $request->search;
         }
 
-        $variationValues = $variationValues->paginate(paginationNumber());
+        $variationValues = $variationValues->get();
+        
         return view('backend.pages.products.variationValues.index', compact('variation', 'variationValues', 'searchKey'));
     }
 
@@ -142,5 +143,19 @@ class VariationValuesController extends Controller
 
         flash(localize('Variation value has been deleted successfully'))->success();
         return back();
+    }
+
+
+    public function updatePositions(Request $request)
+    {
+        
+        try {
+            foreach ($request->positions as $position => $id) {
+                VariationValue::find($id)->update(['position' => $position]);
+            }
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 }

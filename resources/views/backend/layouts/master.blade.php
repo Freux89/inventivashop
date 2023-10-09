@@ -16,8 +16,10 @@
 
     <!--build:css-->
     @include('backend.inc.styles')
+    <link rel="stylesheet" href="https://kit-free.fontawesome.com/releases/v6.4.2/css/free.min.css" media="all">
     <!-- end build -->
     @yield('extra-head')
+
 </head>
 
 <body>
@@ -145,6 +147,7 @@
             notifyMe("{{ $message['level'] }}", "{{ $message['message'] }}");
         @endforeach
     </script>
+    @yield('extra-script-footer')
 </body>
 
 </html>

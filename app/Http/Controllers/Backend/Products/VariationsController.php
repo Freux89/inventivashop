@@ -29,8 +29,7 @@ class VariationsController extends Controller
         $searchKey = null;
         $is_published = null;
 
-        $variations = Variation::oldest();
-        if ($request->search != null) {
+        $variations = Variation::all();        if ($request->search != null) {
             $variations = $variations->where('name', 'like', '%' . $request->search . '%');
             $searchKey = $request->search;
         }
@@ -41,7 +40,7 @@ class VariationsController extends Controller
         }
 
 
-        $variations = $variations->paginate(paginationNumber());
+        //  $variations = Variation::paginate(paginationNumber());
         return view('backend.pages.products.variations.index', compact('variations', 'searchKey', 'is_published'));
     }
 
@@ -149,4 +148,18 @@ class VariationsController extends Controller
     flash(localize('Variation has been deleted successfully'))->success();
     return back();
 }
+
+    public function updatePositions(Request $request)
+    {
+        
+        try {
+            foreach ($request->positions as $position => $id) {
+                Variation::find($id)->update(['position' => $position]);
+            }
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
 }
