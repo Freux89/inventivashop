@@ -38,7 +38,7 @@
                                 </div>
 
                                 <div class="mb-4">
-                                    <label for="country_id" class="form-label">{{ localize('State') }}</label>
+                                    <label for="country_id" class="form-label">{{ localize('Country') }}</label>
                                     <select class="form-control select2" name="country_id" class="w-100"
                                         data-toggle="select2" required>
                                         <option value="">{{ localize('Select a country') }}</option>

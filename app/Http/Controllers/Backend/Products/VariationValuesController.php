@@ -56,7 +56,8 @@ class VariationValuesController extends Controller
         $variationValue->name = $data['name'];
         $variationValue->variation_id = $data['variation_id'];
         $variationValue->image = $data['image'];
-
+        $highestPosition = VariationValue::max('position');
+        $variationValue->position = $highestPosition + 1;
         // Commento perchè sembra un codice errato
         // if ($request->variation_id == 2) {
         //     $variationValue->color_code = $request->color_code;

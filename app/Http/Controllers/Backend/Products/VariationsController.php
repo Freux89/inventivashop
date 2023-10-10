@@ -55,6 +55,9 @@ class VariationsController extends Controller
         $variation = new Variation;
         $variation->name = $request->name;
         $variation->display_type = $data['display_type']; 
+        $highestPosition = Variation::max('position');
+        $variation->position = $highestPosition + 1;
+
 
         $variation->save();
 
