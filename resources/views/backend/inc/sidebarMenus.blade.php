@@ -84,12 +84,12 @@
 
     <!-- pos -->
     @canany(['pos'])
-        <li class="side-nav-item nav-item">
+        <!-- <li class="side-nav-item nav-item">
             <a href="{{ route('admin.pos.index') }}" class="side-nav-link">
                 <span class="tt-nav-link-icon"><i data-feather="table"></i></span>
                 <span class="tt-nav-link-text">{{ localize('Pos System') }}</span>
             </a>
-        </li>
+        </li> -->
     @endcan
 
     <!-- orders -->
@@ -119,7 +119,7 @@
         $stockActiveRoutes = ['admin.stocks.create', 'admin.locations.index', 'admin.locations.create', 'admin.locations.edit'];
     @endphp
     @canany(['add_stock', 'show_locations'])
-        <li class="side-nav-item nav-item {{ areActiveRoutes($stockActiveRoutes, 'tt-menu-item-active') }}">
+        <!-- <li class="side-nav-item nav-item {{ areActiveRoutes($stockActiveRoutes, 'tt-menu-item-active') }}">
             <a data-bs-toggle="collapse" href="#manageStock"
                 aria-expanded="{{ areActiveRoutes($stockActiveRoutes, 'true') }}" aria-controls="manageStock"
                 class="side-nav-link tt-menu-toggle">
@@ -144,7 +144,7 @@
                     @endcan
                 </ul>
             </div>
-        </li>
+        </li> -->
     @endcan
 
 
@@ -154,7 +154,7 @@
     @endphp
 
     @canany(['refund_configurations', 'refund_requests', 'approved_refunds', 'rejected_refunds'])
-        <li class="side-nav-item nav-item {{ areActiveRoutes($refundsActiveRoutes, 'tt-menu-item-active') }}">
+        <!-- <li class="side-nav-item nav-item {{ areActiveRoutes($refundsActiveRoutes, 'tt-menu-item-active') }}">
             <a data-bs-toggle="collapse" href="#manageRefunds"
                 aria-expanded="{{ areActiveRoutes($refundsActiveRoutes, 'true') }}" aria-controls="manageRefunds"
                 class="side-nav-link tt-menu-toggle">
@@ -191,7 +191,7 @@
 
                 </ul>
             </div>
-        </li>
+        </li> -->
     @endcan
 
 
@@ -200,7 +200,7 @@
         $rewardsActiveRoutes = ['admin.rewards.configurations', 'admin.rewards.setPoints', 'admin.wallet.configurations'];
     @endphp
     @canany(['reward_configurations', 'set_reward_points'])
-        <li class="side-nav-item nav-item {{ areActiveRoutes($rewardsActiveRoutes, 'tt-menu-item-active') }}">
+        <!-- <li class="side-nav-item nav-item {{ areActiveRoutes($rewardsActiveRoutes, 'tt-menu-item-active') }}">
             <a data-bs-toggle="collapse" href="#manageRewards"
                 aria-expanded="{{ areActiveRoutes($rewardsActiveRoutes, 'true') }}" aria-controls="manageRewards"
                 class="side-nav-link tt-menu-toggle">
@@ -231,7 +231,7 @@
                     @endcan
                 </ul>
             </div>
-        </li>
+        </li> -->
     @endcan
 
     <!-- Users -->
@@ -344,7 +344,7 @@
         $newsletterActiveRoutes = ['admin.newsletters.index', 'admin.subscribers.index'];
     @endphp
     @canany(['newsletters', 'subscribers'])
-        <li class="side-nav-item nav-item {{ areActiveRoutes($newsletterActiveRoutes, 'tt-menu-item-active') }}">
+        <!-- <li class="side-nav-item nav-item {{ areActiveRoutes($newsletterActiveRoutes, 'tt-menu-item-active') }}">
             <a data-bs-toggle="collapse" href="#newsletter"
                 aria-expanded="{{ areActiveRoutes($newsletterActiveRoutes, 'true') }}" aria-controls="newsletter"
                 class="side-nav-link tt-menu-toggle">
@@ -369,7 +369,7 @@
                     @endcan
                 </ul>
             </div>
-        </li>
+        </li> -->
     @endcan
 
     <!-- Coupons -->
@@ -386,13 +386,13 @@
 
     <!-- campaigns -->
     @can('campaigns')
-        <li
+        <!-- <li
             class="side-nav-item nav-item {{ areActiveRoutes(['admin.campaigns.index', 'admin.campaigns.create', 'admin.campaigns.edit'], 'tt-menu-item-active') }}">
             <a href="{{ route('admin.campaigns.index') }}" class="side-nav-link">
                 <span class="tt-nav-link-icon"> <i data-feather="zap"></i></span>
                 <span class="tt-nav-link-text">{{ localize('Campaigns') }}</span>
             </a>
-        </li>
+        </li> -->
     @endcan
 
     <!-- Fulfillment -->
@@ -487,12 +487,12 @@
 
 
     <!-- Support -->
-    <li class="side-nav-title side-nav-item nav-item">
+    <!-- <li class="side-nav-title side-nav-item nav-item">
         <span class="tt-nav-title-text">{{ localize('Support') }}</span>
-    </li>
+    </li> -->
 
     @can('contact_us_messages')
-        <li class="side-nav-item nav-item {{ areActiveRoutes(['admin.queries.index'], 'tt-menu-item-active') }}">
+        <!-- <li class="side-nav-item nav-item {{ areActiveRoutes(['admin.queries.index'], 'tt-menu-item-active') }}">
             <a href="{{ route('admin.queries.index') }}"
                 class="side-nav-link {{ areActiveRoutes(['admin.queries.index']) }}">
                 <span class="tt-nav-link-icon"><i data-feather="hash"></i></span>
@@ -508,7 +508,7 @@
                     @endif
                 </span>
             </a>
-        </li>
+        </li> -->
     @endcan
 
     <!-- Settings -->
