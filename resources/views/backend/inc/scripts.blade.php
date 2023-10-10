@@ -117,10 +117,13 @@
         // delete confirmation
         function deleteConfirmation() {
             $(".confirm-delete").click(function(e) {
-                e.preventDefault();
-                var url = $(this).data("href");
-                $("#delete-modal").modal("show");
-                $("#delete-link").attr("href", url);
+                console.log('confirm-delete clicked');
+        e.preventDefault();
+        var url = $(this).data("href");
+        console.log('URL:', url);
+        $("#delete-modal").modal("show");
+        $("#delete-link").attr("href", url);
+        console.log('href set on #delete-link');
             });
         }
 

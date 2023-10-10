@@ -144,7 +144,7 @@ Route::group(
             Route::post('/update-product', [ProductsController::class, 'update'])->name('admin.products.update');
             Route::post('/update-featured-product', [ProductsController::class, 'updateFeatured'])->name('admin.products.updateFeatureStatus');
             Route::post('/update-published-product', [ProductsController::class, 'updatePublishedStatus'])->name('admin.products.updatePublishedStatus');
-            Route::delete('/delete-product/{id}', [ProductsController::class, 'delete'])->name('admin.products.delete');
+            Route::get('/delete-product/{id}', [ProductsController::class, 'delete'])->name('admin.products.delete');
 
             # categories 
             Route::get('/category', [CategoriesController::class, 'index'])->name('admin.categories.index');
@@ -162,7 +162,7 @@ Route::group(
             Route::get('/variations/edit/{id}', [VariationsController::class, 'edit'])->name('admin.variations.edit');
             Route::post('/variations/update', [VariationsController::class, 'update'])->name('admin.variations.update');
             Route::post('/variations/update-status', [VariationsController::class, 'updateStatus'])->name('admin.variations.updateStatus');
-            Route::delete('/variations/delete/{id}', [VariationsController::class, 'delete'])->name('admin.variations.delete');
+            Route::get('/variations/delete/{id}', [VariationsController::class, 'delete'])->name('admin.variations.delete');
             Route::post('/variations/update-positions', [VariationsController::class, 'updatePositions'])->name('admin.variations.positions');
 
             # variation values
@@ -171,7 +171,7 @@ Route::group(
             Route::get('/variations-values/edit/{id}', [VariationValuesController::class, 'edit'])->name('admin.variationValues.edit');
             Route::post('/variations-values/update', [VariationValuesController::class, 'update'])->name('admin.variationValues.update');
             Route::post('/variations-values/update-status', [VariationValuesController::class, 'updateStatus'])->name('admin.variationValues.updateStatus');
-            Route::delete('/variations-values/delete/{id}', [VariationValuesController::class, 'delete'])->name('admin.variationValues.delete');
+            Route::get('/variations-values/delete/{id}', [VariationValuesController::class, 'delete'])->name('admin.variationValues.delete');
             Route::post('/variations-values/update-positions', [VariationValuesController::class, 'updatePositions'])->name('admin.variationValues.positions');
 
             # brands
@@ -188,7 +188,7 @@ Route::group(
             Route::get('/units/edit/{id}', [UnitsController::class, 'edit'])->name('admin.units.edit');
             Route::post('/units/update-unit', [UnitsController::class, 'update'])->name('admin.units.update');
             Route::post('/units/update-status', [UnitsController::class, 'updateStatus'])->name('admin.units.updateStatus');
-            Route::delete('/units/delete/{id}', [UnitsController::class, 'delete'])->name('admin.units.delete');
+            Route::get('/units/delete/{id}', [UnitsController::class, 'delete'])->name('admin.units.delete');
 
             # taxes
             Route::get('/taxes', [TaxesController::class, 'index'])->name('admin.taxes.index');
@@ -328,7 +328,7 @@ Route::group(
             Route::post('/', [CouponsController::class, 'store'])->name('admin.coupons.store');
             Route::get('/update-coupon/{id}', [CouponsController::class, 'edit'])->name('admin.coupons.edit');
             Route::post('/update-coupon', [CouponsController::class, 'update'])->name('admin.coupons.update');
-            Route::delete('/delete-coupon/{id}', [CouponsController::class, 'delete'])->name('admin.coupons.delete');
+            Route::get('/delete-coupon/{id}', [CouponsController::class, 'delete'])->name('admin.coupons.delete');
         });
 
         # campaigns 

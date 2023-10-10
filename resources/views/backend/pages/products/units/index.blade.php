@@ -120,15 +120,13 @@
                                                             @endcan
 
                                                             @can('delete_units')
-                                                                
-                                                                <form action="{{ route('admin.units.delete', $unit->id) }}" method="POST" id="deleteForm-{{ $unit->id }}">
-        @csrf
-        @method('DELETE')
-
-        <button type="button" class="dropdown-item delete-button" data-id="{{ $unit->id }}">
-            <i data-feather="trash-2" class="me-2"></i>{{ localize('Delete') }}
-        </button>
-    </form>
+                                                               
+                                                                <a href="#" class="dropdown-item confirm-delete"
+                                                                    data-href="{{ route('admin.units.delete', $unit->id) }}"
+                                                                    title="{{ localize('Delete') }}">
+                                                                    <i data-feather="trash"
+                                                                        class="me-2"></i>{{ localize('Delete') }}
+                                                                </a>
                                                             @endcan
                                                         </div>
                                                     </div>

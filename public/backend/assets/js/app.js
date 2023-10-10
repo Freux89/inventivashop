@@ -274,12 +274,12 @@ $(document).on('click', '.delete-button', function(event) {
 });
 
 // Sends the delete request when the user confirms the deletion
-$('#delete-link').click(function(event) {
-    event.preventDefault();
+// $('#delete-link').click(function(event) {
+//     event.preventDefault();
 
-    if (deleteForm) {
-        deleteForm.submit();
-    }
-});
+//     if (deleteForm) {
+//         deleteForm.submit();
+//     }
+// });
 
 });
