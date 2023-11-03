@@ -22,6 +22,7 @@ use App\Http\Controllers\Backend\CustomersController;
 use App\Http\Controllers\Backend\StaffsController;
 use App\Http\Controllers\Backend\Products\VariationsController;
 use App\Http\Controllers\Backend\Products\VariationValuesController;
+use App\Http\Controllers\Backend\Products\MaterialController;
 use App\Http\Controllers\Backend\Products\BrandsController;
 use App\Http\Controllers\Backend\Products\UnitsController;
 use App\Http\Controllers\Backend\Products\TaxesController;
@@ -51,6 +52,7 @@ use App\Http\Controllers\Backend\OrderSettingsController;
 use App\Http\Controllers\Backend\Pos\PosController;
 use App\Http\Controllers\Backend\Roles\RolesController;
 use App\Http\Controllers\Backend\Reports\ReportsController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -173,6 +175,15 @@ Route::group(
             Route::post('/variations-values/update-status', [VariationValuesController::class, 'updateStatus'])->name('admin.variationValues.updateStatus');
             Route::get('/variations-values/delete/{id}', [VariationValuesController::class, 'delete'])->name('admin.variationValues.delete');
             Route::post('/variations-values/update-positions', [VariationValuesController::class, 'updatePositions'])->name('admin.variationValues.positions');
+
+# materials
+Route::get('/materials', [MaterialController::class, 'index'])->name('admin.materials.index');
+Route::post('/material', [MaterialController::class, 'store'])->name('admin.materials.store');
+Route::get('/materials/edit/{id}', [MaterialController::class, 'edit'])->name('admin.materials.edit');
+Route::post('/materials/update', [MaterialController::class, 'update'])->name('admin.materials.update');
+Route::post('/materials/update-status', [MaterialController::class, 'updateStatus'])->name('admin.materials.updateStatus');
+Route::get('/materials/delete/{id}', [MaterialController::class, 'delete'])->name('admin.materials.delete');
+
 
             # brands
             Route::get('/brands', [BrandsController::class, 'index'])->name('admin.brands.index');

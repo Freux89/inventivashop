@@ -323,7 +323,7 @@ class ProductsController extends Controller
         $taxes = Tax::isActive()->get();
         $tags = Tag::all();
 
-        
+
         return view('backend.pages.products.products.edit', compact('product', 'categories', 'brands', 'units', 'variations', 'taxes', 'lang_key', 'tags'));
     }
 

@@ -634,10 +634,11 @@ if (!function_exists('sellCountPercentage')) {
 if (!function_exists('generateVariationOptions')) {
     //  generate combinations based on variations
     function generateVariationOptions($options)
-{
-    if (count($options) == 0) {
-        return $options;
-    }
+    {
+        
+        if (count($options) == 0) {
+            return $options;
+        }
 
     // Passo 1: Raccolta di tutti gli ID univoci dei valori di variante necessari
     $value_ids = [];
@@ -666,12 +667,17 @@ if (!function_exists('generateVariationOptions')) {
     }
 
     $options = array();
-   
+    
     foreach ($variation_ids as $id => $values) {
+        
         $variationValues = array();
         usort($values, function ($a, $b) use ($all_variation_values) {
+            if (!isset($all_variation_values[$a]) || !isset($all_variation_values[$b])) {
+                return 0; // o gestisci in un altro modo
+            }
             return $all_variation_values[$a]->position <=> $all_variation_values[$b]->position;
         });
+        
         foreach ($values as $value) {
             if(isset($all_variation_values[$value])) {
                 $variationValue = $all_variation_values[$value];
@@ -683,6 +689,7 @@ if (!function_exists('generateVariationOptions')) {
                 array_push($variationValues, $val);
             }
         }
+        
         $variation = Variation::find($id);
         $data['id'] = $id;
         $data['name'] = $variation->collectLocalization('name');
