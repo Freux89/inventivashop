@@ -10,6 +10,21 @@ class Material extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'price_type',
+        'image',
+        'texture',
+        'status',
+        'is_default',
+        'is_active',
+        'is_deleted',
+        'created_by',
+        'updated_by',
+        'deleted_by',
+    ];
 
     public function thicknesses()
     {

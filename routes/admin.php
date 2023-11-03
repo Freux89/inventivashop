@@ -178,6 +178,7 @@ Route::group(
 
 # materials
 Route::get('/materials', [MaterialController::class, 'index'])->name('admin.materials.index');
+Route::get('/add-materials', [MaterialController::class, 'create'])->name('admin.materials.create');
 Route::post('/material', [MaterialController::class, 'store'])->name('admin.materials.store');
 Route::get('/materials/edit/{id}', [MaterialController::class, 'edit'])->name('admin.materials.edit');
 Route::post('/materials/update', [MaterialController::class, 'update'])->name('admin.materials.update');
