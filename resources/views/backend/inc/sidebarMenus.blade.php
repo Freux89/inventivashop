@@ -56,7 +56,24 @@
                                 ]) }}">{{ localize('All Variations') }}</a>
                         </li>
                     @endcan
-
+                    @can('materials')
+                        <li
+                            class="{{ areActiveRoutes(
+                                ['admin.materials.index', 'admin.materials.edit','admin.materials.create'],
+                                'tt-menu-item-active',
+                            ) }}">
+                            <a href="{{ route('admin.materials.index') }}"
+                                class="{{ areActiveRoutes([
+                                    'admin.materials.index',
+                                    'admin.materials.edit'
+                                ]) }}">{{ localize('Materiali') }}</a>
+                        </li>
+                        <li class="{{ areActiveRoutes(['admin.materialDetails.index', 'admin.materialDetails.edit', 'admin.materialDetails.create'],'tt-menu-item-active',) }}">
+                    <a href="{{ route('admin.materialDetails.index') }}" class="{{ areActiveRoutes(['admin.materialDetails.index', 'admin.materialDetails.edit']) }}">
+                        {{ localize('Dettagli Materiali') }}
+                    </a>
+                </li>
+                    @endcan
                     <!-- @can('brands')
                         <li class="{{ areActiveRoutes(['admin.brands.index', 'admin.brands.edit'], 'tt-menu-item-active') }}">
                             <a href="{{ route('admin.brands.index') }}"

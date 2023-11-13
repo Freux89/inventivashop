@@ -15,7 +15,7 @@ class Material extends Model
         'description',
         'price',
         'price_type',
-        'image',
+        'thumbnail_image',
         'texture',
         'status',
         'is_default',
@@ -26,10 +26,10 @@ class Material extends Model
         'deleted_by',
     ];
 
-    public function thicknesses()
-    {
-        return $this->belongsToMany(Thickness::class, 'material_thickness');
-    }
+    public function materialDetails()
+{
+    return $this->belongsToMany(MaterialDetail::class, 'material_material_details');
+}
 
     public function collectLocalization($entity = '', $lang_key = '')
     {

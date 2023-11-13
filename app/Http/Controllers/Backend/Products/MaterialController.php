@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend\Products;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Material;
-use App\Models\Thickness;
+use App\Models\MaterialDetail;
 use App\Models\Location;
 use App\Models\Language;
 use App\Models\MaterialLocalization;
@@ -33,8 +33,8 @@ class MaterialController extends Controller
 
     public function create()
     {
-        $thicknesses = Thickness::all();
-        return view('backend.pages.products.materials.create', compact('thicknesses'));
+        $MaterialDetail = MaterialDetail::all();
+        return view('backend.pages.products.materials.create', compact('MaterialDetail'));
     }
 
     public function store(Request $request)
@@ -48,12 +48,12 @@ class MaterialController extends Controller
         $material = Material::create($request->all());
 
         // Controlla se ci sono spessori nell'input della richiesta e se la relazione esiste
-        if ($request->has('thicknesses') && is_array($request->thicknesses) && method_exists($material, 'thicknesses')) {
-            // Assicurati che ogni ID di spessore fornito esista nella tabella 'thicknesses'
-            $validThicknessIds = Thickness::whereIn('id', $request->thicknesses)->pluck('id')->toArray();
+        if ($request->has('MaterialDetail') && is_array($request->MaterialDetail) && method_exists($material, 'MaterialDetail')) {
+            // Assicurati che ogni ID di spessore fornito esista nella tabella 'materialdetail'
+            $validMaterialDetail = MaterialDetail::whereIn('id', $request->MaterialDetail)->pluck('id')->toArray();
 
             // Associare solo spessori validi al materiale
-            $material->thicknesses()->attach($validThicknessIds);
+            $material->MaterialDetail()->attach($validMaterialDetail);
         }
 
 
@@ -91,15 +91,15 @@ class MaterialController extends Controller
         $material->update($request->only(['name', 'price', 'price_type','thumbnail_image']));
     
         // Controlla se ci sono spessori nell'input della richiesta e se la relazione esiste
-        if ($request->has('thicknesses') && is_array($request->thicknesses) && method_exists($material, 'thicknesses')) {
-            // Assicurati che ogni ID di spessore fornito esista nella tabella 'thicknesses'
-            $validThicknessIds = Thickness::whereIn('id', $request->thicknesses)->pluck('id')->toArray();
+        if ($request->has('MaterialDetail') && is_array($request->materialdetail) && method_exists($material, 'materialdetail')) {
+            // Assicurati che ogni ID di spessore fornito esista nella tabella 'materialdetail'
+            $validMaterialDetailIds = MaterialDetail::whereIn('id', $request->materialdetail)->pluck('id')->toArray();
     
             // Sincronizzare spessori validi al materiale
-            $material->thicknesses()->sync($validThicknessIds);
+            $material->materialdetail()->sync($validMaterialDetailIds);
         } else {
             // Se non ci sono spessori forniti, rimuovere tutte le associazioni esistenti
-            $material->thicknesses()->detach();
+            $material->materialdetail()->detach();
         }
     }
     

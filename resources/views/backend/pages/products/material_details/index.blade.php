@@ -14,11 +14,11 @@
                 <div class="card tt-page-header">
                     <div class="card-body d-lg-flex align-items-center justify-content-lg-between">
                         <div class="tt-page-title">
-                            <h2 class="h5 mb-lg-0">{{ localize('Materiali') }}</h2>
+                            <h2 class="h5 mb-lg-0">{{ localize('Dettagli Materiale') }}</h2>
                         </div>
                         <div class="tt-action">
 
-                            <a href="{{ route('admin.materials.create') }}" class="btn btn-primary"><i data-feather="plus"></i> {{ localize('Aggiungi materiale') }}</a>
+                            <a href="{{ route('admin.materialDetails.create') }}" class="btn btn-primary"><i data-feather="plus"></i> {{ localize('Aggiungi dettaglio materiale') }}</a>
 
                         </div>
                     </div>
@@ -66,24 +66,24 @@
                                 </thead>
                                 <tbody>
 
-                                    @foreach ($materials as $key => $material)
-                                    <tr data-id="{{ $material->id }}">
+                                    @foreach ($materialDetails as $key => $detail)
+                                    <tr data-id="{{ $detail->id }}">
                                         <td class="handle"> <i class="fa-solid fa-bars"></i></td>
                                         <td>
 
-                                        <a href="{{ route('admin.materials.edit', ['id' => $material->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}" class="d-flex align-items-center">
+                                        <a href="{{ route('admin.materialDetails.edit', ['id' => $detail->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}" class="d-flex align-items-center">
                                                 <div class="avatar avatar-sm">
-                                                    <img class="rounded-circle" src="{{ uploadedAsset($material->thumbnail_image) }}" alt="" onerror="this.onerror=null;this.src='{{ staticAsset('backend/assets/img/placeholder-thumb.png') }}';" />
+                                                    <img class="rounded-circle" src="{{ uploadedAsset($detail->thumbnail_image) }}" alt="" onerror="this.onerror=null;this.src='{{ staticAsset('backend/assets/img/placeholder-thumb.png') }}';" />
                                                 </div>
                                                 <h6 class="fs-sm mb-0 ms-2">
-                                                    {{ $material->collectLocalization('name') }}
+                                                    {{ $detail->collectLocalization('name') }}
                                                 </h6>
                                             </a>
                                         </td>
                                         <td>
                                             <div class="form-check form-switch">
-                                                <input type="checkbox" class="form-check-input" onchange="updateStatus(this)" @if ($material->is_active) checked @endif
-                                                value="{{ $material->id }}">
+                                                <input type="checkbox" class="form-check-input" onchange="updateStatus(this)" @if ($detail->is_active) checked @endif
+                                                value="{{ $detail->id }}">
                                             </div>
                                         </td>
                                         <td class="text-end">
@@ -93,11 +93,11 @@
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-end shadow">
 
-                                                    <a class="dropdown-item" href="{{ route('admin.materials.edit', ['id' => $material->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize">
+                                                    <a class="dropdown-item" href="{{ route('admin.materialDetails.edit', ['id' => $detail->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize">
                                                         <i data-feather="edit-3" class="me-2"></i>{{ localize('Edit') }}
                                                     </a>
 
-                                                    <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.materials.delete', $material->id) }}" title="{{ localize('Delete') }}">
+                                                    <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.materialDetails.delete', $detail->id) }}" title="{{ localize('Delete') }}">
                                                         <i data-feather="trash" class="me-2"></i>{{ localize('Delete') }}
                                                     </a>
 
@@ -114,11 +114,7 @@
                     </div>
                 </div>
 
-                @can('add_materials')
-                <form action="{{ route('admin.materials.store') }}" class="pb-650" method="POST">
-                    <!-- ... (Rest of the form remains unchanged, just replace "variation" with "material") ... -->
-                </form>
-                @endcan
+               
             </div>
 
         </div>
@@ -137,7 +133,7 @@
         } else {
             var is_active = 0;
         }
-        $.post('{{ route("admin.materials.updateStatus") }}', {
+        $.post('{{ route("admin.materialDetails.updateStatus") }}', {
                 _token: '{{ csrf_token() }}',
                 id: el.value,
                 is_active: is_active

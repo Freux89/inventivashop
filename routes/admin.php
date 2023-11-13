@@ -23,6 +23,7 @@ use App\Http\Controllers\Backend\StaffsController;
 use App\Http\Controllers\Backend\Products\VariationsController;
 use App\Http\Controllers\Backend\Products\VariationValuesController;
 use App\Http\Controllers\Backend\Products\MaterialController;
+use App\Http\Controllers\Backend\Products\MaterialDetailController;
 use App\Http\Controllers\Backend\Products\BrandsController;
 use App\Http\Controllers\Backend\Products\UnitsController;
 use App\Http\Controllers\Backend\Products\TaxesController;
@@ -184,6 +185,15 @@ Route::get('/materials/edit/{id}', [MaterialController::class, 'edit'])->name('a
 Route::post('/materials/update', [MaterialController::class, 'update'])->name('admin.materials.update');
 Route::post('/materials/update-status', [MaterialController::class, 'updateStatus'])->name('admin.materials.updateStatus');
 Route::get('/materials/delete/{id}', [MaterialController::class, 'delete'])->name('admin.materials.delete');
+
+# material details
+Route::get('/material-details', [MaterialDetailController::class, 'index'])->name('admin.materialDetails.index');
+Route::get('/add-material-details', [MaterialDetailController::class, 'create'])->name('admin.materialDetails.create');
+Route::post('/material-detail', [MaterialDetailController::class, 'store'])->name('admin.materialDetails.store');
+Route::get('/material-details/edit/{id}', [MaterialDetailController::class, 'edit'])->name('admin.materialDetails.edit');
+Route::post('/material-details/update', [MaterialDetailController::class, 'update'])->name('admin.materialDetails.update');
+Route::post('/material-details/update-status', [MaterialDetailController::class, 'updateStatus'])->name('admin.materialDetails.updateStatus');
+Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'delete'])->name('admin.materialDetails.delete');
 
 
             # brands
