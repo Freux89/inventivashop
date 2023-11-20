@@ -59,21 +59,30 @@
                                     <option value="color" {{ $variation->display_type == 'color' ? 'selected' : '' }}>{{ localize('Color') }}</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
-                    <!--basic information end-->
 
-                    <!-- submit button -->
-                    <div class="row">
-                        <div class="col-12">
                             <div class="mb-4">
-                                <button class="btn btn-primary" type="submit">
-                                    <i data-feather="save" class="me-1"></i> {{ localize('Save Changes') }}
-                                </button>
+                                <label for="material_feature" class="form-label">{{ localize('Caratteristica materiale') }}</label>
+                                <div><small class="form-text text-muted">Scegli se questa variante debba essere una caratteristica dei materiali</small></div>
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input" name="material_feature" value="1" id="material_feature" {{ $variation->material_feature == 1 ? 'checked' : '' }}>
+                                </div>
+
+
                             </div>
                         </div>
-                    </div>
-                    <!-- submit button end -->
+                        <!--basic information end-->
+
+                        <!-- submit button -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-4">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i data-feather="save" class="me-1"></i> {{ localize('Save Changes') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- submit button end -->
 
                 </form>
             </div>

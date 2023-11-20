@@ -38,7 +38,7 @@
                                     {{ localize('Il nome del materiale è obbligatorio e si consiglia di renderlo unico.') }}
                                 </span>
                             </div>
-                           
+
                             <div class="mb-4">
                                 <label for="description" class="form-label">{{ localize('Description') }}</label>
                                 <textarea id="description" class="editor" name="description"></textarea>
@@ -68,7 +68,7 @@
                                     <!-- choose media -->
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
 
@@ -102,21 +102,40 @@
                                 </div>
 
                             </div>
-                        
-                        </div> 
+
+                        </div>
+                    </div>
+                    <div class="mb-4" id="feature">
+                        <label for="has_features" class="form-label">Il materiale ha caratteristiche?</label>
+                        <input type="checkbox" name="has_features" id="has_features" class="form-check-input">
                     </div>
 
-                        <!-- submit button -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-4">
-                                    <button class="btn btn-primary" type="submit">
-                                        <i data-feather="save" class="me-1"></i> {{ localize('Salva') }}
-                                    </button>
-                                </div>
+                    <div id="features_container" style="display: none;">
+                        @foreach($variations as $variation)
+                        <div class="mb-3">
+                            <label class="form-label">{{ $variation->name }}</label>
+                            @foreach($variation->variationValues as $value)
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="feature_values[]" id="feature_value_{{ $value->id }}" value="{{ $value->id }}">
+                                <label class="form-check-label" for="feature_value_{{ $value->id }}">
+                                    {{ $value->name }}
+                                </label>
+                            </div>
+                            @endforeach
+                        </div>
+                        @endforeach
+                    </div>
+                    <!-- submit button -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-4">
+                                <button class="btn btn-primary" type="submit">
+                                    <i data-feather="save" class="me-1"></i> {{ localize('Salva') }}
+                                </button>
                             </div>
                         </div>
-                        <!-- submit button end -->
+                    </div>
+                    <!-- submit button end -->
 
                 </form>
             </div>
@@ -135,8 +154,9 @@
                                     <a href="#section-2">{{ localize('Miniatura immagine') }}</a>
                                 </li>
                                 <li>
-                                    <a href="#section-5">{{ localize('Prezzo') }}</a>
+                                    <a href="#section-5">{{ localize('Prezzo Materiale') }}</a>
                                 </li>
+                                
                             </ul>
                         </div>
                     </div>

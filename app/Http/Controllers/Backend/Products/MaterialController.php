@@ -9,6 +9,7 @@ use App\Models\MaterialDetail;
 use App\Models\Location;
 use App\Models\Language;
 use App\Models\MaterialLocalization;
+use App\Models\Variation;
 
 class MaterialController extends Controller
 {
@@ -33,8 +34,9 @@ class MaterialController extends Controller
 
     public function create()
     {
-        $MaterialDetail = MaterialDetail::all();
-        return view('backend.pages.products.materials.create', compact('MaterialDetail'));
+        
+        
+        return view('backend.pages.products.materials.create');
     }
 
     public function store(Request $request)
@@ -47,14 +49,7 @@ class MaterialController extends Controller
 
         $material = Material::create($request->all());
 
-        // Controlla se ci sono spessori nell'input della richiesta e se la relazione esiste
-        if ($request->has('MaterialDetail') && is_array($request->MaterialDetail) && method_exists($material, 'MaterialDetail')) {
-            // Assicurati che ogni ID di spessore fornito esista nella tabella 'materialdetail'
-            $validMaterialDetail = MaterialDetail::whereIn('id', $request->MaterialDetail)->pluck('id')->toArray();
-
-            // Associare solo spessori validi al materiale
-            $material->MaterialDetail()->attach($validMaterialDetail);
-        }
+        
 
 
 
@@ -69,12 +64,14 @@ class MaterialController extends Controller
         $lang_key = $request->lang_key;
         $language = Language::where('is_active', 1)->where('code', $lang_key)->first();
         $material = Material::findOrFail($id);
+        $materialFeatures = Variation::activeMaterialFeatures();
+       
         if (!$language) {
             flash(localize('Language you are trying to translate is not available or not active'))->error();
             return redirect()->route('admin.products.index');
         }
-        
-        return view('backend.pages.products.materials.edit', compact('material', 'lang_key'));
+       
+        return view('backend.pages.products.materials.edit', compact('material','materialFeatures' ,'lang_key'));
     }
 
     public function update(Request $request)
@@ -111,9 +108,12 @@ class MaterialController extends Controller
         return redirect()->route('admin.materials.index')->with('message', 'Materiale modificato con successo');
     }
 
-    public function delete(Material $material)
+    public function delete($id)
     {
+        
+        $material = Material::findOrFail($id);
         $material->delete();
+
         return redirect()->route('admin.materials.index')->with('message', 'Materiale eliminato con successo');
     }
 

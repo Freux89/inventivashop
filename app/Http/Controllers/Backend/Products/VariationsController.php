@@ -86,24 +86,25 @@ class VariationsController extends Controller
     # update variation
     public function update(Request $request)
     {
-
+        
         $data = $request->validate([
             'id' => 'required|integer',
             'name' => 'required|string',
             'lang_key' => 'required|string',
             'display_type' => 'required|string',  
+            'material_feature' => 'sometimes|boolean'
         ]);
 
         $variation = Variation::findOrFail($request->id);
 
         if ($request->lang_key == env("DEFAULT_LANGUAGE")) {
             $variation->name = $request->name;
-            $variation->display_type = $data['display_type']; 
         }
 
         $variationLocalization = VariationLocalization::firstOrNew(['lang_key' => $request->lang_key, 'variation_id' => $variation->id]);
         $variationLocalization->name = $request->name;
-
+        $variation->display_type = $data['display_type']; 
+        $variation->material_feature = $request->has('material_feature') ? 1 : 0;
         $variation->save();
         $variationLocalization->save();
 

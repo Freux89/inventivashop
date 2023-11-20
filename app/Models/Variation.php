@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Scopes\OrderByPositionScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\VariationValue;
 use App; 
 
 class Variation extends Model
@@ -15,6 +16,7 @@ class Variation extends Model
 
     protected $fillable = [
         'position',
+        'material_feature'
         // altri campi...
     ];
     
@@ -24,6 +26,13 @@ class Variation extends Model
 
         static::addGlobalScope(new OrderByPositionScope);
     }
+
+
+    public function variationValues()
+    {
+        return $this->hasMany(VariationValue::class);
+    }
+
 
     public function scopeIsActive($query)
     {
@@ -41,4 +50,15 @@ class Variation extends Model
     {
         return $this->hasMany(VariationLocalization::class);
     } 
+
+    public static function activeMaterialFeatures()
+    {
+        return self::where('material_feature', 1)
+        ->where('is_active', 1)
+        ->orderBy('position')
+        ->with(['variationValues' => function($query) {
+            $query->orderBy('position');
+        }])
+        ->get();
+    }
 }

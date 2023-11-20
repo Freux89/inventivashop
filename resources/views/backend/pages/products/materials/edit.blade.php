@@ -7,34 +7,30 @@
 @section('contents')
 <section class="tt-section pt-4">
     <div class="container">
-    <div class="row mb-3">
-                <div class="col-12">
-                    <div class="card tt-page-header">
-                        <div class="card-body">
-                            <div class="row g-3 align-items-center">
-                                <div class="col-auto flex-grow-1">
-                                    <div class="tt-page-title">
-                                        <h2 class="h5 mb-0">{{ localize('Update Product') }} <sup
-                                                class="badge bg-soft-warning px-2">{{ $lang_key }}</sup></h2>
-                                    </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card tt-page-header">
+                    <div class="card-body">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-auto flex-grow-1">
+                                <div class="tt-page-title">
+                                    <h2 class="h5 mb-0">{{ localize('Update Product') }} <sup class="badge bg-soft-warning px-2">{{ $lang_key }}</sup></h2>
                                 </div>
-                                <div class="col-4 col-md-2">
-                                    <select id="language" class="w-100 form-control text-capitalize country-flag-select"
-                                        data-toggle="select2" onchange="localizeData(this.value)">
-                                        @foreach (\App\Models\Language::all() as $key => $language)
-                                            <option value="{{ $language->code }}"
-                                                {{ $lang_key == $language->code ? 'selected' : '' }}
-                                                data-flag="{{ staticAsset('backend/assets/img/flags/' . $language->flag . '.png') }}">
-                                                {{ $language->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                            </div>
+                            <div class="col-4 col-md-2">
+                                <select id="language" class="w-100 form-control text-capitalize country-flag-select" data-toggle="select2" onchange="localizeData(this.value)">
+                                    @foreach (\App\Models\Language::all() as $key => $language)
+                                    <option value="{{ $language->code }}" {{ $lang_key == $language->code ? 'selected' : '' }} data-flag="{{ staticAsset('backend/assets/img/flags/' . $language->flag . '.png') }}">
+                                        {{ $language->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         <div class="row mb-3">
             <div class="col-12">
                 <div class="card tt-page-header">
@@ -137,18 +133,57 @@
 
                         </div>
                     </div>
-                    @endif
-                    <!-- submit button -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mb-4">
-                                <button class="btn btn-primary" type="submit">
-                                    <i data-feather="save" class="me-1"></i> {{ localize('Salva') }}
-                                </button>
+
+
+                    <div class="card mb-4" id="section-5">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="mb-4">{{ localize('Caratteristiche materiale') }}</h5>
+
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-lg-12">
+                                    <div class="mb-4">
+                                        <label for="has_features" class="form-label">Il materiale ha caratteristiche?</label>
+                                        <input type="checkbox" name="has_features" id="has_features" class="form-check-input">
+                                    </div>
+                                    @if($materialFeatures && count($materialFeatures) > 0)
+                                    <div id="features_container" style="display: none;">
+                                        @foreach($materialFeatures as $feature)
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ $feature->name }}</label>
+                                            @foreach($feature->variationValues as $value)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="feature_values[]" id="feature_value_{{ $feature->id }}" value="{{ $feature->id }}">
+                                                <label class="form-check-label" for="feature_value_{{ $feature->id }}">
+                                                    {{ $value->name }}
+                                                </label>
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    @endif
+                                </div>
+
+
                             </div>
                         </div>
-                    </div>
-                    <!-- submit button end -->
+
+
+
+                        @endif
+                        <!-- submit button -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-4">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i data-feather="save" class="me-1"></i> {{ localize('Salva') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- submit button end -->
 
                 </form>
             </div>
@@ -181,5 +216,19 @@
 @endsection
 
 @section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const featuresCheckbox = document.getElementById('has_features');
+        const featuresContainer = document.getElementById('features_container');
+
+        featuresCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                featuresContainer.style.display = 'block';
+            } else {
+                featuresContainer.style.display = 'none';
+            }
+        });
+    });
+</script>
 @include('backend.inc.product-scripts')
 @endsection

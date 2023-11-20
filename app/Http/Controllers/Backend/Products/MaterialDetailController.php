@@ -55,10 +55,10 @@ class MaterialDetailController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function delete(MaterialDetail $materialDetail)
+    public function delete($id)
     {
-        // Eliminazione del dettaglio materiale
-
+        
+        $materialDetail = MaterialDetail::findOrFail($id);
         $materialDetail->delete();
 
         return redirect()->route('admin.materialDetails.index')->with('message', 'Dettaglio materiale eliminato con successo');
