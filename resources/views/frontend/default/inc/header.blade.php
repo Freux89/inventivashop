@@ -138,7 +138,6 @@
                     <div class="gshop-navbar-right d-flex align-items-center justify-content-end position-relative">
                         <div class="category-dropdown position-relative d-none d-md-inline-block">
 
-                            <a href="javascript:void(0)" class="category-dropdown-btn fw-bold d-none d-sm-inline-block">{{ localize('Categories') }}<span class="ms-1"><i class="fa-solid fa-angle-down"></i></span></a>
                            
                             <div class="category-dropdown-box scrollbar">
                                 
@@ -151,7 +150,7 @@
                                     @endphp
                                     @foreach ($categories as $navbarCat)
                                     <li>
-                                        <a href="{{ route('products.index') }}?&category_id={{ $navbarCat->id }}" class="d-flex align-items-center">
+                                        <a href="{{ route('category.show', ['categorySlug' => $navbarCat->slug]) }}" class="d-flex align-items-center">
                                             <div class="me-2 avatar-icon">
                                                 <img src="{{ uploadedAsset($navbarCat->collectLocalization('thumbnail_image')) }}" alt="" class="rounded-circle h-100 w-100">
                                             </div>
@@ -166,10 +165,31 @@
                         <nav class="gshop-navmenu ms-3 d-none d-xl-block">
                             <ul class="d-flex align-itmes-center justify-content-end">
                                 <li><a href="{{ route('home') }}">{{ localize('Home') }}</a></li>
-                                <li><a href="{{ route('products.index') }}">{{ localize('Products') }}</a></li>
-                                </li>
-                                <li><a href="{{ route('home.coupons') }}">{{ localize('Coupons') }}</a>
-                                </li>
+                                <li>
+                                    <a href="javascript:void(0)" class="category-dropdown-btn fw-bold d-none d-sm-inline-block">{{ localize('Categories') }}<span class="ms-1"><i class="fa-solid fa-angle-down"></i></span></a>
+                                    <div class="category-dropdown-box scrollbar">
+                                
+                                <ul class="category-dropdown-menu">
+                                    @php
+                                    $categories = [];
+                                    if (getSetting('navbar_categories') != null) {
+                                    $categories = \App\Models\Category::whereIn('id', json_decode(getSetting('navbar_categories')))->get();
+                                    }
+                                    @endphp
+                                    @foreach ($categories as $navbarCat)
+                                    <li>
+                                        <a href="{{ route('category.show', ['categorySlug' => $navbarCat->slug]) }}" class="d-flex align-items-center">
+                                            <div class="me-2 avatar-icon">
+                                                <img src="{{ uploadedAsset($navbarCat->collectLocalization('thumbnail_image')) }}" alt="" class="rounded-circle h-100 w-100">
+                                            </div>
+                                            <span>{{ $navbarCat->collectLocalization('name') }}</span>
+                                        </a>
+                                    </li>
+                                    @endforeach
+
+                                </ul>
+                            </div>
+                            </li>
 
                                 <li class="has-submenu">
                                     <a href="javascript:void(0);">{{ localize('Pages') }}<span class="ms-1 fs-xs float-end"><i class="fa-solid fa-angle-down"></i></span></a>
@@ -181,10 +201,14 @@
                                         }
                                         @endphp
 
-                                        <li><a href="{{ route('home.blogs') }}">{{ localize('Blogs') }}</a></li>
-                                        <li><a href="{{ route('home.pages.aboutUs') }}">{{ localize('About Us') }}</a>
+                                        <li>
+                                            <a href="{{ route('home.blogs') }}">{{ localize('Blogs') }}</a>
                                         </li>
-                                        <li><a href="{{ route('home.pages.contactUs') }}">{{ localize('Contact Us') }}</a>
+                                        <li>
+                                            <a href="{{ route('home.pages.aboutUs') }}">{{ localize('About Us') }}</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('home.pages.contactUs') }}">{{ localize('Contact Us') }}</a>
                                         </li>
 
                                         @foreach ($pages as $navbarPage)

@@ -80,23 +80,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="mb-4">
-
-                                        @php
-                                            $categoryBrands = $category->brands()->pluck('brand_id');
-                                        @endphp
-
-                                        <label class="form-label">{{ localize('Brands') }}</label>
-                                        <select class="form-control select2" name="brand_ids[]" class="w-100"
-                                            data-toggle="select2" data-placeholder="{{ localize('Select brands') }}"
-                                            multiple>
-                                            @foreach ($brands as $brand)
-                                                <option value="{{ $brand->id }}"
-                                                    {{ $categoryBrands->contains($brand->id) ? 'selected' : '' }}>
-                                                    {{ $brand->collectLocalization('name') }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                                  
 
                                     <div class="mb-4">
                                         <label for="sorting_order_level"

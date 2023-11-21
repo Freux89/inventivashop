@@ -15,6 +15,7 @@
         <img src="{{ uploadedAsset($product->thumbnail_image) }}" alt="{{ $product->collectLocalization('name') }}"
             class="img-fluid">
     </div>
+    
     <div class="card-content w-100">
 
         @if (getSetting('enable_reward_points') == 1)
@@ -28,7 +29,7 @@
         <div class="mb-2 tt-category tt-line-clamp tt-clamp-1">
             @if ($product->categories()->count() > 0)
                 @foreach ($product->categories as $category)
-                    <a href="{{ route('products.index') }}?&category_id={{ $category->id }}"
+                    <a href="{{ route('category.show', ['categorySlug' => $category->slug]) }}"
                         class="d-inline-block text-muted fs-xxs">{{ $category->collectLocalization('name') }}
                         @if (!$loop->last)
                             ,
@@ -39,28 +40,20 @@
         </div>
         <!--product category end-->
 
-        <h3 class="h5 mb-2">
+        <div class="h5 mb-2">
             <a href="{{ route('products.show', $product->slug) }}"
                 class="card-title fw-semibold mb-2 tt-line-clamp tt-clamp-1">{{ $product->collectLocalization('name') }}
             </a>
-        </h3>
-
+        </div>
+        <div class="card-description">
+{{$product->collectLocalization('short_description') }}
+</div>
         <h6 class="price">
             @include('frontend.default.pages.partials.products.pricing', [
                 'product' => $product,
                 'br' => true,
             ])
         </h6>
-
-
-        {{-- @isset($showSold) --}}
-        <div class="card-progressbar mt-3 mb-2 rounded-pill">
-            <span class="card-progress bg-primary" data-progress="{{ sellCountPercentage($product) }}%"
-                style="width: {{ sellCountPercentage($product) }}%;"></span>
-        </div>
-        <p class="mb-0 fw-semibold">{{ localize('Total Sold') }}: <span
-                class="fw-bold text-secondary">{{ $product->total_sale_count }}/{{ $product->sell_target }}</span></p>
-        {{-- @endisset --}}
 
         @php
             $isVariantProduct = 0;

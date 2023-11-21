@@ -509,6 +509,16 @@ if (!function_exists('productBasePrice')) {
     }
 }
 
+if (!function_exists('productNetPrice')) {
+    // min/base price of a product
+    function productNetPrice($product, $formatted = false)
+    {
+        $price = $product->price;
+       
+        return $formatted ? formatPrice($price) : $price;
+    }
+}
+
 if (!function_exists('discountedProductBasePrice')) {
     // min/base price of a product with discount
     function discountedProductBasePrice($product, $formatted = false)

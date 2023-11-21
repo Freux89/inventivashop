@@ -39,7 +39,7 @@
         <div class="mb-2 tt-category tt-line-clamp tt-clamp-1">
             @if ($product->categories()->count() > 0)
                 @foreach ($product->categories as $category)
-                    <a href="{{ route('products.index') }}?&category_id={{ $category->id }}"
+                    <a href="{{ route('category.show', ['categorySlug' => $category->slug]) }}"
                         class="d-inline-block text-muted fs-xxs">{{ $category->collectLocalization('name') }}
                         @if (!$loop->last)
                             ,

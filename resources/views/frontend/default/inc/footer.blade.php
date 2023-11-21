@@ -32,7 +32,7 @@
                     <ul class="footer-nav">
                         @foreach ($categories as $category)
                             <li><a
-                                    href="{{ route('products.index') }}?&category_id={{ $category->id }}">{{ $category->collectLocalization('name') }}</a>
+                                    href="{{ route('category.show', ['categorySlug' => $category->slug]) }}">{{ $category->collectLocalization('name') }}</a>
                             </li>
                         @endforeach
                     </ul>

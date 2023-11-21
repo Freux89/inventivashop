@@ -14821,6 +14821,9 @@ fieldset:disabled .btn {
     margin-top: calc(-0.5 * var(--bs-card-title-spacer-y));
     margin-bottom: 0;
 }
+.card-description{
+    margin-bottom:10px;
+}
 .card-text:last-child {
     margin-bottom: 0;
 }

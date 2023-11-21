@@ -38,7 +38,7 @@
         <div class="mb-2 tt-category tt-line-clamp tt-clamp-1">
             @if ($product->categories()->count() > 0)
                 @foreach ($product->categories as $category)
-                    <a href="{{ route('products.index') }}?&category_id={{ $category->id }}"
+                    <a href="{{ route('category.show', ['categorySlug' => $category->slug]) }}"
                         class="d-inline-block text-muted fs-xxs">{{ $category->collectLocalization('name') }}
                         @if (!$loop->last)
                             ,
@@ -52,13 +52,15 @@
         <a href="{{ route('products.show', $product->slug) }}"
             class="card-title fw-semibold mb-2 tt-line-clamp tt-clamp-1">{{ $product->collectLocalization('name') }}
         </a>
-
-        <h6 class="price">
+<div class="card-description">
+{{$product->collectLocalization('short_description') }}
+</div>
+        <div class="price">
             @include('frontend.default.pages.partials.products.pricing', [
                 'product' => $product,
                 'onlyPrice' => true,
             ])
-        </h6>
+        </div>
 
 
         @isset($showSold)

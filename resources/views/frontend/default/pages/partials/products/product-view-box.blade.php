@@ -88,7 +88,7 @@
                     @if ($product->categories()->count() > 0)
                         <div class="tt-category-tag mt-4">
                             @foreach ($product->categories as $category)
-                                <a href="{{ route('products.index') }}?&category_id={{ $category->id }}"
+                                <a href="{{ route('category.show', ['categorySlug' => $category->slug]) }}"
                                     class="text-muted fs-xxs">{{ $category->collectLocalization('name') }}</a>
                             @endforeach
                         </div>

@@ -61,7 +61,6 @@
                                     </th>
                                     <th>{{ localize('Category Name') }}</th>
                                     <th data-breakpoints="xs sm">{{ localize('Base Category') }}</th>
-                                    <th data-breakpoints="xs sm">{{ localize('Brands') }}</th>
                                     <th data-breakpoints="xs sm">{{ localize('Priority') }}</th>
                                     <th data-breakpoints="xs sm md" class="text-end">{{ localize('Action') }}</th>
                                 </tr>
@@ -72,13 +71,16 @@
                                         <td class="text-center">
                                             {{ $key + 1 + ($categories->currentPage() - 1) * $categories->perPage() }}</td>
                                         <td>
-                                            <a href="javascript:void(0);" class="d-flex align-items-center">
-                                                <div class="avatar avatar-sm">
+                                           
+                                            <a class="d-flex align-items-center" href="{{ route('admin.categories.edit', ['id' => $category->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize">
+   
+                                            <div class="avatar avatar-sm">
                                                     <img class="rounded-circle"
                                                         src="{{ uploadedAsset($category->collectLocalization('thumbnail_image')) }}"
                                                         alt="" />
                                                 </div>
-                                                <h6 class="fs-sm mb-0 ms-2">{{ $category->collectLocalization('name') }}
+                                                <h6 class="fs-sm mb-0 ms-2"> 
+                                                        {{ $category->collectLocalization('name') }}
                                                 </h6>
                                             </a>
                                         </td>
@@ -91,17 +93,7 @@
                                                 </span>
                                             @endif
                                         </td>
-                                        <td>
-                                            @forelse ($category->brands as $brand)
-                                                <span
-                                                    class="badge rounded-pill bg-secondary">{{ $brand->collectLocalization('name') }}</span>
-
-                                            @empty
-                                                <span class="badge rounded-pill bg-secondary">
-                                                    {{ localize('N/A') }}
-                                                </span>
-                                            @endforelse
-                                        </td>
+                                       
                                         <td>{{ $category->sorting_order_level }}</td>
 
                                         <td class="text-end">

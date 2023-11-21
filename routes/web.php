@@ -102,11 +102,14 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
     # products
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-
+   
     Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
     Route::post('/products/get-variation-info', [ProductController::class, 'getVariationInfo'])->name('products.getVariationInfo');
     Route::post('/products/show-product-info', [ProductController::class, 'showInfo'])->name('products.showInfo');
-
+    
+    # category
+    Route::get('/{categorySlug}', [ProductController::class, 'category'])->name('category.show');
+    
 
     # carts
     Route::get('/carts', [CartsController::class, 'index'])->name('carts.index');

@@ -9,6 +9,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductTag;
 use App\Models\ProductVariation;
 use App\Models\Tag;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -23,6 +24,9 @@ class ProductController extends Controller
         $maxRange = Product::max('max_price');
         $min_value = 0;
         $max_value = formatPrice($maxRange, false, false, false, false);
+        
+        $category = null;
+        $tag = null;
 
         $products = Product::isPublished();
 
@@ -58,12 +62,15 @@ class ProductController extends Controller
 
         # by category
         if ($request->category_id && $request->category_id != null) {
+            $category = Category::find($request->category_id);
             $product_category_product_ids = ProductCategory::where('category_id', $request->category_id)->pluck('product_id');
             $products = $products->whereIn('id', $product_category_product_ids);
         }
 
         # by tag
         if ($request->tag_id && $request->tag_id != null) {
+            $tag = Tag::find($request->tag_id);
+            
             $product_tag_product_ids = ProductTag::where('tag_id', $request->tag_id)->pluck('product_id');
             $products = $products->whereIn('id', $product_tag_product_ids);
         }
@@ -72,7 +79,10 @@ class ProductController extends Controller
         $products = $products->paginate(paginationNumber($per_page));
 
         $tags = Tag::all();
+        $breadcrumbs = collect([]);
         return getView('pages.products.index', [
+            'category'    => $category,
+            'tag'          => $tag,
             'products'      => $products,
             'searchKey'     => $searchKey,
             'per_page'      => $per_page,
@@ -81,6 +91,7 @@ class ProductController extends Controller
             'min_value'     => $min_value,
             'max_value'     => $max_value,
             'tags'          => $tags,
+            'breadcrumbs'   => $breadcrumbs,
         ]);
     }
 
@@ -108,9 +119,20 @@ class ProductController extends Controller
             $product_page_widgets = json_decode(getSetting('product_page_widgets'));
         }
     
-       
+        $breadcrumbs = collect([]);
+        foreach ($product->categories as $category) {
+            $breadcrumbs->push($category); // Aggiungi la categoria corrente ai breadcrumbs
+            while ($parent = $category->parentCategory) {
+                $breadcrumbs->prepend($parent); // Aggiungi la categoria genitore ai breadcrumbs
+                $category = $parent; // Sposta il riferimento alla categoria genitore per il prossimo ciclo
+            }
+        }
+    
+        $breadcrumbs = $breadcrumbs->unique('id')->values();
 
-        return getView('pages.products.show', ['product' => $product, 'relatedProducts' => $relatedProducts, 'product_page_widgets' => $product_page_widgets]);
+        
+
+        return getView('pages.products.show', ['product' => $product, 'relatedProducts' => $relatedProducts, 'product_page_widgets' => $product_page_widgets, 'breadcrumbs' => $breadcrumbs]);
     }
 
     # product info
@@ -144,4 +166,50 @@ class ProductController extends Controller
     
     return new ProductVariationInfoResource($productVariations);
 }
+
+public function category($categorySlug)
+{
+    
+    $category = Category::where('slug', $categorySlug)->first();
+
+    $maxRange = Product::max('max_price');
+    $max_value = formatPrice($maxRange, false, false, false, false);
+    if (!$category) {
+        // Gestire il caso in cui la categoria non esiste
+        return redirect()->route('home');
+    }
+
+    // Filtrare i prodotti per la categoria specificata
+    $products = Product::isPublished()->whereHas('categories', function ($query) use ($category) {
+        $query->where('category_id', $category->id);
+    })->paginate(paginationNumber(9));
+
+
+    $breadcrumbs = collect([]);
+    $currentCategory = $category;
+
+    // Risali la gerarchia delle categorie fino a quando non ci sono più categorie genitore
+    while ($parent = $currentCategory->parentCategory) {
+        $breadcrumbs->prepend($parent);
+        $currentCategory = $parent; // Sposta il riferimento alla categoria genitore per il prossimo ciclo
+    }
+
+    $breadcrumbs = $breadcrumbs->unique('id')->values();
+
+    return getView('pages.products.index', [
+        'category'    => $category,
+        'products'    => $products,
+        // Imposta le altre variabili a null o ai loro valori di default
+        'tag'         => null,
+        'searchKey'   => null,
+        'per_page'    => 9,
+        'sort_by'     => 'new',
+        'max_range'   => $maxRange,
+        'min_value'   => 0,
+        'max_value'   => $max_value,
+        'tags'        => Tag::all(),
+        'breadcrumbs' => $breadcrumbs,
+    ]);
+}
+
 }

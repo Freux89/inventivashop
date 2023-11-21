@@ -135,7 +135,7 @@
                     </div>
 
 
-                    <div class="card mb-4" id="section-5">
+                    <div class="card mb-4" id="section-6">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <h5 class="mb-4">{{ localize('Caratteristiche materiale') }}</h5>
@@ -187,7 +187,7 @@
 
                 </form>
             </div>
-
+        </div>
             <!--right sidebar-->
             <div class="col-xl-3 order-1 order-md-1 order-lg-1 order-xl-2">
                 <div class="card tt-sticky-sidebar">
@@ -203,6 +203,10 @@
                                 </li>
                                 <li>
                                     <a href="#section-5">{{ localize('Prezzo') }}</a>
+                                </li>
+                                <li>
+                                    <a href="#section-6">{{ localize('Caratteristiche materiale
+') }}</a>
                                 </li>
 
                             </ul>

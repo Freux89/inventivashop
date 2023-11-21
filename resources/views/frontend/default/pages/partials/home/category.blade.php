@@ -24,13 +24,13 @@
                                     alt="" class="img-fluid">
                             </div>
 
-                            <a href="{{ route('products.index') }}?&category_id={{ $category->id }}"
+                            <a href="{{ route('category.show', ['categorySlug' => $category->slug]) }}"
                                 class="text-dark fs-sm fw-bold d-block mt-3">{{ $category->collectLocalization('name') }}</a>
                             <span
                                 class="total-count position-relative ps-3 fs-sm fw-medium doted-primary">{{ $productsCount }}
                                 {{ localize('Items') }}</span>
 
-                            <a href="{{ route('products.index') }}?&category_id={{ $category->id }}"
+                            <a href="{{ route('category.show', ['categorySlug' => $category->slug]) }}"
                                 class="explore-btn position-absolute"><i class="fa-solid fa-arrow-up"></i></a>
                         </div>
                     </div>

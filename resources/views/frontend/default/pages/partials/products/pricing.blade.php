@@ -1,8 +1,8 @@
 @if (productBasePrice($product) == discountedProductBasePrice($product))
     @if (productBasePrice($product) == productMaxPrice($product))
-        <span class="fw-bold h4 text-danger">{{ formatPrice(productBasePrice($product)) }}</span>
+        <span class="fw-bold h4 text-danger">{{ formatPrice(productNetPrice($product)) }}</span>
     @else
-        <span class="fw-bold h4 text-danger">{{ formatPrice(productBasePrice($product)) }}</span>
+        <span class="fw-bold h4 text-danger">{{ formatPrice(productNetPrice($product)) }}</span>
         <!-- -
         <span class="fw-bold h4 text-danger">{{ formatPrice(productMaxPrice($product)) }}</span> -->
     @endif
@@ -22,10 +22,10 @@
     @if (!isset($onlyPrice) || $onlyPrice == false)
         @if (productBasePrice($product) == productMaxPrice($product))
             <span
-                class="fw-bold h4 deleted text-muted {{ isset($br) ? '' : 'ms-1' }}">{{ formatPrice(productBasePrice($product)) }}</span>
+                class="fw-bold h4 deleted text-muted {{ isset($br) ? '' : 'ms-1' }}">{{ formatPrice(productNetPrice($product)) }}</span>
         @else
             <span
-                class="fw-bold h4 deleted text-muted {{ isset($br) ? '' : 'ms-1' }}">{{ formatPrice(productBasePrice($product)) }}</span>
+                class="fw-bold h4 deleted text-muted {{ isset($br) ? '' : 'ms-1' }}">{{ formatPrice(productNetPrice($product)) }}</span>
             <!-- -
             <span class="fw-bold h4 deleted text-muted ms-1">{{ formatPrice(productMaxPrice($product)) }}</span> -->
         @endif
