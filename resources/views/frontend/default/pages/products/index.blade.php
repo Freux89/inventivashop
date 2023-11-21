@@ -31,25 +31,29 @@
     <!--shop grid section start-->
     <section class="gshop-gshop-grid ptb-120">
         <div class="container">
+            @if (isset($category) && $category->childrenCategories->isNotEmpty())
+
             <div class="row">
                 <div class="col-xl-12">
-                <div class="row">
-    @foreach ($category->childrenCategories as $subCategory)
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <img src="{{ uploadedAsset($subCategory->thumbnail_image) }}" class="card-img-top" alt="{{ $subCategory->name }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ $subCategory->name }}</h5>
-                    <p class="card-text">{{ $subCategory->description }}</p>
-                    <a href="{{ route('category.show', ['categorySlug' => $subCategory->slug]) }}" class="btn btn-primary">Esplora</a>
-                </div>
-            </div>
-        </div>
-    @endforeach
-</div>
+                    <div class="row">
+                        @foreach ($category->childrenCategories as $subCategory)
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <img src="{{ uploadedAsset($subCategory->thumbnail_image) }}" class="card-img-top" alt="{{ $subCategory->name }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ $subCategory->name }}</h5>
+                                    <p class="card-text">{{ $subCategory->description }}</p>
+                                    <a href="{{ route('category.show', ['categorySlug' => $subCategory->slug]) }}" class="btn btn-primary">Esplora</a>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
 
                 </div>
             </div>
+            @endif
+            @if (count($products) > 0)
             <div class="row g-4">
 
                 <div class="col-xl-3">
@@ -164,6 +168,7 @@
                 <!--rightbar-->
 
             </div>
+            @endif
         </div>
     </section>
     <!--shop grid section end-->
@@ -189,31 +194,36 @@
 @if (isset($category))
 
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
     {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "{{ route('home') }}"
-    },
-    @foreach ($breadcrumbs as $index => $breadcrumb)
-    {
-      "@type": "ListItem",
-      "position": {{ $index + 2 }},
-      "name": "{{ $breadcrumb->name }}",
-      "item": "{{ route('category.show', ['categorySlug' => $breadcrumb->slug]) }}"
-    },
-    @endforeach
-    {
-      "@type": "ListItem",
-      "position": {{ count($breadcrumbs) + 2 }},
-      "name": "{{ $category->name }}"
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ route('home') }}"
+            },
+            @foreach($breadcrumbs as $index => $breadcrumb) {
+                "@type": "ListItem",
+                "position": {
+                    {
+                        $index + 2
+                    }
+                },
+                "name": "{{ $breadcrumb->name }}",
+                "item": "{{ route('category.show', ['categorySlug' => $breadcrumb->slug]) }}"
+            },
+            @endforeach {
+                "@type": "ListItem",
+                "position": {
+                    {
+                        count($breadcrumbs) + 2
+                    }
+                },
+                "name": "{{ $category->name }}"
+            }
+        ]
     }
-  ]
-}
 </script>
 @endif
 

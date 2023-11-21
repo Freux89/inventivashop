@@ -231,6 +231,7 @@ if (!function_exists('calculateVariationPrice')) {
         } elseif ($price_change_type == 'percentage') {
             return $product_price + ($product_price * ($price / 100));
         }
+        
         return $product_price;
     }
 }
