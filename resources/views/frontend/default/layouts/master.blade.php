@@ -61,7 +61,7 @@
     <!--build:css-->
     @include('frontend.default.inc.css', ['localLang' => $localLang])
     <!-- endbuild --> 
-
+    @yield('styles')
     <!-- PWA  -->
     <meta name="theme-color" content="#6eb356"/>
     <link rel="apple-touch-icon" href="{{ staticAsset('/pwa.png') }}"/>

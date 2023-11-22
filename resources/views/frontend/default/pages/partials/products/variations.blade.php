@@ -19,7 +19,7 @@
     @endforeach
 </ul>
 @elseif ($variation['display_type'] == 'select')
-<select name="variation_value_for_variation_{{ $variation['id'] }}" class="product-select form-control">
+<select name="variation_value_for_variation_{{ $variation['id'] }}" class="product-select form-control" required>
 <option value="">Seleziona</option>
     @foreach ($variation['values'] as $value)
     <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>

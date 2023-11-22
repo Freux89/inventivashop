@@ -107,8 +107,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
     Route::post('/products/get-variation-info', [ProductController::class, 'getVariationInfo'])->name('products.getVariationInfo');
     Route::post('/products/show-product-info', [ProductController::class, 'showInfo'])->name('products.showInfo');
     
-    # category
-    Route::get('/{categorySlug}', [ProductController::class, 'category'])->name('category.show');
+    
     
 
     # carts
@@ -186,4 +185,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
         Route::post('/request-refund', [RefundsController::class, 'store'])->name('customers.requestRefund');
         Route::get('/refunds', [RefundsController::class, 'refunds'])->name('customers.refunds');
     });
+});
+
+Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localizationRedirect', 'localeViewPath']], function () {
+    # category
+    Route::get('/{categorySlug}', [ProductController::class, 'category'])->name('category.show');
+
 });
