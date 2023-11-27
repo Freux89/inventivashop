@@ -13,7 +13,7 @@
                     <div class="card tt-page-header">
                         <div class="card-body d-lg-flex align-items-center justify-content-lg-between">
                             <div class="tt-page-title">
-                                <h2 class="h5 mb-lg-0">{{ localize('Update City') }} </h2>
+                                <h2 class="h5 mb-lg-0">{{ localize('Aggiorna comune') }} </h2>
                             </div>
                         </div>
                     </div>
@@ -33,17 +33,17 @@
                                 <h5 class="mb-4">{{ localize('Basic Information') }}</h5>
 
                                 <div class="mb-4">
-                                    <label for="name" class="form-label">{{ localize('City Name') }}</label>
+                                    <label for="name" class="form-label">{{ localize('Name') }}</label>
                                     <input class="form-control" type="text" id="name"
-                                        placeholder="{{ localize('Type city name') }}" name="name" required
+                                        placeholder="{{ localize('Aggiungi comune') }}" name="name" required
                                         value="{{ $city->name }}">
                                 </div>
 
                                 <div class="mb-4">
-                                    <label for="state_id" class="form-label">{{ localize('State') }}</label>
+                                    <label for="state_id" class="form-label">{{ localize('Provincia') }}</label>
                                     <select class="form-control select2" name="state_id" class="w-100"
                                         data-toggle="select2" required>
-                                        <option value="">{{ localize('Select an State') }}</option>
+                                        <option value="">{{ localize('Seleziona una provincia') }}</option>
                                         @foreach ($states as $state)
                                             <option value="{{ $state->id }}"
                                                 {{ $city->state->id == $state->id ? 'selected' : '' }}>
@@ -73,20 +73,7 @@
                 </div>
 
                 <!--right sidebar-->
-                <div class="col-xl-3 order-1 order-md-1 order-lg-1 order-xl-2">
-                    <div class="card tt-sticky-sidebar d-none d-xl-block">
-                        <div class="card-body">
-                            <h5 class="mb-4">{{ localize('Logistic Information') }}</h5>
-                            <div class="tt-vertical-step">
-                                <ul class="list-unstyled">
-                                    <li>
-                                        <a href="#section-1" class="active">{{ localize('Basic Information') }}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </section>

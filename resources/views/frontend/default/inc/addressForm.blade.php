@@ -23,9 +23,9 @@
                                  </div>
                                  <div class="col-sm-6">
                                      <div class="w-100 label-input-field">
-                                         <label>{{ localize('State') }}</label>
+                                         <label>{{ localize('Provincia') }}</label>
                                          <select class="select2Address" required name="state_id">
-                                             <option value="">{{ localize('Select State') }}</option>
+                                             <option value="">{{ localize('Seleziona provincia') }}</option>
 
                                          </select>
                                      </div>
@@ -33,9 +33,9 @@
 
                                  <div class="col-sm-6">
                                      <div class="w-100 label-input-field">
-                                         <label>{{ localize('City') }}</label>
+                                         <label>{{ localize('Comune') }}</label>
                                          <select class="select2Address" required name="city_id">
-                                             <option value="">{{ localize('Select City') }}</option>
+                                             <option value="">{{ localize('Seleziona comune') }}</option>
 
                                          </select>
                                      </div>
@@ -53,7 +53,7 @@
                                  <div class="col-sm-12">
                                      <div class="label-input-field">
                                          <label>{{ localize('Address') }}</label>
-                                         <textarea rows="4" placeholder="{{ localize('2/5 Elephant Road, New Town') }}" name="address"></textarea>
+                                         <textarea rows="4" placeholder="{{ localize('Via Roma 12') }}" name="address"></textarea>
                                      </div>
                                  </div>
 

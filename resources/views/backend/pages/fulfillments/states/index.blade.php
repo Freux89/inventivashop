@@ -14,7 +14,7 @@
                             <div class="row justify-content-between align-items-center g-3">
                                 <div class="col-auto flex-grow-1">
                                     <div class="tt-page-title">
-                                        <h2 class="h5 mb-0">{{ localize('Shipping States') }}</h2>
+                                        <h2 class="h5 mb-0">{{ localize('Province') }}</h2>
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -24,7 +24,7 @@
                                 <div class="col-auto">
                                     @can('add_shipping_states')
                                         <a href="{{ route('admin.states.create') }}" class="btn btn-primary"><i
-                                                data-feather="plus"></i>{{ localize('Add State') }}</a>
+                                                data-feather="plus"></i>{{ localize('Aggiungi provincia') }}</a>
                                     @endcan
                                 </div>
                             </div>

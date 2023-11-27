@@ -53,7 +53,7 @@ class StatesController extends Controller
         $state->country_id  = $request->country_id;
         $state->is_active  = 1;
         $state->save();
-        flash(localize('State has been inserted successfully'))->success();
+        flash(localize('Provincia inserita con successo'))->success();
         return redirect()->route('admin.states.index');
     }
 
@@ -72,7 +72,7 @@ class StatesController extends Controller
         $state->name        = $request->name;
         $state->country_id  = $request->country_id;
         $state->save();
-        flash(localize('State has been updated successfully'))->success();
+        flash(localize('Provincia aggiornata con successo'))->success();
         return back();
     }
 

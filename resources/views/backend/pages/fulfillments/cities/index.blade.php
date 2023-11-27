@@ -14,7 +14,7 @@
                             <div class="row justify-content-between align-items-center g-3">
                                 <div class="col-auto flex-grow-1">
                                     <div class="tt-page-title">
-                                        <h2 class="h5 mb-0">{{ localize('Shipping Citites') }}</h2>
+                                        <h2 class="h5 mb-0">{{ localize('Comuni') }}</h2>
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -24,7 +24,7 @@
                                 <div class="col-auto">
                                     @can('add_shipping_cities')
                                         <a href="{{ route('admin.cities.create') }}" class="btn btn-primary"><i
-                                                data-feather="plus"></i>{{ localize('Add City') }}</a>
+                                                data-feather="plus"></i>{{ localize('Aggiungi comune') }}</a>
                                     @endcan
                                 </div>
                             </div>
@@ -56,7 +56,7 @@
                                     <div class="col-auto">
                                         <div class="input-group">
                                             <select class="form-select select2" name="searchState">
-                                                <option value="">{{ localize('Select an State') }}</option>
+                                                <option value="">{{ localize('Seleziona una provincia') }}</option>
                                                 @foreach (\App\Models\State::where('is_active', 1)->get() as $state)
                                                     <option value="{{ $state->id }}"
                                                         @if ($searchState == $state->id) selected @endif>
@@ -81,7 +81,7 @@
                                 <tr>
                                     <th class="text-center">{{ localize('S/L') }}</th>
                                     <th>{{ localize('Name') }}</th>
-                                    <th>{{ localize('State') }}</th>
+                                    <th>{{ localize('Provincia') }}</th>
                                     <th data-breakpoints="xs sm">{{ localize('Active') }}</th>
                                     <th data-breakpoints="xs sm" class="text-end">{{ localize('Action') }}
                                     </th>

@@ -15,7 +15,7 @@ class AddressController extends Controller
     public function getStates(Request $request)
     {
         $states = State::isActive()->where('country_id', $request->country_id)->get();
-        $html = '<option value="">' . localize("Select State") . '</option>';
+        $html = '<option value="">' . localize("Seleziona provincia") . '</option>';
 
         foreach ($states as $state) {
             $html .= '<option value="' . $state->id . '">' . $state->name . '</option>';
@@ -28,7 +28,7 @@ class AddressController extends Controller
     public function getCities(Request $request)
     {
         $cities = City::isActive()->where('state_id', $request->state_id)->get();
-        $html = '<option value="">' . localize("Select City") . '</option>';
+        $html = '<option value="">' . localize("Seleziona Comune") . '</option>';
 
         foreach ($cities as $city) {
             $html .= '<option value="' . $city->id . '">' . $city->name . '</option>';

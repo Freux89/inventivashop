@@ -106,6 +106,7 @@
                             <!-- billing address -->
 
                             <!-- Delivery Time -->
+                            @if (getSetting('enable_scheduled_order') == 1)
                             <h4 class="mt-7 mb-3">{{ localize('Preferred Delivery Time') }}</h4>
                             <div class="row g-4">
                                 <div class="col-12">
@@ -182,7 +183,10 @@
                                 <!-- Delivery Time -->
 
                             </div>
-
+                            @else
+                            <input type="hidden" class="tt-custom-radio" name="shipping_delivery_type"
+                                            id="regular-shipping" value="regular" checked>
+                            @endif
                             <!-- personal information -->
                             <h4 class="mt-7">{{ localize('Personal Information') }}</h4>
                             <div class="checkout-form mt-3 p-5 bg-white rounded-2">

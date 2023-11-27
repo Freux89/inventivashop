@@ -70,7 +70,8 @@ class RegisterController extends Controller
                 $userId = $user->id;
                 if ($carts) {
                     foreach ($carts as $cart) {
-                        $existInUserCart = Cart::where('user_id', $userId)->where('product_variation_id', $cart->product_variation_id)->first();
+                        
+                        $existInUserCart = Cart::where('user_id', $userId)->first();
                         if (!is_null($existInUserCart)) {
                             $existInUserCart->qty += $cart->qty;
                             $existInUserCart->save();

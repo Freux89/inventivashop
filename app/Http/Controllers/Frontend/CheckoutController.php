@@ -176,7 +176,8 @@ class CheckoutController extends Controller
                 $orderItem->save();
 
                 $productVariationIds = $cart->product_variations->pluck('id')->toArray();
-                $orderItem->productVariations()->attach($productVariationIds);
+                
+                $orderItem->product_variations()->attach($productVariationIds);
 
                 $product = $cart->product_variations->first()->product;
                 $product->total_sale_count += $orderItem->qty;
@@ -287,7 +288,7 @@ class CheckoutController extends Controller
             Notification::send($user, new OrderPlacedNotification($orderGroup->order));
         } catch (\Exception $e) {
         }
-        return getView('pages.checkout.invoice', ['orderGroup' => $orderGroup]);
+        return getView('pages.checkout.success', ['orderGroup' => $orderGroup]);
     }
 
 

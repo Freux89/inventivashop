@@ -55,9 +55,9 @@
                                         $logisticCities = $logisticZone->cities->pluck('id')->toArray();
                                     @endphp
 
-                                    <label class="form-label">{{ localize('Cities') }}</label>
+                                    <label class="form-label">{{ localize('Province') }}</label>
                                     <select class="form-control select2" name="city_ids[]" class="w-100" id="city_ids"
-                                        data-toggle="select2" data-placeholder="{{ localize('Select cities') }}" multiple
+                                        data-toggle="select2" data-placeholder="{{ localize('Seleziona province') }}" multiple
                                         required>
                                         @foreach ($cities as $city)
                                             <option value="{{ $city->id }}"
@@ -104,20 +104,7 @@
                 </div>
 
                 <!--right sidebar-->
-                <div class="col-xl-3 order-1 order-md-1 order-lg-1 order-xl-2">
-                    <div class="card tt-sticky-sidebar d-none d-xl-block">
-                        <div class="card-body">
-                            <h5 class="mb-4">{{ localize('Zone Information') }}</h5>
-                            <div class="tt-vertical-step">
-                                <ul class="list-unstyled">
-                                    <li>
-                                        <a href="#section-1" class="active">{{ localize('Basic Information') }}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </section>

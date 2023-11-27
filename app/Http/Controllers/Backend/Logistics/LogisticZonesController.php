@@ -116,11 +116,10 @@ class LogisticZonesController extends Controller
 
         $logisticZone->save();
 
+        LogisticZoneCity::where('logistic_zone_id', $logisticZone->id)->delete();
 
         foreach ($request->city_ids as $city_id) {
-            LogisticZoneCity::where('logistic_id', $logisticZone->logistic_id)
-                ->where('city_id', $city_id)
-                ->delete();
+           
             $logisticZoneCity                   = new LogisticZoneCity;
             $logisticZoneCity->logistic_id      = $logisticZone->logistic_id;
             $logisticZoneCity->logistic_zone_id = $logisticZone->id;

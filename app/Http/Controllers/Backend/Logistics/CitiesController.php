@@ -53,7 +53,7 @@ class CitiesController extends Controller
         $city->state_id    = $request->state_id;
         $city->is_active   = 1;
         $city->save();
-        flash(localize('City has been inserted successfully'))->success();
+        flash(localize('Comune aggiunto con successo'))->success();
         return redirect()->route('admin.cities.index');
     }
 
@@ -72,7 +72,7 @@ class CitiesController extends Controller
         $city->name        = $request->name;
         $city->state_id    = $request->state_id;
         $city->save();
-        flash(localize('City has been updated successfully'))->success();
+        flash(localize('Comune aggiornato con successo'))->success();
         return back();
     }
 
