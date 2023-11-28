@@ -9,8 +9,8 @@ class Logistic extends Model
 {
     use HasFactory;
 
-    public function cities()
+    public function countries()
     {
-        return $this->hasMany(LogisticZoneCity::class);
+        return $this->hasMany(LogisticZoneCountry::class);
     }
 }

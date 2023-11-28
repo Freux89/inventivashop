@@ -33,11 +33,8 @@
 
                                  <div class="col-sm-6">
                                      <div class="w-100 label-input-field">
-                                         <label>{{ localize('Comune') }}</label>
-                                         <select class="select2Address" required name="city_id">
-                                             <option value="">{{ localize('Seleziona comune') }}</option>
-
-                                         </select>
+                                         <label>{{ localize('City') }}</label>
+                                         <input name="city" type="text" required>
                                      </div>
                                  </div>
                                  <div class="col-sm-6">
@@ -126,8 +123,8 @@
          // runs when the document is ready --> for media files
          $(document).ready(function() {
              if ($("input[name='shipping_address_id']").is(':checked')) {
-                 let city_id = $("input[name='shipping_address_id']:checked").data('city_id');
-                 getLogistics(city_id);
+                 let country_id = $("input[name='shipping_address_id']:checked").data('country_id');
+                 getLogistics(country_id);
              }
          });
 
@@ -181,29 +178,10 @@
          }
 
          //  get cities on state change
-         $(document).on('change', '[name=state_id]', function() {
-             var state_id = $(this).val();
-             getCities(state_id);
-         });
+         
 
          //  get cities
-         function getCities(state_id) {
-             $.ajax({
-                 headers: {
-                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                 },
-                 url: "{{ route('address.getCities') }}",
-                 type: 'POST',
-                 data: {
-                     state_id: state_id
-                 },
-                 success: function(response) {
-                     $('[name="city_id"]').html("");
-                     $('[name="city_id"]').html(JSON.parse(response));
-                     addressModalSelect2(parent);
-                 }
-             });
-         }
+         
 
          //  get edit address
          function getAddress(addressId) {

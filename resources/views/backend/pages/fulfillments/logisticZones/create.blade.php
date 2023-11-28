@@ -50,9 +50,9 @@
                                 </div>
 
                                 <div class="mb-4">
-                                    <label class="form-label">{{ localize('Cities') }}</label>
-                                    <select class="form-control select2" name="city_ids[]" class="w-100" id="city_ids"
-                                        data-toggle="select2" data-placeholder="{{ localize('Select cities') }}" multiple
+                                    <label class="form-label">{{ localize('Countries') }}</label>
+                                    <select class="form-control select2" name="country_ids[]" class="w-100" id="country_ids"
+                                        data-toggle="select2" data-placeholder="{{ localize('Seleziona paesi') }}" multiple
                                         required>
                                     </select>
                                 </div>
@@ -119,23 +119,23 @@
         //  get states on country change
         $(document).on('change', '[name=logistic_id]', function() {
             var logistic_id = $(this).val();
-            getLogisticCities(logistic_id);
+            getLogisticCountries(logistic_id);
         });
 
         //  get cities
-        function getLogisticCities(logistic_id) {
+        function getLogisticCountries(logistic_id) {
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                url: "{{ route('admin.logisticZones.getLogisticCities') }}",
+                url: "{{ route('admin.logisticZones.getLogisticCountries') }}",
                 type: 'POST',
                 data: {
                     logistic_id: logistic_id
                 },
                 success: function(response) {
-                    $('[name="city_ids[]"]').html("");
-                    $('[name="city_ids[]"]').html(JSON.parse(response));
+                    $('[name="country_ids[]"]').html("");
+                    $('[name="country_ids[]"]').html(JSON.parse(response));
                 }
             });
         }

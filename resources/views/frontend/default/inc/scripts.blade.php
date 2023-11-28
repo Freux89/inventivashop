@@ -401,7 +401,7 @@
     }
 
     // get logistics to check out
-    function getLogistics(city_id) {
+    function getLogistics(country_id) {
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -409,7 +409,7 @@
             url: "{{ route('checkout.getLogistic') }}",
             type: 'POST',
             data: {
-                city_id: city_id
+                country_id: country_id
             },
             success: function(data) {
                 $('.checkout-sidebar').empty();

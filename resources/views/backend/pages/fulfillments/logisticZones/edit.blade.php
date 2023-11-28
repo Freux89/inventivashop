@@ -52,17 +52,17 @@
 
 
                                     @php
-                                        $logisticCities = $logisticZone->cities->pluck('id')->toArray();
+                                        $logisticCountries = $logisticZone->countries->pluck('id')->toArray();
                                     @endphp
 
-                                    <label class="form-label">{{ localize('Province') }}</label>
-                                    <select class="form-control select2" name="city_ids[]" class="w-100" id="city_ids"
-                                        data-toggle="select2" data-placeholder="{{ localize('Seleziona province') }}" multiple
+                                    <label class="form-label">{{ localize('Paesi') }}</label>
+                                    <select class="form-control select2" name="country_ids[]" class="w-100" id="country_ids"
+                                        data-toggle="select2" data-placeholder="{{ localize('Seleziona paesi') }}" multiple
                                         required>
-                                        @foreach ($cities as $city)
-                                            <option value="{{ $city->id }}"
-                                                {{ in_array($city->id, $logisticCities) ? 'selected' : '' }}>
-                                                {{ $city->name }}</option>
+                                        @foreach ($countries as $country)
+                                            <option value="{{ $country->id }}"
+                                                {{ in_array($country->id, $logisticCountries) ? 'selected' : '' }}>
+                                                {{ $country->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

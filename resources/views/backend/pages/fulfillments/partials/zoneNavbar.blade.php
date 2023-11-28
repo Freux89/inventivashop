@@ -6,12 +6,7 @@
         </a>
     @endcan
 
-    @can('shipping_cities')
-        <a href="{{ route('admin.cities.index') }}"
-            class="btn btn-outline-primary {{ areActiveRoutes(['admin.cities.index']) }}">
-            <i data-feather="pocket" class="me-1"></i>{{ localize('Comuni') }}
-        </a>
-    @endcan
+   
 
     @can('shipping_states')
         <a href="{{ route('admin.states.index') }}"

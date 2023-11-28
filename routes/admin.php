@@ -384,7 +384,7 @@ Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'd
             Route::get('/update-zone/{id}', [LogisticZonesController::class, 'edit'])->name('admin.logisticZones.edit');
             Route::post('/update-zone', [LogisticZonesController::class, 'update'])->name('admin.logisticZones.update');
             Route::get('/delete-zone/{id}', [LogisticZonesController::class, 'delete'])->name('admin.logisticZones.delete');
-            Route::post('/logistic-cities', [LogisticZonesController::class, 'getLogisticCities'])->name('admin.logisticZones.getLogisticCities');
+            Route::post('/logistic-countries', [LogisticZonesController::class, 'getLogisticCountries'])->name('admin.logisticZones.getLogisticCountries');
 
             # countries
             Route::get('/countries', [CountriesController::class, 'index'])->name('admin.countries.index');

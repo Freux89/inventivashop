@@ -10,7 +10,7 @@ use App\Models\Coupon;
 use App\Models\CouponUsage;
 use App\Models\Currency;
 use App\Models\LogisticZone;
-use App\Models\LogisticZoneCity;
+use App\Models\LogisticZoneCountry;
 use App\Models\Order;
 use App\Models\OrderGroup;
 use App\Models\OrderItem;
@@ -50,9 +50,10 @@ class CheckoutController extends Controller
     # checkout logistic
     public function getLogistic(Request $request)
     {
-        $logisticZoneCities = LogisticZoneCity::where('city_id', $request->city_id)->distinct('logistic_id')->get();
+        $logisticZoneCountries = LogisticZoneCountry::where('country_id', $request->country_id)->distinct('logistic_id')->get();
+        
         return [
-            'logistics' => getViewRender('inc.logistics', ['logisticZoneCities' => $logisticZoneCities]),
+            'logistics' => getViewRender('inc.logistics', ['logisticZoneCountries' => $logisticZoneCountries]),
             'summary'   => getViewRender('pages.partials.checkout.orderSummary', ['carts' => Cart::where('user_id', auth()->user()->id)->where('location_id', session('stock_location_id'))->get()])
         ];
     }

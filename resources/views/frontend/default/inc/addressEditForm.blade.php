@@ -30,14 +30,8 @@
 
             <div class="col-sm-6">
                 <div class="w-100 label-input-field">
-                    <label>{{ localize('Comune') }}</label>
-                    <select class="select2Address" required name="city_id">
-                        <option value="">{{ localize('Seleziona Comune') }}</option>
-                        @foreach ($cities as $city)
-                            <option value="{{ $city->id }}" @if ($address->city_id == $city->id) selected @endif>
-                                {{ $city->name }}</option>
-                        @endforeach
-                    </select>
+                    <label>{{ localize('City') }}</label>
+                    <input name="city" type="text" value="{{ $address->city }}" required>
                 </div>
             </div>
             <div class="col-sm-6">

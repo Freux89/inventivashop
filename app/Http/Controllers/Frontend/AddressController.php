@@ -25,16 +25,7 @@ class AddressController extends Controller
     }
 
     # get cities based on state
-    public function getCities(Request $request)
-    {
-        $cities = City::isActive()->where('state_id', $request->state_id)->get();
-        $html = '<option value="">' . localize("Seleziona Comune") . '</option>';
-
-        foreach ($cities as $city) {
-            $html .= '<option value="' . $city->id . '">' . $city->name . '</option>';
-        }
-        echo json_encode($html);
-    }
+    
 
     # store new address
     public function store(Request $request)
@@ -44,7 +35,7 @@ class AddressController extends Controller
         $address->user_id       = $userId;
         $address->country_id    = $request->country_id;
         $address->state_id      = $request->state_id;
-        $address->city_id       = $request->city_id;
+        $address->city       = $request->city;
 
         if ($request->is_default == 1) {
             $prevDefault = UserAddress::where('user_id', $userId)->where('is_default', 1)->first();
@@ -67,12 +58,10 @@ class AddressController extends Controller
         if ($address) {
             $countries      = Country::isActive()->get();
             $states         = State::isActive()->where('country_id', $address->country_id)->get();
-            $cities         = City::isActive()->where('state_id', $address->state_id)->get();
             return getViewRender('inc.addressEditForm', [
                 'address' => $address,
                 'countries' => $countries,
-                'states' => $states,
-                'cities' => $cities
+                'states' => $states
             ]);
         }
     }
@@ -85,7 +74,7 @@ class AddressController extends Controller
 
         $address->country_id    = $request->country_id;
         $address->state_id      = $request->state_id;
-        $address->city_id       = $request->city_id;
+        $address->city       = $request->city;
         if ($request->is_default == 1) {
             $prevDefault = UserAddress::where('user_id', $userId)->where('is_default', 1)->first();
             if (!is_null($prevDefault)) {

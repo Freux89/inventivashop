@@ -1,22 +1,22 @@
 <h4 class="mt-7">{{ localize('Available Logistics') }}</h4>
-@forelse ($logisticZoneCities as $zoneCity)
+@forelse ($logisticZoneCountries as $zoneCountry)
     <div class="checkout-radio d-flex align-items-center justify-content-between gap-3 bg-white rounded p-4 mt-3">
         <div class="radio-left d-inline-flex align-items-center">
             <div class="theme-radio">
-                <input type="radio" name="chosen_logistic_zone_id" id="logistic-{{ $zoneCity->logistic_zone_id }}"
-                    value="{{ $zoneCity->logistic_zone_id }}">
+                <input type="radio" name="chosen_logistic_zone_id" id="logistic-{{ $zoneCountry->logistic_zone_id }}"
+                    value="{{ $zoneCountry->logistic_zone_id }}">
                 <span class="custom-radio"></span>
             </div>
             <div>
-                <label for="logistic-{{ $zoneCity->logistic_zone_id }}" class="ms-3 mb-0">
-                    <div class="h6 mb-0">{{ $zoneCity->logistic->name }}</div>
+                <label for="logistic-{{ $zoneCountry->logistic_zone_id }}" class="ms-3 mb-0">
+                    <div class="h6 mb-0">{{ $zoneCountry->logistic->name }}</div>
                     <div> {{ localize('Shipping Charge') }}
-                        {{ formatPrice($zoneCity->logisticZone->standard_delivery_charge) }}</div>
+                        {{ formatPrice($zoneCountry->logisticZone->standard_delivery_charge) }}</div>
                 </label>
             </div>
         </div>
         <div class="radio-right text-end">
-            <img src="{{ uploadedAsset($zoneCity->logistic->thumbnail_image) }}" alt="{{ $zoneCity->logistic->name }}"
+            <img src="{{ uploadedAsset($zoneCountry->logistic->thumbnail_image) }}" alt="{{ $zoneCountry->logistic->name }}"
                 class="img-fluid">
         </div>
     </div>

@@ -20,8 +20,5 @@ class UserAddress extends Model
         return $this->belongsTo(State::class);
     }
 
-    public function city()
-    {
-        return $this->belongsTo(City::class);
-    }
+   
 }

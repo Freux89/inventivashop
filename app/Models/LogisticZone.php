@@ -14,8 +14,8 @@ class LogisticZone extends Model
         return $this->belongsTo(Logistic::class);
     }
 
-    public function cities()
+    public function countries()
     {
-        return $this->belongsToMany(City::class, 'logistic_zone_cities', 'logistic_zone_id', 'city_id');
+        return $this->belongsToMany(Country::class, 'logistic_zone_countries', 'logistic_zone_id', 'country_id');
     }
 }

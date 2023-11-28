@@ -105,11 +105,11 @@
                                         </td>
 
                                         @php
-                                            $cities = $logisticZone->cities;
+                                            $countries = $logisticZone->countries;
                                         @endphp
                                         <td>
-                                            @forelse ($cities as $city)
-                                                <span class="badge bg-secondary rounded-pill">{{ $city->name }}</span>
+                                            @forelse ($countries as $country)
+                                                <span class="badge bg-secondary rounded-pill">{{ $country->name }}</span>
                                             @empty
                                                 <span class="badge bg-secondary rounded-pill">{{ localize('n/a') }}</span>
                                             @endforelse
