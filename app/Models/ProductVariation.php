@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Variation;
 use App\Models\VariationValue;
@@ -10,6 +11,7 @@ use App\Models\VariationValue;
 class ProductVariation extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     public function product()
     {
