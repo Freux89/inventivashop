@@ -173,7 +173,7 @@
                             <tbody>
                                 @foreach ($order->orderItems as $key => $item)
                                     @php
-                                        $product = $item->product_variation->product;
+                                        $product = $item->product_variations->first()->product;
                                     @endphp
                                     <tr>
                                         <td class="text-center">{{ $key + 1 }}</td>
@@ -189,17 +189,12 @@
                                                         {{ $product->collectLocalization('name') }}
                                                     </h6>
                                                     <div class="text-muted">
-                                                        @foreach (generateVariationOptions($item->product_variation->combinations) as $variation)
-                                                            <span class="fs-xs">
-                                                                {{ $variation['name'] }}:
-                                                                @foreach ($variation['values'] as $value)
-                                                                    {{ $value['name'] }}
-                                                                @endforeach
-                                                                @if (!$loop->last)
-                                                                    ,
-                                                                @endif
-                                                            </span>
-                                                        @endforeach
+                                                        
+                                                        @foreach ($item->product_variations as $product_variation)
+            <li style="margin: 0; padding: 0; font-size: 0.85em;">
+                {{ $product_variation->variation_name }}: {{ $product_variation->variation_value_name }}
+            </li>
+            @endforeach
                                                     </div>
                                                 </div>
                                             </div>

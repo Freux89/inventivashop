@@ -48,6 +48,7 @@ class AppServiceProvider extends ServiceProvider
             }
             
             // Condividi la variabile $carts con tutte le viste
+            
             $view->with('carts', $carts);
         });
     }

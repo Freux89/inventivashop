@@ -28,10 +28,11 @@ class CartsController extends Controller
     {
        
         $productVariationIds = explode(',', $request->product_variation_id);
-
+        
         // Verifica che tutti gli ID esistano
-        $countValidIds = ProductVariation::whereIn('id', $productVariationIds)->count();
-        if ($countValidIds != count($productVariationIds)) {
+        $productVariations = ProductVariation::whereIn('id', $productVariationIds)->get();
+        
+        if ($productVariations->count()  != count($productVariationIds)) {
             // Non tutti gli ID sono validi
             return response()->json(['error' => 'Invalid product variation IDs provided.'], 400);
         }
@@ -46,6 +47,7 @@ class CartsController extends Controller
             $query->whereIn('product_variation_id', $productVariationIds);
         }])->having('product_variations_count', '=', count($productVariationIds))->first();
         
+        $productId = $productVariations->first()->product_id;
 
         if ($cart) {
             $cart->qty += (int) $request->quantity;
@@ -53,6 +55,7 @@ class CartsController extends Controller
         } else {
             $cart = new Cart;
             $cart->qty = (int) $request->quantity;
+            $cart->product_id = $productId;
             $cart->location_id = session('stock_location_id');
             
             if (Auth::check()) {
@@ -189,7 +192,7 @@ class CartsController extends Controller
     # get cart information
     private function getCartsInfo($message = '', $couponDiscount = true, $couponCode = '')
     {
-        
+       
         $carts = null;
         if (Auth::check()) {
             $carts          = Cart::where('user_id', Auth::user()->id)->where('location_id', session('stock_location_id'))->get();

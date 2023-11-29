@@ -1,9 +1,14 @@
 @forelse ($carts as $cart)
 <tr>
     <td class="h-100px">
+    @if($cart->product_variations->first() && $cart->product_variations->first()->product && $cart->product_variations->first()->product->deleted_at == null)
+
         <img src="{{ uploadedAsset($cart->product_variations->first()->product->thumbnail_image) }}" alt="{{ $cart->product_variations->first()->product->collectLocalization('name') }}" class="img-fluid" width="100">
+    @endif
     </td>
     <td class="text-start product-title">
+    @if($cart->product_variations->first() && $cart->product_variations->first()->product && $cart->product_variations->first()->product->deleted_at == null)
+
         <h6 class="mb-0">{{ $cart->product_variations->first()->product->collectLocalization('name') }}</h6>
         <ul style="margin: 0; padding-left: 0; list-style-type: none;">
             @foreach ($cart->product_variations as $product_variation)
@@ -12,11 +17,17 @@
             </li>
             @endforeach
         </ul>
+    @else
+    <span>Prodotto non disponibile</span>
+    @endif
     </td>
     <td>
         <span class="text-dark fw-bold me-2 d-lg-none">{{ localize('Unit Price') }}:</span>
         <span class="text-dark fw-bold">
+        @if($cart->product_variations->first() && $cart->product_variations->first()->product && $cart->product_variations->first()->product->deleted_at == null)
+
             {{ formatPrice(variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations)) }}
+            @endif
         </span>
     </td>
     <td>
@@ -29,8 +40,11 @@
     <td>
         <span class="text-dark fw-bold me-2 d-lg-none">{{ localize('Total Price') }}:</span>
         <span class="text-dark fw-bold">
+        @if($cart->product_variations->first() && $cart->product_variations->first()->product && $cart->product_variations->first()->product->deleted_at == null)
+
             {{ formatPrice(variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations) * $cart->qty) }}
         </span>
+        @endif
     </td>
     <td>
         <span class="text-dark fw-bold me-2 d-lg-none">{{ localize('Delete') }}:</span>

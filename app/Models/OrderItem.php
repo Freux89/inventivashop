@@ -16,7 +16,7 @@ class OrderItem extends Model
 
     public function product_variations()
     {
-        return $this->belongsToMany(ProductVariation::class, 'order_item_product_variation');
+        return $this->belongsToMany(ProductVariation::class, 'order_item_product_variation')->withTrashed();;
    
     }
 
