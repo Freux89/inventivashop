@@ -174,6 +174,36 @@ class CheckoutController extends Controller
                 $orderItem->unit_price           = variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations);
                 $orderItem->total_tax            = getTotalTax([$cart]);
                 $orderItem->total_price          = $orderItem->unit_price * $orderItem->qty;
+
+
+                // Crea un array per le informazioni
+                $informations = [
+                        'product_name' => $cart->product_variations->first()->product->name, // Nome del prodotto
+                        'variations' => []
+                    ];
+
+                // Aggiungi le varianti al array
+                foreach ($cart->product_variations as $variation) {
+                   
+                    foreach ($cart->product_variations as $variation) {
+                        // Controlla se la variation_key è null
+                        if (!is_null($variation->variation_key)) {
+                            array_push($informations['variations'], [
+                                'name' => $variation->variation_name, // Utilizza l'accessore per ottenere il nome della variazione
+                                'value' => $variation->variation_value_name // Utilizza l'accessore per ottenere il nome del valore della variazione
+                            ]);
+                        }
+                    }
+                    
+                }
+                
+
+                // Aggiungi altri dettagli come necessario
+
+                // Converti l'array in JSON e assegnalo a informations
+                $orderItem->informations = json_encode($informations);
+
+
                 $orderItem->save();
 
                 $productVariationIds = $cart->product_variations->pluck('id')->toArray();
