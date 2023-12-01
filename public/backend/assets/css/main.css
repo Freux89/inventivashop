@@ -36757,7 +36757,7 @@ button.note-btn.dropdown-toggle:after {
     display:block;
 }
 
-#order_informations ul{
+.order_informations ul{
     list-style: none;
     padding-left:0;
     font-size:12px;

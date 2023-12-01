@@ -99,7 +99,7 @@
                                     <p class="mb-0">{{ localize('Email') }}: {{ optional($order->user)->email }}</p>
                                     <p class="mb-0">{{ localize('Phone') }}: {{ optional($order->user)->phone }}</p>
 
-                                    @php
+                                    <!-- @php
                                     $deliveryInfo = json_decode($order->scheduled_delivery_info);
                                     @endphp
 
@@ -107,7 +107,7 @@
                                         <span class="badge bg-primary">{{ Str::title(Str::replace('_', ' ', $order->shipping_delivery_type)) }}</span>
 
 
-                                    </p>
+                                    </p> -->
                                     @if ($order->shipping_delivery_type == getScheduledDeliveryType())
                                     <p class="mb-0">
                                         {{ localize('Delivery Time') }}:
@@ -187,7 +187,7 @@
                                             <div class="text-muted">
 
 
-                                                <div class="text-muted" id="order_informations">
+                                                <div class="text-muted order_informations">
                                                     @if (!empty($informations) && !empty($informations['variations']))
                                                     <ul>
                                                         @foreach ($informations['variations'] as $variation)

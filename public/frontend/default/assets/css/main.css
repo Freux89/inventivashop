@@ -28263,3 +28263,9 @@ blockquote::before {
 [data-bs-theme="light"] .logo-light{
     display:block;
 }
+
+.order_informations ul{
+    list-style: none;
+    padding-left:0;
+    font-size:12px;
+}

@@ -17,9 +17,9 @@ $orderItems = $order->orderItems;
             <div class="row g-5 justify-content-between">
                 <div class="col-lg-6">
                     <div class="invoice-title d-flex align-items-center">
-                        <h3>{{ localize('Invoice') }}</h3>
+                        <h3>{{ localize('Order details') }}</h3>
                         <span class="badge rounded-pill bg-primary-light text-primary fw-medium ms-3">
-                            {{ ucwords(str_replace('_', ' ', $order->delivery_status)) }}
+                            {{ localize(ucwords(str_replace('_', ' ', $order->delivery_status))) }}
                         </span>
                     </div>
                     <table class="invoice-table-sm">
@@ -34,12 +34,7 @@ $orderItems = $order->orderItems;
                         </tr>
                     </table>
                 </div>
-                <div class="col-lg-5 col-md-8">
-                    <div class="text-lg-end">
-                        <a href="{{ route('home') }}"><img src="{{ uploadedAsset(getSetting('navbar_logo')) }}" alt="logo" class="img-fluid"></a>
-                        <h6 class="mb-0 text-gray mt-4">{{ getSetting('site_address') }}</h6>
-                    </div>
-                </div>
+
             </div>
             <span class="my-6 w-100 d-block border-top"></span>
             <div class="row justify-content-between g-5">
@@ -50,7 +45,7 @@ $orderItems = $order->orderItems;
                             {{ localize('Here are your order details. We thank you for your purchase.') }}
                         </p>
 
-                        @php
+                        <!-- @php
                         $deliveryInfo = json_decode($order->scheduled_delivery_info);
                         @endphp
 
@@ -58,7 +53,7 @@ $orderItems = $order->orderItems;
                             <span class="badge bg-primary">{{ Str::title(Str::replace('_', ' ', $order->shipping_delivery_type)) }}</span>
 
 
-                        </p>
+                        </p> -->
                         @if ($order->shipping_delivery_type == getScheduledDeliveryType())
                         <p class="mb-0">
                             {{ localize('Delivery Time') }}:
@@ -112,6 +107,7 @@ $orderItems = $order->orderItems;
                     @foreach ($orderItems as $key => $item)
                     @php
                     $product = $item->product_variations->first()->product;
+                    $informations = json_decode($item->informations, true); // Decodifica JSON in array
                     @endphp
                     <tr>
                         <td>{{ $key + 1 }}</td>
@@ -120,13 +116,15 @@ $orderItems = $order->orderItems;
                                 <img src="{{ uploadedAsset($product->thumbnail_image) }}" alt="{{ $product->collectLocalization('name') }}" class="img-fluid product-item d-none">
                                 {{-- <div class="ms-2"> --}}
                                 <div class="">
-                                    <span>{{ $product->collectLocalization('name') }}</span>
-                                    <div>
-                                        @foreach ($item->product_variations as $product_variation)
-                                        <span class="fs-xs">
-                                            {{ $product_variation->variation_name }}: {{ $product_variation->variation_value_name }}
-                                        </span>
-                                        @endforeach
+                                    <span>{{$informations['product_name'] }}</span>
+                                    <div class="text-muted order_informations">
+                                        @if (!empty($informations) && !empty($informations['variations']))
+                                        <ul>
+                                            @foreach ($informations['variations'] as $variation)
+                                            <li>{{ $variation['name'] }}: {{ $variation['value'] }}</li>
+                                            @endforeach
+                                        </ul>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -188,10 +186,10 @@ $orderItems = $order->orderItems;
                             <span>{{ formatPrice($orderGroup->sub_total_amount) }}</span>
                         </td>
 
-                        <td>
+                        <!-- <td>
                             <strong class="text-dark d-block text-nowrap">{{ localize('Tips') }}</strong>
                             <span>{{ formatPrice($orderGroup->total_tips_amount) }}</span>
-                        </td>
+                        </td> -->
 
                         <td>
                             <strong class="text-dark d-block text-nowrap">{{ localize('Shipping Cost') }}</strong>
