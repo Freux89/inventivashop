@@ -148,20 +148,18 @@ class LoginController extends Controller
     {
         // set guest_user_id to user_id from carts
         if (isset($_COOKIE['guest_user_id'])) {
-            $carts  = Cart::where('guest_user_id', (int) $_COOKIE['guest_user_id'])->get();
             $userId = auth()->user()->id;
-            if ($carts) {
-                foreach ($carts as $cart) {
-                    $existInUserCart = Cart::where('user_id', $userId)->first();
-                    if (!is_null($existInUserCart)) {
-                        $existInUserCart->qty += $cart->qty;
-                        $existInUserCart->save();
-                        $cart->delete();
-                    } else {
-                        $cart->user_id = $userId;
-                        $cart->guest_user_id = null;
-                        $cart->save();
-                    }
+
+            // Elimina il carrello esistente dell'utente
+            Cart::where('user_id', $userId)->delete();
+
+            $guestCarts = Cart::where('guest_user_id', (int) $_COOKIE['guest_user_id'])->get();
+
+            if ($guestCarts) {
+                foreach ($guestCarts as $guestCart) {
+                    $guestCart->user_id = $userId;
+                    $guestCart->guest_user_id = null;
+                    $guestCart->save();
                 }
             }
         }
