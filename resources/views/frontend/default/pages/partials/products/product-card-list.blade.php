@@ -65,24 +65,9 @@
             }
         @endphp
 
-        @if ($isVariantProduct)
-            <a href="javascript:void(0);" class="btn btn-outline-secondary btn-sm border-secondary mt-4"
-                onclick="showProductDetailsModal({{ $product->id }})">{{ localize('Add to Cart') }}</a>
-        @else
-            <form action="" class="direct-add-to-cart-form">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="product_variation_id" value="{{ $product->variations[0]->id }}">
-                <input type="hidden" value="1" name="quantity">
-
-                @if (!$isVariantProduct && $stock < 1)
-                    <a href="javascript:void(0);" class="btn btn-outline-secondary btn-sm border-secondary mt-4">
-                        {{ localize('Out of Stock') }}</a>
-                @else
-                    <a href="javascript:void(0);" onclick="directAddToCartFormSubmit(this)"
-                        class="btn btn-outline-secondary btn-sm border-secondary mt-4 direct-add-to-cart-btn add-to-cart-text">{{ localize('Add to Cart') }}</a>
-                @endif
-            </form>
-        @endif
+       
+            <a href="{{ route('products.show', $product->slug) }}" class="btn btn-outline-secondary btn-sm border-secondary mt-4"
+                >{{ localize('Apri') }}</a>
 
 
     </div>

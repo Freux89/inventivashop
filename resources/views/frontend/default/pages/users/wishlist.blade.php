@@ -53,8 +53,8 @@
                                 </td>
 
                                 <td>
-                                    <a href="javascript:void(0);" class="btn btn-secondary btn-sm ms-5 rounded-1"
-                                        onclick="showProductDetailsModal({{ $item->product->id }})">{{ localize('Add to Cart') }}</a>
+                                    <a href="{{ route('products.show', $product->slug) }}" class="btn btn-secondary btn-sm ms-5 rounded-1"
+                                        >{{ localize('Apri') }}</a>
                                     <a href="{{ route('customers.wishlist.delete', $item->id) }}" class="close-btn ms-3"><i
                                             class="fas fa-close"></i></a>
                                 </td>

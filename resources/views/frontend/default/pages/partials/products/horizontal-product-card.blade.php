@@ -12,8 +12,7 @@
                         class="fa-regular fa-heart"></i></a>
             @endif
 
-            <a href="javascript:void(0);" class="rounded-btn fs-xs"
-                onclick="showProductDetailsModal({{ $product->id }})"><i class="fa-solid fa-eye"></i></a>
+            <a href="{{ route('products.show', $product->slug) }}" class="rounded-btn fs-xs"><i class="fa-solid fa-eye"></i></a>
 
         </div>
     </div>
@@ -37,11 +36,10 @@
             }
         @endphp
 
-        @if ($isVariantProduct)
+        
             <div class="d-flex justify-content-between align-items-center mt-10">
                 <span class="flex-grow-1">
-                    <a href="javascript:void(0);" class="fs-xs fw-bold mt-10 d-inline-block explore-btn"
-                        onclick="showProductDetailsModal({{ $product->id }})">{{ localize('Buy Now') }}<span
+                    <a href="{{ route('products.show', $product->slug) }}" class="fs-xs fw-bold mt-10 d-inline-block explore-btn">{{ localize('Buy Now') }}<span
                             class="ms-1"><i class="fa-solid fa-arrow-right"></i></span></a>
                 </span>
 
@@ -54,37 +52,7 @@
 
 
             </div>
-        @else
-            <form action="" class="direct-add-to-cart-form">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="product_variation_id" value="{{ $product->variations[0]->id }}">
-                <input type="hidden" value="1" name="quantity">
-
-                <div class="d-flex justify-content-between align-items-center mt-10">
-                    <span class="flex-grow-1">
-                        @if (!$isVariantProduct && $stock < 1)
-                            <a href="javascript:void(0);" class="fs-xs fw-bold d-inline-block explore-btn">
-                                {{ localize('Out of Stock') }}
-                                <span class="ms-1"><i class="fa-solid fa-arrow-right"></i></span>
-                            </a>
-                        @else
-                            <a href="javascript:void(0);" onclick="directAddToCartFormSubmit(this)"
-                                class="fs-xs fw-bold d-inline-block explore-btn direct-add-to-cart-btn">
-                                <span class="add-to-cart-text">{{ localize('Buy Now') }}</span>
-                                <span class="ms-1"><i class="fa-solid fa-arrow-right"></i></span>
-                            </a>
-                        @endif
-                    </span>
-
-                    @if (getSetting('enable_reward_points') == 1)
-                        <span class="fs-xxs fw-bold" data-bs-toggle="tooltip" data-bs-placement="top"
-                            data-bs-title="{{ localize('Reward Points') }}">
-                            <i class="fas fa-medal"></i> {{ $product->reward_points }}
-                        </span>
-                    @endif
-                </div>
-            </form>
-        @endif
+        
 
     </div>
 </div>

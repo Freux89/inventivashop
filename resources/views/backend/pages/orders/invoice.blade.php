@@ -54,8 +54,7 @@
                 </p>
             @endif
         </td>
-        <td colspan="4" align="right"
-            style="width: 300px; text-align: right; padding-left: 50px; line-height: 1.5; color: #323232;">
+        <td colspan="4" align="right"  style="width: 300px; text-align: right; padding-left: 50px; line-height: 1.5; color: #323232;">
             <img src="{{ uploadedAsset(getSetting('favicon')) }}" alt="logo" border="0" />
             <p
                 style="font-size: 12px; font-family: 'Open Sans', sans-serif;font-weight: bold; color: #5b5b5b; line-height: 1; vertical-align: top; ">
@@ -200,25 +199,22 @@
 
                                         @foreach ($order->orderItems as $key => $item)
                                             @php
-                                                $product = $item->product_variation->product;
+                                            $product = $item->product_variations->first()->product;
+                            $informations = json_decode($item->informations, true);
                                             @endphp
                                             <tr>
                                                 <td style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #5b5b5b;  line-height: 18px;  vertical-align: top; padding:10px 0;"
                                                     class="article">
-                                                    <div>{{ $product->collectLocalization('name') }}</div>
-                                                    <div class="text-muted">
-                                                        @foreach (generateVariationOptions($item->product_variation->combinations) as $variation)
-                                                            <span class="fs-xs">
-                                                                {{ $variation['name'] }}:
-                                                                @foreach ($variation['values'] as $value)
-                                                                    {{ $value['name'] }}
-                                                                @endforeach
-                                                                @if (!$loop->last)
-                                                                    ,
-                                                                @endif
-                                                            </span>
+                                                    <div> {{$informations['product_name'] }}</div>
+                                                    <div class="text-muted order_informations">
+                                                    @if (!empty($informations) && !empty($informations['variations']))
+                                                    <ul>
+                                                        @foreach ($informations['variations'] as $variation)
+                                                        <li>{{ $variation['name'] }}: {{ $variation['value'] }}</li>
                                                         @endforeach
-                                                    </div>
+                                                    </ul>
+                                                    @endif
+                                                </div>
                                                 </td>
                                                 <td
                                                     style="font-size: 12px; font-family: 'Open Sans', sans-serif; color: #646a6e;  line-height:

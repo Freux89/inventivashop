@@ -318,6 +318,8 @@ class CheckoutController extends Controller
         try {
             Notification::send($user, new OrderPlacedNotification($orderGroup->order));
         } catch (\Exception $e) {
+            \Log::error('Errore nell\'invio della notifica OrderPlaced: ' . $e->getMessage());
+
         }
         return getView('pages.checkout.success', ['orderGroup' => $orderGroup]);
     }

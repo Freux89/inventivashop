@@ -23,7 +23,7 @@
                         onclick="addToWishlist({{ $product->id }})"></i></a>
             @endif
 
-            <a href="javascript:void(0);" class="rounded-btn" onclick="showProductDetailsModal({{ $product->id }})"><i
+            <a href="{{ route('products.show', $product->slug) }}" class="rounded-btn" ><i
                     class="fa-regular fa-eye"></i></a>
         </div>
     </div>
@@ -83,23 +83,9 @@
             }
         @endphp
 
-        @if ($isVariantProduct)
-            <a href="javascript:void(0);" class="btn btn-secondary d-block btn-md rounded-1"
-                onclick="showProductDetailsModal({{ $product->id }})">{{ localize('Add to Cart') }}</a>
-        @else
-            <form action="" class="direct-add-to-cart-form">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="product_variation_id" value="{{ $product->variations[0]->id }}">
-                <input type="hidden" value="1" name="quantity">
-
-                @if (!$isVariantProduct && $stock < 1)
-                    <a href="javascript:void(0);" class="btn btn-secondary d-block btn-md rounded-1 w-100">
-                        {{ localize('Out of Stock') }}</a>
-                @else
-                    <a href="javascript:void(0);" onclick="directAddToCartFormSubmit(this)"
-                        class="btn btn-secondary d-block btn-md rounded-1 w-100 direct-add-to-cart-btn add-to-cart-text">{{ localize('Add to Cart') }}</a>
-                @endif
-            </form>
-        @endif
+        
+            <a href="{{ route('products.show', $product->slug) }}" class="btn btn-secondary d-block btn-md rounded-1"
+                >{{ localize('Apri') }}</a>
+      
     </div>
 </div>
