@@ -71,7 +71,7 @@ active @endif">
                                         @foreach ($order->orderUpdates as $orderUpdate)
                                             <tr>
                                                 <td>{{ date('d M, Y', strtotime($orderUpdate->created_at)) }}</td>
-                                                <td>{{ $orderUpdate->note }}</span>
+                                                <td>{{ localize($orderUpdate->note) }}</span>
                                                 </td>
                                             </tr>
                                         @endforeach

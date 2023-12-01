@@ -509,12 +509,12 @@
     </li> -->
 
     @can('contact_us_messages')
-        <!-- <li class="side-nav-item nav-item {{ areActiveRoutes(['admin.queries.index'], 'tt-menu-item-active') }}">
+        <li class="side-nav-item nav-item {{ areActiveRoutes(['admin.queries.index'], 'tt-menu-item-active') }}">
             <a href="{{ route('admin.queries.index') }}"
                 class="side-nav-link {{ areActiveRoutes(['admin.queries.index']) }}">
                 <span class="tt-nav-link-icon"><i data-feather="hash"></i></span>
                 <span class="tt-nav-link-text">
-                    <span>{{ localize('Queries') }}</span>
+                    <span>{{ localize('Richieste') }}</span>
 
                     @php
                         $newMsgCount = \App\Models\ContactUsMessage::where('is_seen', 0)->count();
@@ -525,7 +525,7 @@
                     @endif
                 </span>
             </a>
-        </li> -->
+        </li>
     @endcan
 
     <!-- Settings -->

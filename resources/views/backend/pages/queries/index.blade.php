@@ -12,7 +12,7 @@
                     <div class="card tt-page-header">
                         <div class="card-body d-lg-flex align-items-center justify-content-lg-between">
                             <div class="tt-page-title">
-                                <h2 class="h5 mb-lg-0">{{ localize('Queries') }}</h2>
+                                <h2 class="h5 mb-lg-0">{{ localize('Richieste') }}</h2>
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
 
                                         <td>
 
-                                            {{ Str::title(Str::replace('_', ' ', $message->support_for)) }}
+                                            {{ localize(Str::title(Str::replace('_', ' ', $message->support_for))) }}
                                         </td>
 
 
