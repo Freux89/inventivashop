@@ -85,7 +85,7 @@
                                         </select>
                                     </div>
 
-                                    @if (count($locations) > 0)
+                                    <!-- @if (count($locations) > 0)
                                         <div class="col-auto">
                                             <select class="form-select select2" name="location_id"
                                                 data-minimum-results-for-search="Infinity" id="location_id">
@@ -98,7 +98,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    @endif
+                                    @endif -->
 
                                     <div class="col-auto">
                                         <select class="form-select select2" name="is_pos_order"
@@ -128,14 +128,14 @@
                                     </th>
                                     <th>{{ localize('Order Code') }}</th>
                                     <th data-breakpoints="xs sm md">{{ localize('Customer') }}</th>
-                                    <th>{{ localize('Placed On') }}</th>
-                                    <th data-breakpoints="xs">{{ localize('Items') }}</th>
+                                    <th>{{ localize('Data') }}</th>
+                                    <th data-breakpoints="xs">{{ localize('Products') }}</th>
                                     <th data-breakpoints="xs sm">{{ localize('Payment') }}</th>
                                     <th data-breakpoints="xs sm">{{ localize('Status') }}</th>
-                                    <th data-breakpoints="xs sm">{{ localize('Type') }}</th>
-                                    @if (count($locations) > 0)
+                                    <!-- <th data-breakpoints="xs sm">{{ localize('Type') }}</th> -->
+                                    <!-- @if (count($locations) > 0)
                                         <th data-breakpoints="xs sm">{{ localize('Location') }}</th>
-                                    @endif
+                                    @endif -->
                                     <th data-breakpoints="xs sm" class="text-end">{{ localize('Action') }}</th>
                                 </tr>
                             </thead>
@@ -178,11 +178,11 @@
                                         <td>
                                             @if ($order->payment_status == unpaidPaymentStatus())
                                                 <span class="badge bg-soft-danger rounded-pill text-capitalize">
-                                                    {{ $order->payment_status }}
+                                                    {{ localize($order->payment_status) }}
                                                 </span>
                                             @else
                                                 <span class="badge bg-soft-primary rounded-pill text-capitalize">
-                                                    {{ $order->payment_status }}
+                                                    {{ localize($order->payment_status) }}
                                                 </span>
                                             @endif
                                         </td>
@@ -191,7 +191,7 @@
                                         <td>
                                             @if ($order->delivery_status == orderDeliveredStatus())
                                                 <span class="badge bg-soft-primary rounded-pill text-capitalize">
-                                                    {{ $order->delivery_status }}
+                                                    {{ localize($order->delivery_status) }}
                                                 </span>
                                             @elseif($order->delivery_status == orderCancelledStatus())
                                                 <span class="badge bg-soft-danger rounded-pill text-capitalize">
@@ -204,14 +204,14 @@
                                             @endif
                                         </td>
 
-                                        <td>
+                                        <!-- <td>
                                             <span
                                                 class="badge rounded-pill text-capitalize {{ $order->shipping_delivery_type == getScheduledDeliveryType() ? 'bg-soft-warning' : 'bg-secondary' }}">
                                                 {{ Str::title(Str::replace('_', ' ', $order->shipping_delivery_type)) }}
                                             </span>
-                                        </td>
+                                        </td> -->
 
-                                        @if (count($locations) > 0)
+                                        <!-- @if (count($locations) > 0)
                                             <td>
                                                 <span class="badge rounded-pill text-capitalize bg-secondary">
                                                     @if ($order->location)
@@ -221,13 +221,13 @@
                                                     @endif
                                                 </span>
                                             </td>
-                                        @endif
+                                        @endif -->
 
                                         <td class="text-end">
                                             @can('manage_orders')
                                                 <a href="{{ route('admin.orders.show', $order->id) }}"
                                                     class="btn btn-sm p-0 tt-view-details" data-bs-toggle="tooltip"
-                                                    data-bs-placement="top" title="View Details">
+                                                    data-bs-placement="top" title="Visualizza dettagli">
                                                     <i data-feather="eye"></i>
                                                 </a>
                                             @endcan

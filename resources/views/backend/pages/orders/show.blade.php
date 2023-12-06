@@ -28,21 +28,21 @@
                         <!--order status-->
                         <div class="row justify-content-between align-items-center g-3">
                             <div class="col-auto flex-grow-1">
-                                <h5 class="mb-0">{{ localize('Invoice') }}
+                                <h5 class="mb-0">{{ localize('Ordine') }}
                                     <span class="text-accent">{{ getSetting('order_code_prefix') }}{{ $order->orderGroup->order_code }}
                                     </span>
                                 </h5>
-                                <span class="text-muted">{{ localize('Order Date') }}:
+                                <span class="text-muted">{{ localize('Data ordine') }}:
                                     {{ date('d M, Y', strtotime($order->created_at)) }}
                                 </span>
 
-                                @if ($order->location_id != null)
+                                <!-- @if ($order->location_id != null)
                                 <div>
                                     <span class="text-muted">
                                         <i class="las la-map-marker"></i> {{ optional($order->location)->name }}
                                     </span>
                                 </div>
-                                @endif
+                                @endif -->
 
                             </div>
 
@@ -81,9 +81,9 @@
                                 </div>
                             </div>
                             <div class="col-auto">
-                                <a href="{{ route('admin.orders.downloadInvoice', $order->id) }}" class="btn btn-primary">
+                                <a href="#" class="btn btn-primary">
                                     <i data-feather="download" width="18"></i>
-                                    {{ localize('Download Invoice') }}
+                                    {{ localize('Genera fattura') }}
                                 </a>
                             </div>
                         </div>
@@ -94,7 +94,7 @@
                         <div class="row justify-content-between g-3">
                             <div class="col-xl-7 col-lg-6">
                                 <div class="welcome-message">
-                                    <h6 class="mb-2">{{ localize('Customer Info') }}</h6>
+                                    <h6 class="mb-2">{{ localize('Informazioni cliente') }}</h6>
                                     <p class="mb-0">{{ localize('Name') }}: {{ optional($order->user)->name }}</p>
                                     <p class="mb-0">{{ localize('Email') }}: {{ optional($order->user)->email }}</p>
                                     <p class="mb-0">{{ localize('Phone') }}: {{ optional($order->user)->phone }}</p>
@@ -191,7 +191,7 @@
                                                     @if (!empty($informations) && !empty($informations['variations']))
                                                     <ul>
                                                         @foreach ($informations['variations'] as $variation)
-                                                        <li>{{ $variation['name'] }}: {{ $variation['value'] }}</li>
+                                                            <li>{{ $variation['name'] }}: {{ $variation['value'] }}</li>
                                                         @endforeach
                                                     </ul>
                                                     @endif
@@ -242,10 +242,7 @@
                                     <strong>{{ formatPrice($order->orderGroup->sub_total_amount) }}</strong>
                                 </div>
 
-                                <div class="col-auto">
-                                    <h6 class="mb-1">{{ localize('Tips') }}</h6>
-                                    <strong>{{ formatPrice($order->orderGroup->total_tips_amount) }}</strong>
-                                </div>
+                             
 
                                 <div class="col-auto ps-lg-5">
                                     <h6 class="mb-1">{{ localize('Shipping Cost') }}</h6>
@@ -281,9 +278,9 @@
                                     @forelse ($order->orderUpdates as $orderUpdate)
                                     <li>
                                         <a class="{{ $loop->first ? 'active' : '' }}">
-                                            {{ $orderUpdate->note }} <br> By
+                                            {{ localize($orderUpdate->note) }} <br> da
                                             <span class="text-capitalize">{{ optional($orderUpdate->user)->name }}</span>
-                                            at
+                                            il
                                             {{ date('d M, Y', strtotime($orderUpdate->created_at)) }}.</a>
                                     </li>
                                     @empty
