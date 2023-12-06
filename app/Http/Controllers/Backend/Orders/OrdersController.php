@@ -12,6 +12,8 @@ use App\Models\OrderUpdate;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use App\Notifications\OrderPaymentStatusUpdated;
+use App\Notifications\OrderShippingStatusUpdated;
 use PDF;
 
 class OrdersController extends Controller
@@ -97,6 +99,7 @@ class OrdersController extends Controller
         $order = Order::findOrFail((int)$request->order_id);
         $order->payment_status = $request->status;
         $order->save();
+        $customer = $order->user;
 
         OrderUpdate::create([
             'order_id' => $order->id,
@@ -104,7 +107,15 @@ class OrdersController extends Controller
             'note' => 'Payment status updated to ' . ucwords(str_replace('_', ' ', $request->status)) . '.',
         ]);
 
-        // todo::['mail notification']
+        try {
+            $customer->notify(new OrderPaymentStatusUpdated($order));
+
+        } catch (\Exception $e) {
+            \Log::error('Errore nell\'invio della notifica OrderPlaced: ' . $e->getMessage());
+
+        }
+
+
         return true;
     }
 
@@ -123,6 +134,7 @@ class OrdersController extends Controller
 
         $order->delivery_status = $request->status;
         $order->save();
+        $customer = $order->user;
 
         OrderUpdate::create([
             'order_id' => $order->id,
@@ -130,7 +142,14 @@ class OrdersController extends Controller
             'note' => 'Delivery status updated to ' . ucwords(str_replace('_', ' ', $request->status)) . '.',
         ]);
 
-        // todo::['mail notification'] 
+        try {
+            $customer->notify(new OrderShippingStatusUpdated($order));
+
+        } catch (\Exception $e) {
+            \Log::error('Errore nell\'invio della notifica OrderShippingStatusUpdated : ' . $e->getMessage());
+
+        }
+
         return true;
     }
 
