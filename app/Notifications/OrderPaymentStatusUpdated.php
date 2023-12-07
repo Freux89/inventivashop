@@ -47,7 +47,7 @@ class OrderPaymentStatusUpdated extends Notification
                 ->subject('Aggiornamento Stato Pagamento per Ordine #' . $this->order->order_group_id)
                 ->greeting('Ciao ' . $notifiable->name . ',')
                 ->line('Lo stato di pagamento per il tuo ordine #' . $this->order->order_group_id . ' è stato aggiornato.')
-                ->line('Nuovo stato di pagamento: ' . ucfirst($this->order->payment_status))
+                ->line('Nuovo stato di pagamento: ' . localize(ucfirst($this->order->payment_status)))
                 ->action('Visualizza Ordine', url('/orders/invoice/' . $this->order->order_group_id))
                 ->line('Grazie per aver scelto il nostro negozio!')
                 ->salutation(env('APP_NAME') . ' Team');
