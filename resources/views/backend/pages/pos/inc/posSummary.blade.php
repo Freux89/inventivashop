@@ -62,7 +62,7 @@
       <div class="tt-pos-cal">
           <div class="row g-3">
               <div class="col-12">
-                  <label for="discount_value" class="form-label">{{ localize('Additional Discount') }}</label>
+                  <label for="discount_value" class="form-label">{{ localize('Sconto') }}</label>
                   <div class="input-group row g-0">
                       <input class="form-control col-6 rounded-end-0" type="number"
                           placeholder="{{ localize('Type discount amount') }}" id="additional_discount_value"

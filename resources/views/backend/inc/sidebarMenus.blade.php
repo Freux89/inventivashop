@@ -100,14 +100,14 @@
     @endcan
 
     <!-- pos -->
-    @canany(['pos'])
-        <!-- <li class="side-nav-item nav-item">
+    <!-- @canany(['pos'])
+        <li class="side-nav-item nav-item">
             <a href="{{ route('admin.pos.index') }}" class="side-nav-link">
                 <span class="tt-nav-link-icon"><i data-feather="table"></i></span>
-                <span class="tt-nav-link-text">{{ localize('Pos System') }}</span>
+                <span class="tt-nav-link-text">{{ localize('Crea un ordine (POS)') }}</span>
             </a>
-        </li> -->
-    @endcan
+        </li>
+    @endcan -->
 
     <!-- orders -->
     @can('orders')

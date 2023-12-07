@@ -117,7 +117,7 @@
                                 <div class="px-3">
                                     <h5 class="fw-bold mb-1">{{ localize('Top Selling Products') }}</h5>
                                     <span class="text-muted">
-                                        {{ localize('We have listed ' . \App\Models\Product::count() . ' total products.') }}</span>
+                                        {{ localize('We have listed')}} {{\App\Models\Product::count() }} {{localize('total products')}}</span>
                                 </div>
                                 <div class="tt-top-selling mt-3 h-25rem" data-simplebar>
                                     <ul class="tt-top-selling-list list-unstyled mb-0 px-3">

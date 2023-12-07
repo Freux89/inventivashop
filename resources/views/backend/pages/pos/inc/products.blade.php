@@ -27,11 +27,7 @@
             </div>
             <div class="d-flex flex-column">
 
-                @if (!$isVariantProduct)
-                    @if ($code != null)
-                        <small class="text-muted">{{ localize('Code') }}: {{ $code }}</small>
-                    @endif
-                @endif
+              
 
                 <h3 class="fs-md mb-1 tt-line-clamp tt-clamp-1 fw-medium">
                     {{ $product->collectLocalization('name') }}</h3>

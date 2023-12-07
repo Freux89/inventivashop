@@ -6,11 +6,6 @@
                     data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
                     aria-selected="true">{{ localize('Categories') }}</button>
             </li>
-            <li class="nav-item me-2" role="presentation">
-                <button class="nav-link px-3 py-1 fs-md" id="pills-profile-tab" data-bs-toggle="pill"
-                    data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile"
-                    aria-selected="false">{{ localize('Brands') }}</button>
-            </li>
 
 
         </ul>

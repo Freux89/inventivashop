@@ -21,7 +21,7 @@
                         <div class="tt-pos-products-wrap">
                             <div class="row justify-content-between align-items-center g-3 mb-3">
                                 <div class="col-auto flex-grow-1">
-                                    <h2 class="h5 mb-0">{{ localize('All Listed Products') }}</h2>
+                                    <h2 class="h5 mb-0">{{ localize('All Products') }}</h2>
                                 </div>
                                 <div class="col-auto">
                                     <div class="tt-search-box">
@@ -38,12 +38,7 @@
                                         {{ localize('Search') }}
                                     </button>
                                 </div>
-                                <div class="col-auto">
-                                    <button type="button" class="btn btn-soft-primary" data-bs-toggle="modal"
-                                        data-bs-target="#addItemCode">
-                                        <i data-feather="plus"></i> {{ localize('Add Item by Code') }}
-                                    </button>
-                                </div>
+                                
                             </div>
                             <div class="tt-pos-products" data-simplebar>
                                 <div
@@ -72,7 +67,7 @@
                         <form action="" class="d-flex flex-column h-100 pos-cart-list-form">
                             @csrf
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <h5 class="mb-0">{{ localize('Billing Section') }}</h5>
+                                <h5 class="mb-0">{{ localize('Creazione ordine') }}</h5>
                                 <div class="d-flex flex-wrap align-items-center">
                                     <div class="me-2 mb-1 mb-md-0">
                                         <select class="form-select py-1" name="delivery_status">
@@ -86,9 +81,7 @@
                                     <button type="button" class="btn btn-soft-primary py-1 px-2 me-2 mb-1 mb-md-0"
                                         onclick="showCustomerModal()"><i data-feather="user-plus"
                                             class="me-1"></i>{{ localize('Customer') }}</button>
-                                    <a href="{{ route('admin.pos.index') }}" target="_blank"
-                                        class="btn btn-soft-accent py-1 px-2 mb-1 mb-md-0"><i data-feather="plus-circle"
-                                            class="me-1"></i>{{ localize('New Order') }}</a>
+                                    
                                 </div>
                             </div>
 
@@ -122,7 +115,7 @@
                                 <table class="table tt-footable align-middle" data-use-parent-width="true">
                                     <thead class="sticky-top bg-secondary-subtle">
                                         <tr>
-                                            <th>{{ localize('Item') }}</th>
+                                            <th>{{ localize('Prodotto') }}</th>
                                             <th data-breakpoints="xs sm" class="text-center">{{ localize('Qty') }}</th>
                                             <th data-breakpoints="xs sm md">{{ localize('Price') }}</th>
                                             <th data-breakpoints="xs sm md" class="text-end">{{ localize('Action') }}</th>
@@ -180,7 +173,7 @@
 
         // get pos products
         function getPosProducts() {
-            let url = '{{ route('admin.pos.products') }}';
+            let url = '{{ route("admin.pos.products") }}';
             $('.pos-products').empty();
             $('.pos-load-more').addClass('d-none')
 
