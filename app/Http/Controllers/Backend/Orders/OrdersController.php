@@ -141,7 +141,7 @@ class OrdersController extends Controller
             'user_id' => auth()->user()->id,
             'note' => 'Delivery status updated to ' . ucwords(str_replace('_', ' ', $request->status)) . '.',
         ]);
-
+        
         try {
             $customer->notify(new OrderShippingStatusUpdated($order));
 
@@ -158,11 +158,12 @@ class OrdersController extends Controller
     {
         $orderItems = OrderItem::where('order_id', $order->id)->get();
         foreach ($orderItems as $orderItem) {
-            $stock = $orderItem->product_variation->product_variation_stock;
-            $stock->stock_qty += $orderItem->qty;
-            $stock->save();
+            // Da gestire con il nuovo sistema di gestione delle varianti
+            // $stock = $orderItem->product_variation->product_variation_stock;
+            // $stock->stock_qty += $orderItem->qty;
+            // $stock->save();
 
-            $product = $orderItem->product_variation->product;
+            $product = $orderItem->product_variations->first()->product;
             $product->total_sale_count += $orderItem->qty;
             $product->save();
 
@@ -180,11 +181,12 @@ class OrdersController extends Controller
     {
         $orderItems = OrderItem::where('order_id', $order->id)->get();
         foreach ($orderItems as $orderItem) {
-            $stock = $orderItem->product_variation->product_variation_stock;
-            $stock->stock_qty -= $orderItem->qty;
-            $stock->save();
+            // Da gestire con il nuovo sistema di gestione delle varianti
+            // $stock = $orderItem->product_variation->product_variation_stock;
+            // $stock->stock_qty -= $orderItem->qty;
+            // $stock->save();
 
-            $product = $orderItem->product_variation->product;
+            $product = $orderItem->product_variations->first()->product;
             $product->total_sale_count -= $orderItem->qty;
             $product->save();
 

@@ -44,6 +44,7 @@ use App\Http\Controllers\Backend\Logistics\CitiesController;
 use App\Http\Controllers\Backend\MediaManager\MediaManagerController;
 use App\Http\Controllers\Backend\Newsletters\NewslettersController;
 use App\Http\Controllers\Backend\Orders\OrdersController;
+use App\Http\Controllers\Backend\Orders\OrderStatesController;
 use App\Http\Controllers\Backend\Stocks\StocksController;
 use App\Http\Controllers\Backend\Stocks\LocationsController;
 use App\Http\Controllers\Backend\Rewards\RewardsController;
@@ -244,6 +245,20 @@ Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'd
             Route::post('/update-payment-status', [OrdersController::class, 'updatePaymentStatus'])->name('admin.orders.update_payment_status');
             Route::post('/update-delivery-status', [OrdersController::class, 'updateDeliveryStatus'])->name('admin.orders.update_delivery_status');
             Route::get('/invoice-download/{id}', [OrdersController::class, 'downloadInvoice'])->name('admin.orders.downloadInvoice');
+        });
+
+        # order status
+        Route::group(['prefix' => 'order-states'], function () {
+            Route::get('/', [OrderStatesController::class, 'index'])->name('admin.orderStates.index');
+            // create
+            Route::get('/add', [OrderStatesController::class, 'create'])->name('admin.orderStates.create');
+            Route::post('/add', [OrderStatesController::class, 'store'])->name('admin.orderStates.store');
+            Route::get('/{id}', [OrderStatesController::class, 'edit'])->name('admin.orderStates.edit');
+            Route::put('/update/{id}', [OrderStatesController::class, 'update'])->name('admin.orderStates.update');
+            Route::get('/delete/{id}', [OrderStatesController::class, 'delete'])->name('admin.orderStates.delete');
+            Route::post('/update-published-status', [OrderStatesController::class, 'updatePublishedStatus'])->name('admin.orderStates.updatePublishedStatus');
+            Route::post('/update-positions', [OrderStatesController::class, 'updatePositions'])->name('admin.orderStates.positions');
+
         });
 
         # stocks

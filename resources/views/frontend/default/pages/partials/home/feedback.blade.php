@@ -13,8 +13,7 @@
                         <div class="swiper-wrapper">
                             @foreach ($client_feedback as $feedback)
                                 <div class="swiper-slide control-thumb">
-                                    <img src="{{ uploadedAsset($feedback->image) }}" alt="clients"
-                                        class="img-fluid rounded-circle">
+                                  
                                 </div>
                             @endforeach
                         </div>

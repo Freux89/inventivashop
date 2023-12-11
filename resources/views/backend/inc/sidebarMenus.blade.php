@@ -129,6 +129,17 @@
                 </span>
             </a>
         </li>
+
+        <li
+            class="side-nav-item nav-item {{ areActiveRoutes(['admin.orderStates.index', 'admin.orderStates.edit'], 'tt-menu-item-active') }}">
+            <a href="{{ route('admin.orderStates.index') }}"
+                class="side-nav-link {{ areActiveRoutes(['admin.orderStates.index', 'admin.orderStates.edit']) }}">
+                <span class="tt-nav-link-icon"><i data-feather="shopping-cart"></i></span>
+                <span class="tt-nav-link-text">
+                    <span>{{ localize('Stati ordine') }}</span>
+                </span>
+            </a>
+        </li>
     @endcan
 
     <!-- stock -->

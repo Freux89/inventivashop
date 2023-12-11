@@ -922,7 +922,7 @@ if (!function_exists('validateCouponForProductsAndCategories')) {
         if ($coupon->product_ids) {
             $product_ids = json_decode($coupon->product_ids);
             foreach ($cartItems as $key => $cartItem) {
-                if (in_array($cartItem->product_variation->product_id, $product_ids)) {
+                if (in_array($cartItem->product_variations->first()->product_id, $product_ids)) {
                     return true;
                 }
             }
@@ -931,7 +931,7 @@ if (!function_exists('validateCouponForProductsAndCategories')) {
         if ($coupon->category_ids) {
             $category_ids = json_decode($coupon->category_ids);
             foreach ($cartItems as $key => $cartItem) {
-                $product_categories = $cartItem->product_variation->product->product_categories;
+                $product_categories = $cartItem->product_variations->first()->product->product_categories;
                 foreach ($product_categories as $key => $product_category) {
                     if (in_array($product_category->category_id, $category_ids)) {
                         return true;
@@ -1125,4 +1125,15 @@ if (!function_exists('orderCancelledStatus')) {
     {
         return "cancelled";
     }
+}
+if (!function_exists('isColorLight')) {
+function isLight($color) {
+    
+    $hex = ltrim($color, '#');
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+    $brightness = ($r * 299 + $g * 587 + $b * 114) / 1000;
+    return $brightness > 155;
+}
 }
