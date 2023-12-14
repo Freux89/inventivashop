@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderGroup;
 use App\Models\OrderItem;
 use App\Models\OrderUpdate;
+use App\Models\OrderState;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -30,7 +31,7 @@ class OrdersController extends Controller
     {
         $searchKey = null;
         $searchCode = null;
-        $deliveryStatus = null;
+        $stateId = null;
         $paymentStatus = null;
         $locationId = null;
         $posOrder = 0;
@@ -56,9 +57,9 @@ class OrdersController extends Controller
             });
         }
 
-        if ($request->delivery_status != null) {
-            $deliveryStatus = $request->delivery_status;
-            $orders = $orders->where('delivery_status', $deliveryStatus);
+        if ($request->order_state_id != null) {
+            $stateId = $request->order_state_id;
+            $orders = $orders->where('order_state_id', $stateId);
         }
 
         if ($request->payment_status != null) {
@@ -81,9 +82,10 @@ class OrdersController extends Controller
             $q->orWhereIn('order_group_id', $orderGroup);
         });
 
+        $orderStates = OrderState::where('status', 1)->get();
         $orders = $orders->paginate(paginationNumber());
         $locations = Location::where('is_published', 1)->latest()->get();
-        return view('backend.pages.orders.index', compact('orders', 'searchKey', 'locations', 'locationId', 'searchCode', 'deliveryStatus', 'paymentStatus', 'posOrder'));
+        return view('backend.pages.orders.index', compact('orders', 'searchKey', 'locations', 'locationId', 'searchCode', 'orderStates', 'stateId', 'paymentStatus', 'posOrder'));
     }
 
     # show order details
@@ -109,10 +111,8 @@ class OrdersController extends Controller
 
         try {
             $customer->notify(new OrderPaymentStatusUpdated($order));
-
         } catch (\Exception $e) {
             \Log::error('Errore nell\'invio della notifica OrderPlaced: ' . $e->getMessage());
-
         }
 
 
@@ -123,31 +123,33 @@ class OrdersController extends Controller
     public function updateDeliveryStatus(Request $request)
     {
         $order = Order::findOrFail((int)$request->order_id);
-
-        if ($order->delivery_status != orderCancelledStatus() && $request->status == orderCancelledStatus()) {
+        $cancelledStatusIds = orderCancelledStatus();
+        if (!in_array($order->order_state_id, $cancelledStatusIds) && in_array($request->status, $cancelledStatusIds)) {
             $this->addQtyToStock($order);
         }
 
-        if ($order->delivery_status == orderCancelledStatus() && $request->status != orderCancelledStatus()) {
+        // Verifica se lo stato d'ordine precedente era cancellato e quello nuovo non lo è
+        if (in_array($order->order_state_id, $cancelledStatusIds) && !in_array($request->status, $cancelledStatusIds)) {
             $this->removeQtyFromStock($order);
         }
 
-        $order->delivery_status = $request->status;
+        // Aggiorna lo stato d'ordine
+        $order->order_state_id = $request->status;
         $order->save();
         $customer = $order->user;
 
         OrderUpdate::create([
             'order_id' => $order->id,
             'user_id' => auth()->user()->id,
-            'note' => 'Delivery status updated to ' . ucwords(str_replace('_', ' ', $request->status)) . '.',
+            'note' => 'Stato ordine aggiornato a ' . ucwords(str_replace('_', ' ', $order->orderState->name)) . '.',
         ]);
-        
-        try {
-            $customer->notify(new OrderShippingStatusUpdated($order));
-
-        } catch (\Exception $e) {
-            \Log::error('Errore nell\'invio della notifica OrderShippingStatusUpdated : ' . $e->getMessage());
-
+        $sendEmail = $order->orderState->send_email;
+        if ($sendEmail) {
+            try {
+                $customer->notify(new OrderShippingStatusUpdated($order));
+            } catch (\Exception $e) {
+                \Log::error('Errore nell\'invio della notifica OrderShippingStatusUpdated : ' . $e->getMessage());
+            }
         }
 
         return true;

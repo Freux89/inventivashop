@@ -44,15 +44,44 @@
                                 <input type="color" class="form-control" id="color" name="color">
                             </div>
                             <div class="mb-4">
+                                <label for="cancelled" class="form-label">{{ localize('Annulla Ordine') }}</label>
+                                <select class="form-control" id="cancelled" name="cancelled">
+                                    <option value="0">{{ localize('No') }}</option>
+                                    <option value="1">{{ localize('Sì') }}</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="invoice" class="form-label">{{ localize('Genera Fattura') }}</label>
+                                <select class="form-control" id="invoice" name="invoice">
+                                    <option value="0">{{ localize('No') }}</option>
+                                    <option value="1">{{ localize('Sì') }}</option>
+                                </select>
+                            </div>
+
+                            
+                            <div class="mb-4">
+                                <label for="visible_to_customer" class="form-label">{{ localize('Visibile all\'utente?') }}</label>
+                                <select class="form-control" id="visible_to_customer" name="visible_to_customer">
+                                    <option value="0">{{ localize('No') }}</option>
+                                    <option value="1">{{ localize('Sì') }}</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <!-- Nuovo: Stato per Ordine Completato -->
+                                <label for="default_on_completion" class="form-label">{{ localize('Imposta come stato predefinito all\'ordine completato?') }}</label>
+                                <select class="form-control" id="default_on_completion" name="default_on_completion">
+                                    <option value="0">{{ localize('No') }}</option>
+                                    <option value="1">{{ localize('Sì') }}</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
                                 <label for="send_email" class="form-label">{{ localize('Invia Email al cliente') }}</label>
                                 <select class="form-control" id="send_email" name="send_email" onchange="toggleEmailContent()">
                                     <option value="0">{{ localize('Non inviare') }}</option>
                                     <option value="1">{{ localize('Invia') }}</option>
                                 </select>
                             </div>
-
-                           
-
                             <div class="mb-4" id="email_content_container" style="display: none;">
                                 <label for="email_content" class="form-label">{{ localize('Contenuto email') }}</label>
                                 <textarea id="email_content" class="editor" name="email_content"></textarea>

@@ -33,4 +33,9 @@ class OrderState extends Model
     }
 
 
+    public static function getDefaultOnCompletion()
+    {
+        return self::where('default_on_completion', 1)->first();
+    }
+
 }

@@ -85,4 +85,21 @@ class Order extends Model
     {
         return $this->belongsTo(Location::class);
     }
+
+    public function orderState()
+    {
+        return $this->belongsTo(OrderState::class, 'order_state_id');
+    }
+
+    public static function getActiveOrderStatesAttribute()
+    {
+        return OrderState::where('status', 1)->get();
+    }
+
+    public function getActiveAndVisibleOrderStatesAttribute()
+{
+    return OrderState::where('status', 1)
+                     ->where('visible_to_customer', 1)
+                     ->get();
+}
 }

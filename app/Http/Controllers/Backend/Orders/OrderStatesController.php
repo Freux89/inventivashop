@@ -50,6 +50,10 @@ class OrderStatesController extends Controller
             'color' => 'required|string|regex:/^#([a-fA-F0-9]{6})$/', 
             'email_content' => 'nullable|string',
             'type' => 'required|in:1,2', 
+            'cancelled' => 'required|in:0,1',
+            'invoice' => 'required|in:0,1',
+            'visible_to_customer' => 'required|in:0,1',
+            'default_on_completion' => 'required|in:0,1',
         ]);
     
         // Creazione di un nuovo stato d'ordine
@@ -58,6 +62,14 @@ class OrderStatesController extends Controller
         $orderState->send_email = $validatedData['send_email'];
         $orderState->color = $validatedData['color'];
         $orderState->type = $validatedData['type'];
+        $orderState->cancelled = $validatedData['cancelled'];
+        $orderState->invoice = $validatedData['invoice'];
+        $orderState->visible_to_customer = $validatedData['visible_to_customer'];
+        if ($validatedData['default_on_completion'] == 1) {
+            OrderState::query()->update(['default_on_completion' => 0]);
+        }
+        $orderState->default_on_completion = $validatedData['default_on_completion'];
+        
         // Salva il contenuto email solo se send_email è 1
         if ($validatedData['send_email'] == 1) {
             $orderState->email_content = $validatedData['email_content'];
@@ -110,6 +122,10 @@ class OrderStatesController extends Controller
         'color' => 'required|string|regex:/^#([a-fA-F0-9]{6})$/', 
         'email_content' => 'nullable|string',
         'type' => 'required|in:1,2', 
+        'cancelled' => 'required|in:0,1',
+        'invoice' => 'required|in:0,1',
+        'visible_to_customer' => 'required|in:0,1',
+        'default_on_completion' => 'required|in:0,1',
     ]);
 
     // Trova l'ordine esistente o fallisci se non trovato
@@ -118,6 +134,14 @@ class OrderStatesController extends Controller
     $orderState->send_email = $validatedData['send_email'];
     $orderState->color = $validatedData['color'];
     $orderState->type = $validatedData['type'];
+    $orderState->cancelled = $validatedData['cancelled'];
+    $orderState->invoice = $validatedData['invoice'];
+    $orderState->visible_to_customer = $validatedData['visible_to_customer'];
+    if ($validatedData['default_on_completion'] == 1) {
+        OrderState::query()->update(['default_on_completion' => 0]);
+    }
+    $orderState->default_on_completion = $validatedData['default_on_completion'];
+    
     // Aggiorna il contenuto email solo se send_email è 1
     $orderState->email_content = $validatedData['send_email'] == 1 ? $validatedData['email_content'] : null;
     

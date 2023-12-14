@@ -45,10 +45,17 @@
                                             <td class="text-secondary">
                                                 {{ formatPrice($recentOrder->orderGroup->grand_total_amount) }}</td>
                                             <td>
-                                                <span class="badge bg-secondary">
-                                                    {{ ucwords(str_replace('_', ' ', $recentOrder->delivery_status)) }}
-                                                </span>
-                                            </td>
+                                                
+                                        @if ($recentOrder->orderState) <!-- Controlla se esiste uno stato d'ordine associato -->
+                                        <span class="badge" style="background-color: {{ $recentOrder->orderState->color }};color: {{ isLight($recentOrder->orderState->color) ? '#000000' : '#FFFFFF' }};">
+                                            {{ localize($recentOrder->orderState->name) }}
+                                        </span>
+                                        @else
+                                        <span class="badge bg-secondary">
+                                            {{ localize('Stato Non Definito') }}
+                                        </span>
+                                        @endif
+                                    </td>
                                             <td class="text-center">
                                                 <a href="{{ route('customers.trackOrder') }}?code={{ $recentOrder->orderGroup->order_code }}"
                                                     class="view-invoice fs-xs me-2" target="_blank" data-bs-toggle="tooltip"

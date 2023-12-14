@@ -14,6 +14,7 @@ use App\Models\LogisticZoneCountry;
 use App\Models\Order;
 use App\Models\OrderGroup;
 use App\Models\OrderItem;
+use App\Models\OrderState;
 use App\Models\RewardPoint;
 use App\Models\ScheduledDeliveryTimeList;
 use App\Notifications\OrderPlacedNotification;
@@ -160,7 +161,8 @@ class CheckoutController extends Controller
 
             $order->shipping_cost                   = $orderGroup->total_shipping_cost; // todo::[update version] calculate for each vendors
             $order->tips_amount                     = $orderGroup->total_tips_amount; // todo::[update version] calculate for each vendors
-
+            $order->order_state_id =  OrderState::getDefaultOnCompletion()->id;
+           
             $order->save();
 
             # order items
@@ -279,6 +281,8 @@ class CheckoutController extends Controller
 
             $orderGroup->payment_method = $request->payment_method;
             $orderGroup->save();
+            
+            session(['order_placed_' . $orderGroup->id => true]);
 
             if ($request->payment_method != "cod" && $request->payment_method != "wallet") {
                 $request->session()->put('payment_type', 'order_payment');
@@ -311,15 +315,19 @@ class CheckoutController extends Controller
     # order successful
     public function success($code)
     {
+        
         $orderGroup = OrderGroup::where('user_id', auth()->user()->id)->where('order_code', $code)->first();
         $user = auth()->user();
 
-        // todo:: change this from here
-        try {
-            Notification::send($user, new OrderPlacedNotification($orderGroup->order));
-        } catch (\Exception $e) {
-            \Log::error('Errore nell\'invio della notifica OrderPlaced: ' . $e->getMessage());
+        $sessionKey = 'order_placed_' . $orderGroup->id;
 
+        if (session($sessionKey)) {
+            try {
+                Notification::send($user, new OrderPlacedNotification($orderGroup->order));
+            } catch (\Exception $e) {
+                \Log::error('Errore nell\'invio della notifica OrderPlaced: ' . $e->getMessage());
+            }
+            session()->forget($sessionKey);
         }
         return getView('pages.checkout.success', ['orderGroup' => $orderGroup]);
     }

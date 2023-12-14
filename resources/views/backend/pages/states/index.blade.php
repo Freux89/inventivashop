@@ -19,9 +19,9 @@
                             <h2 class="h5 mb-lg-0">{{ localize('Stati ordine') }}</h2>
                         </div>
                         <div class="tt-action">
-                           
+
                             <a href="{{ route('admin.orderStates.create') }}" class="btn btn-primary"><i data-feather="plus"></i> {{ localize('Aggiungi stato') }}</a>
-                          
+
                         </div>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
         <div class="row g-4">
             <div class="col-12">
                 <div class="card mb-4" id="section-1">
-                    
+
 
                     <table class="table tt-footable border-top" data-use-parent-width="true">
                         <thead>
@@ -40,6 +40,9 @@
                                 <th>{{ localize('Nome') }}</th>
                                 <th data-breakpoints="xs sm">{{ localize('Tipo') }}</th>
                                 <th data-breakpoints="xs sm">{{ localize('Email') }}</th>
+                                <th data-breakpoints="xs sm">{{ localize('Annulla ordine') }}</th>
+                                <th data-breakpoints="xs sm">{{ localize('Genera fattura') }}</th>
+                                <th data-breakpoints="xs sm">{{ localize('Visibile') }}</th>
                                 <th data-breakpoints="xs sm md">{{ localize('Attivo') }}</th>
                                 <th data-breakpoints="xs sm md" class="text-end">{{ localize('Action') }}</th>
                             </tr>
@@ -47,32 +50,58 @@
                         <tbody>
                             @foreach ($states as $key => $state)
                             <tr data-id="{{ $state->id }}">
-                                            <td class="handle"> <i class="fa-solid fa-bars"></i></td>
+                                <td class="handle"> <i class="fa-solid fa-bars"></i></td>
                                 <td>
                                     <a href="{{ route('admin.orderStates.edit', ['id' => $state->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}" class="d-flex align-items-center">
-                                        
-                                    <h6 class="fs-sm mb-0 ms-2" style="background-color: {{ $state->color }}; border-radius: 10px; padding: 5px; color: {{ $state->color && isLight($state->color) ? '#000000' : '#FFFFFF' }};">
-                                    {{ $state->name }}
+
+                                        <h6 class="fs-sm mb-0 ms-2" style="background-color: {{ $state->color }}; border-radius: 10px; padding: 5px; color: {{ $state->color && isLight($state->color) ? '#000000' : '#FFFFFF' }};">
+                                            {{ $state->name }}
                                         </h6>
+                                        @if ($state->default_on_completion)
+                                        <span class="badge rounded-pill" style="background-color: #c0ffcb; color: #36ad4c; margin-left: 20px;">
+                                            Conclusione ordine
+                                        </span>
+                                        @endif
                                     </a>
                                 </td>
                                 <td>
-                                   {{$state->type}}
+                                    {{$state->type}}
                                 </td>
                                 <td>
-                                       @if ($state->send_email)
-                                            <span class="badge bg-success">{{ localize('Si') }}</span>
-                                        @else
-                                            <span class="badge bg-danger">{{ localize('No') }}</span>
-                                        @endif
+                                    @if ($state->send_email)
+                                    <span class="badge bg-success">{{ localize('Si') }}</span>
+                                    @else
+                                    <span class="badge bg-danger">{{ localize('No') }}</span>
+                                    @endif
                                 </td>
                                 <td>
-                                 
+                                    @if ($state->cancelled)
+                                    <span class="badge bg-success">{{ localize('Si') }}</span>
+                                    @else
+                                    <span class="badge bg-danger">{{ localize('No') }}</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($state->invoice)
+                                    <span class="badge bg-success">{{ localize('Si') }}</span>
+                                    @else
+                                    <span class="badge bg-danger">{{ localize('No') }}</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($state->visible_to_customer)
+                                    <span class="badge bg-success">{{ localize('Si') }}</span>
+                                    @else
+                                    <span class="badge bg-danger">{{ localize('No') }}</span>
+                                    @endif
+                                </td>
+                                <td>
+
                                     <div class="form-check form-switch">
                                         <input type="checkbox" onchange="updatePublishedStatus(this)" class="form-check-input" @if ($state->status) checked @endif
                                         value="{{ $state->id }}">
                                     </div>
-                                  
+
 
                                 </td>
                                 <td class="text-end">
@@ -81,20 +110,17 @@
                                             <i data-feather="more-vertical"></i>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end shadow">
-                                            
+
                                             <a class="dropdown-item" href="{{ route('admin.orderStates.edit', ['id' => $state->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize">
                                                 <i data-feather="edit-3" class="me-2"></i>{{ localize('Edit') }}
                                             </a>
-                                            
 
-                                            
-                                            <a href="#" class="dropdown-item confirm-delete"
-                                                                    data-href="{{ route('admin.orderStates.delete', $state->id) }}"
-                                                                    title="{{ localize('Delete') }}">
-                                                                    <i data-feather="trash"
-                                                                        class="me-2"></i>{{ localize('Delete') }}
-                                                                </a>
-                                           
+
+
+                                            <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.orderStates.delete', $state->id) }}" title="{{ localize('Delete') }}">
+                                                <i data-feather="trash" class="me-2"></i>{{ localize('Delete') }}
+                                            </a>
+
                                         </div>
                                     </div>
                                 </td>
@@ -124,35 +150,37 @@
 
 
 <script>
-     document.addEventListener('DOMContentLoaded', (event) => {
-    const tableBody = document.querySelector('.table tbody');
-    const sortable = new Sortable(tableBody, {
-        handle: '.handle',  // Class name of the handle
-        animation: 150,  // Animation speed when sorting
-        onUpdate() {
-            const order = this.toArray();
-            // Send the new order to the server
-            fetch('{{ route("admin.orderStates.positions") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add your Laravel CSRF token here
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ positions: order })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    console.log('Positions updated successfully');
-                } else {
-                    console.error('Failed to update positions');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const tableBody = document.querySelector('.table tbody');
+        const sortable = new Sortable(tableBody, {
+            handle: '.handle', // Class name of the handle
+            animation: 150, // Animation speed when sorting
+            onUpdate() {
+                const order = this.toArray();
+                // Send the new order to the server
+                fetch('{{ route("admin.orderStates.positions") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // Add your Laravel CSRF token here
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            positions: order
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            console.log('Positions updated successfully');
+                        } else {
+                            console.error('Failed to update positions');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        });
     });
-});
 
     // update publish status 
     function updatePublishedStatus(el) {

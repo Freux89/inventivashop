@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
 
 class OrderShippingStatusUpdated extends Notification
 {
@@ -43,14 +44,18 @@ class OrderShippingStatusUpdated extends Notification
      */
     public function toMail($notifiable)
     {
+        $emailContent = $this->order->orderState->email_content ?? '';
+
         return (new MailMessage)
-        ->subject('Aggiornamento Stato Spedizione Ordine #' . $this->order->order_group_id)
-        ->greeting('Ciao ' . $notifiable->name . ',')
-        ->line('Lo stato di spedizione del tuo ordine #' . $this->order->order_group_id . ' è stato aggiornato.')
-        ->line('Nuovo stato di spedizione: ' . ucfirst($this->order->payment_status))
-        ->action('Visualizza Ordine', url('/orders/invoice/' . $this->order->order_group_id))
-        ->line('Grazie per aver scelto il nostro negozio!')
-        ->salutation(env('APP_NAME') . ' Team');
+            ->subject('Aggiornamento Stato Spedizione Ordine #' . $this->order->order_group_id)
+            ->greeting('Ciao ' . $notifiable->name . ',')
+            ->line('Lo stato di spedizione del tuo ordine #' . $this->order->order_group_id . ' è stato aggiornato.')
+            ->line('Nuovo stato di ordine: ' . ucfirst($this->order->orderState->name))
+            // Utilizza il contenuto personalizzato dell'email
+            ->line(new HtmlString($this->order->orderState->email_content)) // Utilizza HtmlString per inserire HTML
+            ->action('Visualizza Ordine', url('/orders/invoice/' . $this->order->order_group_id))
+            ->line('Grazie per aver scelto il nostro negozio!')
+            ->salutation(env('APP_NAME') . ' Team');
     }
 
     /**

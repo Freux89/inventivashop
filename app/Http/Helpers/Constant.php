@@ -8,6 +8,7 @@ use App\Models\MediaManager;
 use App\Models\SystemSetting;
 use App\Models\Variation;
 use App\Models\VariationValue;
+use App\Models\OrderState;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
@@ -1123,7 +1124,9 @@ if (!function_exists('orderCancelledStatus')) {
     // order cancelled Status
     function orderCancelledStatus()
     {
-        return "cancelled";
+        $cancelledStates = OrderState::where('cancelled', 1)->pluck('id')->toArray();
+
+        return $cancelledStates;
     }
 }
 if (!function_exists('isColorLight')) {

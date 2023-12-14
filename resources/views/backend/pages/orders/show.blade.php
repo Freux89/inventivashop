@@ -65,19 +65,13 @@
                                 <div class="input-group">
                                     <select class="form-select select2" name="delivery_status" data-minimum-results-for-search="Infinity" id="update_delivery_status">
                                         <option value="" disabled>{{ localize('Delivery Status') }}</option>
-                                        <option value="order_placed" @if ($order->delivery_status == orderPlacedStatus()) selected @endif>
-                                            {{ localize('Order Placed') }}
+                                        @foreach($order->activeOrderStates as $state)
+                                        <option value="{{ $state->id }}" @if ($order->order_state_id == $state->id) selected @endif>
+                                            {{ localize($state->name) }}
                                         </option>
-                                        <option value="pending" @if ($order->delivery_status == orderPendingStatus()) selected @endif>
-                                            {{ localize('Pending') }}
-                                        <option value="processing" @if ($order->delivery_status == orderProcessingStatus()) selected @endif>
-                                            {{ localize('Processing') }}
-                                        <option value="delivered" @if ($order->delivery_status == orderDeliveredStatus()) selected @endif>
-                                            {{ localize('Delivered') }}
-                                        <option value="cancelled" @if ($order->delivery_status == orderCancelledStatus()) selected @endif>
-                                            {{ localize('Cancelled') }}
-                                        </option>
+                                        @endforeach
                                     </select>
+
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -191,7 +185,7 @@
                                                     @if (!empty($informations) && !empty($informations['variations']))
                                                     <ul>
                                                         @foreach ($informations['variations'] as $variation)
-                                                            <li>{{ $variation['name'] }}: {{ $variation['value'] }}</li>
+                                                        <li>{{ $variation['name'] }}: {{ $variation['value'] }}</li>
                                                         @endforeach
                                                     </ul>
                                                     @endif
@@ -242,7 +236,7 @@
                                     <strong>{{ formatPrice($order->orderGroup->sub_total_amount) }}</strong>
                                 </div>
 
-                             
+
 
                                 <div class="col-auto ps-lg-5">
                                     <h6 class="mb-1">{{ localize('Shipping Cost') }}</h6>

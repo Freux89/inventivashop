@@ -41,6 +41,40 @@
                             </div>
 
                             <div class="mb-4">
+                                <label for="cancelled" class="form-label">{{ localize('Annulla Ordine') }}</label>
+                                <select class="form-control" id="cancelled" name="cancelled">
+                                    <option value="0" @if ($orderState->cancelled == 0) selected @endif>{{ localize('No') }}</option>
+                                    <option value="1" @if ($orderState->cancelled == 1) selected @endif>{{ localize('Sì') }}</option>
+                                </select>
+
+
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="invoice" class="form-label">{{ localize('Genera Fattura') }}</label>
+                                <select class="form-control" id="invoice" name="invoice">
+                                    <option value="0" @if ($orderState->invoice == 0) selected @endif>{{ localize('No') }}</option>
+                                    <option value="1" @if ($orderState->invoice == 1) selected @endif>{{ localize('Sì') }}</option>
+                                </select>   
+                            </div>
+                            <div class="mb-4">
+                                <label for="invoice" class="form-label">{{ localize('Visibile all\'utente?') }}</label>
+                                <select class="form-control" id="visible_to_customer" name="visible_to_customer">
+                                    <option value="0" @if ($orderState->visible_to_customer == 0) selected @endif>{{ localize('No') }}</option>
+                                    <option value="1" @if ($orderState->visible_to_customer == 1) selected @endif>{{ localize('Sì') }}</option>
+                                </select>   
+                            </div>
+
+                            <div class="mb-4">
+                                <!-- Nuovo: Stato per Ordine Completato -->
+                                <label for="default_on_completion" class="form-label">{{ localize('Imposta come stato predefinito all\'ordine completato?') }}</label>
+                                <select class="form-control" id="default_on_completion" name="default_on_completion">
+                                    <option value="0" @if ($orderState->default_on_completion == 0) selected @endif>{{ localize('No') }}</option>
+                                    <option value="1" @if ($orderState->default_on_completion == 1) selected @endif>{{ localize('Sì') }}</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
                                 <label for="send_email" class="form-label">{{ localize('Invia Email al cliente') }}</label>
                                 <select class="form-control" id="send_email" name="send_email" onchange="toggleEmailContent()">
                                     <option value="0" {{ $orderState->send_email == 0 ? 'selected' : '' }}>{{ localize('Non inviare') }}</option>

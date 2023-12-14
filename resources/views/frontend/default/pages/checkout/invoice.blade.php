@@ -18,8 +18,8 @@ $orderItems = $order->orderItems;
                 <div class="col-lg-6">
                     <div class="invoice-title d-flex align-items-center">
                         <h3>{{ localize('Order details') }}</h3>
-                        <span class="badge rounded-pill bg-primary-light text-primary fw-medium ms-3">
-                            {{ localize(ucwords(str_replace('_', ' ', $order->delivery_status))) }}
+                        <span class="badge rounded-pill fw-medium ms-3" style="background-color: {{ $order->orderState->color }};color: {{ isLight($order->orderState->color) ? '#000000' : '#FFFFFF' }};">
+                            {{ localize(ucwords(str_replace('_', ' ', $order->orderState->name))) }}
                         </span>
                     </div>
                     <table class="invoice-table-sm">
