@@ -315,8 +315,22 @@ Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'd
         # customers
         Route::group(['prefix' => 'customers'], function () {
             Route::get('/', [CustomersController::class, 'index'])->name('admin.customers.index');
+            Route::get('/edit/{id}', [CustomersController::class, 'edit'])->name('admin.customers.edit');
+            Route::put('/update/{id}', [CustomersController::class, 'update'])->name('admin.customers.update');
+            Route::get('/delete/{id}', [CustomersController::class, 'delete'])->name('admin.customers.delete');
             Route::post('/update-banned-customer', [CustomersController::class, 'updateBanStatus'])->name('admin.customers.updateBanStatus');
         });
+
+        #addresses
+        Route::group(['prefix' => 'addresses'], function () {
+            Route::get('/create', [CustomersController::class, 'createAddress'])->name('admin.addresses.create');
+            Route::get('/edit/{id}', [CustomersController::class, 'editAddress'])->name('admin.addresses.edit');
+            Route::put('/update/{id}', [CustomersController::class, 'updateAddress'])->name('admin.addresses.update');
+            Route::get('/delete/{id}', [CustomersController::class, 'deleteAddress'])->name('admin.addresses.delete');
+           
+        });
+
+        
 
         # tags
         Route::get('/tags', [TagsController::class, 'index'])->name('admin.tags.index');

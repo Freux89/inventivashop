@@ -84,9 +84,9 @@ class OrderStatesController extends Controller
             $StateLocalization->email_content = $validatedData['email_content'];
         }
         $StateLocalization->save();
-
+        flash(localize('Stato d\'ordine creato con successo'))->success();
         // Redirect a una pagina con messaggio di successo
-        return redirect()->route('admin.orderStates.index')->with('success', 'Stato d\'ordine creato con successo');
+        return redirect()->route('admin.orderStates.index');
     }
 
    
@@ -155,7 +155,8 @@ class OrderStatesController extends Controller
     $StateLocalization->save();
 
     // Redirect a una pagina con messaggio di successo
-    return redirect()->route('admin.orderStates.index')->with('success', 'Stato d\'ordine aggiornato con successo');
+    flash(localize('Stato d\'ordine aggiornato con successo'))->success();
+    return redirect()->route('admin.orderStates.index');
 }
 
     /**
