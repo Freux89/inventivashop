@@ -117,13 +117,14 @@
                                         <h6 class="mb-2">{{ localize('Shipping Address') }}</h6>
                                         @php
                                         $shippingAddress = $order->orderGroup->shippingAddress;
+                                        
                                         @endphp
                                         <p class="mb-0">
                                             @if ($order->orderGroup->is_pos_order)
                                             {{ $order->orderGroup->pos_order_address }}
                                             @else
                                             {{ optional($shippingAddress)->address }},
-                                            {{ optional(optional($shippingAddress)->city)->name }},
+                                            {{ optional($shippingAddress)->city  }},
                                             {{ optional(optional($shippingAddress)->state)->name }},
                                             {{ optional(optional($shippingAddress)->country)->name }}
                                             @endif
@@ -138,7 +139,7 @@
                                         <p class="mb-0">
 
                                             {{ optional($billingAddress)->address }},
-                                            {{ optional(optional($billingAddress)->city)->name }},
+                                            {{ optional($billingAddress)->city }},
                                             {{ optional(optional($billingAddress)->state)->name }},
                                             {{ optional(optional($billingAddress)->country)->name }}
                                         </p>
