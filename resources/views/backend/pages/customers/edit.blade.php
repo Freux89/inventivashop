@@ -101,7 +101,7 @@
                                     <div class="tab-pane fade show active" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
                                         <!-- Indirizzi di Spedizione -->
                                         <div class="row">
-                                        @foreach ($user->addresses->where('document_type', 0) as $address)
+                                        @forelse($user->addresses as $address)
                                         <div class="col-md-4">
                                             <div class="card m-3">
                                                 <div class="card-body">
@@ -118,18 +118,24 @@
                                                         <li>{{ $address->city }}</li>
                                                         <li>{{ $address->address }}</li>
                                                     </ul>
-                                                    <a href="{{ route('admin.addresses.edit', $address->id) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
+                                                    <a href="{{ route('admin.address.edit', $address->id) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
                                                 </div>
                                             </div>
                                         </div>
-                                        @endforeach
+                                        @empty
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    Nessun indirizzo inserito
+                </div>
+            </div>
+                                        @endforelse
                                         </div>
                                         
                                     </div>
                                     <div class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab">
                                         <!-- Indirizzi di Fatturazione -->
                                         <div class="row">
-                                        @foreach ($user->addresses->whereIn('document_type', [1, 2]) as $address)
+                                        @forelse($user->addresses->whereIn('document_type', [1, 2]) as $address)
                                         <div class="col-md-4">
                                             <div class="card m-3">
                                                 <div class="card-body">
@@ -149,11 +155,17 @@
                                                         <li>{{ $address->address }}</li>
                                                     </ul>
                                                     
-                                                    <a href="{{ route('admin.addresses.edit', $address->id) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
+                                                    <a href="{{ route('admin.address.edit', $address->id) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
                                                 </div>
                                             </div>
                                         </div>
-                                        @endforeach
+                                        @empty
+                                        <div class="col-12">
+                <div class="alert alert-info text-center">
+                    Nessun indirizzo inserito
+                </div>
+            </div>
+                                        @endforelse
                                         </div>
                                         
                                     </div>
@@ -165,7 +177,7 @@
 
 
 
-                        <a href="{{ route('admin.addresses.create', $user->id) }}" class="btn btn-primary">{{ localize('Aggiungi Indirizzo') }}</a>
+                        <a href="{{ route('admin.address.create', $user->id) }}" class="btn btn-primary">{{ localize('Aggiungi Indirizzo') }}</a>
                     </div>
                 </div>
             </div>

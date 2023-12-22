@@ -19,6 +19,7 @@ use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\SettingsController;
 use App\Http\Controllers\Backend\SubscribersController;
 use App\Http\Controllers\Backend\CustomersController;
+use App\Http\Controllers\Backend\AddressController;
 use App\Http\Controllers\Backend\StaffsController;
 use App\Http\Controllers\Backend\Products\VariationsController;
 use App\Http\Controllers\Backend\Products\VariationValuesController;
@@ -323,11 +324,12 @@ Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'd
 
         #addresses
         Route::group(['prefix' => 'addresses'], function () {
-            Route::get('/create', [CustomersController::class, 'createAddress'])->name('admin.addresses.create');
-            Route::get('/edit/{id}', [CustomersController::class, 'editAddress'])->name('admin.addresses.edit');
-            Route::put('/update/{id}', [CustomersController::class, 'updateAddress'])->name('admin.addresses.update');
-            Route::get('/delete/{id}', [CustomersController::class, 'deleteAddress'])->name('admin.addresses.delete');
-           
+            Route::get('/create', [AddressController::class, 'create'])->name('admin.address.create');
+            Route::get('/edit/{id}', [AddressController::class, 'edit'])->name('admin.address.edit');
+            Route::put('/update/{id}', [AddressController::class, 'update'])->name('admin.address.update');
+            Route::get('/delete/{id}', [AddressController::class, 'delete'])->name('admin.address.delete');
+            Route::get('/get-states', [AddressController::class, 'getStates'])->name('admin.states.get');
+
         });
 
         
