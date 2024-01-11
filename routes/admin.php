@@ -324,7 +324,8 @@ Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'd
 
         #addresses
         Route::group(['prefix' => 'addresses'], function () {
-            Route::get('/create', [AddressController::class, 'create'])->name('admin.address.create');
+            Route::get('/create/{id}', [AddressController::class, 'create'])->name('admin.address.create');
+            Route::post('/store/{id}', [AddressController::class, 'store'])->name('admin.address.store');
             Route::get('/edit/{id}', [AddressController::class, 'edit'])->name('admin.address.edit');
             Route::put('/update/{id}', [AddressController::class, 'update'])->name('admin.address.update');
             Route::get('/delete/{id}', [AddressController::class, 'delete'])->name('admin.address.delete');

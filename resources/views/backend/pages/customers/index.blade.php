@@ -78,7 +78,7 @@
                                     {{ $key + 1 + ($customers->currentPage() - 1) * $customers->perPage() }}
                                 </td>
                                 <td>
-                                    <a href="javascript:void(0);" class="d-flex align-items-center">
+                                    <a href="{{ route('admin.customers.edit', $customer->id) }}" class="d-flex align-items-center">
                                         <div class="avatar avatar-sm">
                                             <img class="rounded-circle" src="{{ uploadedAsset($customer->avatar) }}" alt="" onerror="this.onerror=null;this.src='{{ staticAsset('backend/assets/img/placeholder-thumb.png') }}';" />
                                         </div>

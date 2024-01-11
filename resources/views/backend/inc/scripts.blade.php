@@ -62,6 +62,7 @@
                     },
                 },
             });
+            deleteConfirmation();
         });
 
         // approve Refund Confirmation 

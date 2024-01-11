@@ -101,73 +101,80 @@
                                     <div class="tab-pane fade show active" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
                                         <!-- Indirizzi di Spedizione -->
                                         <div class="row">
-                                        @forelse($user->addresses as $address)
-                                        <div class="col-md-4">
-                                            <div class="card m-3">
-                                                <div class="card-body">
-                                                    <h6 class="card-title">
-                                                        {{ $address->address_name }}
-                                                        @if ($address->is_default)
-                                                        <span class="badge bg-primary">{{ localize('Predefinito') }}</span>
-                                                        @endif
-                                                    </h6>
-                                                    <ul class="list-unstyled">
-                                                        <li>{{ $address->first_name }} {{ $address->last_name }}</li>
-                                                        <li>{{ $address->country->name }}</li>
-                                                        <li>{{ $address->state->name }}</li>
-                                                        <li>{{ $address->city }}</li>
-                                                        <li>{{ $address->address }}</li>
-                                                    </ul>
-                                                    <a href="{{ route('admin.address.edit', $address->id) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
+                                            @forelse($user->addresses as $address)
+                                            <div class="col-md-4">
+                                                <div class="card m-3">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title">
+                                                            {{ $address->address_name }}
+                                                            @if ($address->is_default)
+                                                            <span class="badge bg-primary">{{ localize('Predefinito') }}</span>
+                                                            @endif
+                                                        </h6>
+
+                                                        <ul class="list-unstyled">
+                                                            <li>{{ $address->first_name }} {{ $address->last_name }}</li>
+                                                            <li>{{ $address->country->name }}</li>
+                                                            <li>{{ $address->state->name }}</li>
+                                                            <li>{{ $address->city }}</li>
+                                                            <li>{{ $address->address }}</li>
+                                                        </ul>
+                                                        <a href="{{ route('admin.address.edit', $address->id) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
+                                                        <a href="#" class="btn btn-danger btn-sm confirm-delete" data-href="{{ route('admin.address.delete', $address->id) }}" title="{{ localize('Delete') }}">
+                                                            {{ localize('Delete') }}
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            @empty
+                                            <div class="col-12">
+                                                <div class="alert alert-info text-center">
+                                                    Nessun indirizzo inserito
+                                                </div>
+                                            </div>
+                                            @endforelse
                                         </div>
-                                        @empty
-            <div class="col-12">
-                <div class="alert alert-info text-center">
-                    Nessun indirizzo inserito
-                </div>
-            </div>
-                                        @endforelse
-                                        </div>
-                                        
+
                                     </div>
                                     <div class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab">
                                         <!-- Indirizzi di Fatturazione -->
                                         <div class="row">
-                                        @forelse($user->addresses->whereIn('document_type', [1, 2]) as $address)
-                                        <div class="col-md-4">
-                                            <div class="card m-3">
-                                                <div class="card-body">
+                                            @forelse($user->addresses->whereIn('document_type', [1, 2]) as $address)
+                                            <div class="col-md-4">
+                                                <div class="card m-3">
+                                                    <div class="card-body">
 
-                                                    <h6 class="card-title">
-                                                        {{ $address->address_name }}
-                                                        @if ($address->is_default)
+                                                        <h6 class="card-title">
+                                                            {{ $address->address_name }}
+                                                            @if ($address->is_default)
                                                             <span class="badge bg-primary">{{ localize('Predefinito') }}</span>
-                                                        @endif
-                                                    </h6>
-                                                    
-                                                    <ul class="list-unstyled">
-                                                        <li>{{ $address->company_name }}</li>
-                                                        <li>{{ $address->country->name }}</li>
-                                                        <li>{{ $address->state->name }}</li>
-                                                        <li>{{ $address->city }}</li>
-                                                        <li>{{ $address->address }}</li>
-                                                    </ul>
-                                                    
-                                                    <a href="{{ route('admin.address.edit', $address->id) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
+                                                            @endif
+                                                        </h6>
+
+                                                        <ul class="list-unstyled">
+                                                            <li>{{ $address->company_name }}</li>
+                                                            <li>{{ $address->country->name }}</li>
+                                                            <li>{{ $address->state->name }}</li>
+                                                            <li>{{ $address->city }}</li>
+                                                            <li>{{ $address->address }}</li>
+                                                        </ul>
+
+                                                        <a href="{{ route('admin.address.edit', $address->id) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
+                                                        <a href="#" class="btn btn-danger btn-sm confirm-delete" data-href="{{ route('admin.address.delete', $address->id) }}" title="{{ localize('Delete') }}">
+                                                            {{ localize('Delete') }}
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            @empty
+                                            <div class="col-12">
+                                                <div class="alert alert-info text-center">
+                                                    Nessun indirizzo inserito
+                                                </div>
+                                            </div>
+                                            @endforelse
                                         </div>
-                                        @empty
-                                        <div class="col-12">
-                <div class="alert alert-info text-center">
-                    Nessun indirizzo inserito
-                </div>
-            </div>
-                                        @endforelse
-                                        </div>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -187,4 +194,6 @@
         <!-- ... -->
     </div>
 </section>
+
+
 @endsection

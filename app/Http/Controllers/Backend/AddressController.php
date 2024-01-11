@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\UserAddress;
 use App\Models\Country;
 use App\Models\State;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class AddressController extends Controller
@@ -20,6 +21,60 @@ class AddressController extends Controller
     }
 
     # customer list
+
+    public function create($id){
+        $user_id = $id;
+        $countries      = Country::isActive()->get();
+        $states         = State::isActive()->get();
+        return view('backend.pages.address.create', compact('user_id','countries', 'states'));
+    }
+
+
+    public function store(Request $request, $id)
+{
+    // Verifica che l'ID utente esista
+    $user = User::findOrFail($id);
+
+    // Definisce le regole di base per la validazione
+    $rules = [
+        'address_name'  => 'required',
+        'first_name'    => 'required',
+        'last_name'     => 'required',
+        'phone'         => 'sometimes|nullable',
+        'country_id'    => 'required',
+        'state_id'      => 'required',
+        'city'          => 'required',
+        'address'       => 'required',
+        'postal_code'   => 'required',
+        'document_type' => 'required|in:0,1,2',
+    ];
+
+    // Aggiunge regole condizionali in base al tipo di documento selezionato
+    switch ($request->document_type) {
+        case '1': // Ricevuta
+            $rules['fiscal_code'] = 'required';
+            break;
+        case '2': // Fattura
+            $rules = array_merge($rules, [
+                'company_name'   => 'required',
+                'vat_id'         => 'required',
+                'fiscal_code'    => 'required',
+                'pec'            => 'required',
+                'exchange_code'  => 'required',
+            ]);
+            break;
+    }
+
+    // Esegue la validazione
+    $validatedData = $request->validate($rules);
+
+    // Crea un nuovo indirizzo e lo associa all'utente
+    $address = $user->addresses()->create($validatedData);
+
+    // Redireziona o restituisci una risposta in base al successo della creazione
+    flash(localize('Indirizzo creato con successo'))->success();
+    return redirect()->route('admin.customers.edit', ['id' => $id]);
+}
 
 
 
@@ -88,9 +143,9 @@ class AddressController extends Controller
 
     public function delete($id)
     {
-        $customer = User::findOrFail($id);
-        $customer->delete();
-        flash(localize('Cliente eliminato con successo'))->success();
+        $address = UserAddress::findOrFail($id);
+        $address->delete();
+        flash(localize('Indirizzo eliminato con successo'))->success();
         return back();
     }
 
