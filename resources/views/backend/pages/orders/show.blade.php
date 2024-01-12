@@ -230,6 +230,7 @@
                                 <div class="col-auto flex-grow-1">
                                     <h6 class="mb-1">{{ localize('Logistic') }}</h6>
                                     <span>{{ $order->logistic_name }}</span>
+                                    
                                 </div>
 
                                 <div class="col-auto">
@@ -254,6 +255,10 @@
                                 <div class="col-auto text-lg-end ps-lg-5">
                                     <h6 class="mb-1">{{ localize('Grand Total') }}</h6>
                                     <strong class="text-accent">{{ formatPrice($order->orderGroup->grand_total_amount) }}</strong>
+                                </div>
+                                <div class="col-auto flex-grow-1">
+                                    <h6 class="mb-1">{{ localize('Pacco') }}</h6>
+                                    <span>{{$order->orderGroup->packaging_type}}</span>
                                 </div>
                             </div>
                         </div>

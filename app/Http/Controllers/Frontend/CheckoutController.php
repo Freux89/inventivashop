@@ -100,11 +100,13 @@ class CheckoutController extends Controller
             $orderGroup->shipping_address_id                = $request->shipping_address_id;
             $orderGroup->billing_address_id                 = $request->billing_address_id;
             $orderGroup->location_id                        = session('stock_location_id');
+            $orderGroup->packaging_type                     = $request->packaging_type;
             $orderGroup->phone_no                           = $request->phone;
             $orderGroup->alternative_phone_no               = $request->alternative_phone;
             $orderGroup->sub_total_amount                   = getSubTotal($carts, false, '', false);
             $orderGroup->total_tax_amount                   = getTotalTax($carts);
             $orderGroup->total_coupon_discount_amount       = 0;
+
             if (getCoupon() != '') {
                 # todo::[for eCommerce] handle coupon for multi vendor
                 $orderGroup->total_coupon_discount_amount   = getCouponDiscount(getSubTotal($carts, false), getCoupon());
