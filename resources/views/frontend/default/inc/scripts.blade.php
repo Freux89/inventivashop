@@ -11,7 +11,7 @@
 <script src="{{ staticAsset('frontend/default/assets/js/vendors/waypoints.js') }}"></script>
 <script src="{{ staticAsset('frontend/default/assets/js/vendors/counterup.min.js') }}"></script>
 <script src="{{ staticAsset('frontend/default/assets/js/vendors/clipboard.min.js') }}"></script>
-
+<script src="{{ staticAsset('frontend/default/assets/js/vendors/feather.min.js') }}"></script>
 <script src="{{ staticAsset('frontend/common/js/toastr.min.js') }}"></script>
 <script src="{{ staticAsset('frontend/common/js/select2.js') }}"></script>
 <script src="{{ staticAsset('frontend/default/assets/js/app.js') }}"></script>
@@ -135,6 +135,7 @@
     }
     addressModalSelect2();
 
+    
     // ajax toast 
     function notifyMe(level, message) {
         if (level == 'danger') {
@@ -461,11 +462,14 @@
         }
 
         // billing address not selected
+        if ($('input[name="invoice_request"]:checked').val() == '1') {
+
         if ($('.checkout-form input[name=billing_address_id]:checked').length == 0) {
             notifyMe('error', '{{ localize('Please select billing address') }}');
             e.preventDefault();;
             return false;
         }
+    }
     });
 
     // add to wishlist
@@ -492,4 +496,31 @@
             notifyMe('warning', '{{ localize('Please login first') }}');
         @endif
     }
+
+    function toggleBillingAddresses(display) {
+    // Seleziona il contenitore degli indirizzi di fatturazione
+    var billingAddressesContainer = document.getElementById('billing-addresses-container');
+
+    // Imposta la proprietà display in base al valore passato alla funzione
+    billingAddressesContainer.style.display = display ? 'block' : 'none';
+}
+document.addEventListener('DOMContentLoaded', function() {
+    var savedChoice = localStorage.getItem('invoice_preference');
+    if (savedChoice) {
+        var radioButton = document.querySelector('input[name="invoice_request"][value="' + savedChoice + '"]');
+        if (radioButton) {
+            radioButton.checked = true;
+            toggleBillingAddresses(savedChoice === '1');
+        }
+    }
+});
+    function saveInvoicePreference(choice) {
+        localStorage.setItem('invoice_preference', choice);
+    }
+
+    function initFeather() {
+        feather.replace();
+    }
+    initFeather();
+
 </script>

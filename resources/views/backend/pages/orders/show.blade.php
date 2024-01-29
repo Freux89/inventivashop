@@ -74,12 +74,14 @@
 
                                 </div>
                             </div>
+                            @if($order->orderGroup->billingAddress)
                             <div class="col-auto">
                                 <a href="#" class="btn btn-primary">
                                     <i data-feather="download" width="18"></i>
                                     {{ localize('Genera fattura') }}
                                 </a>
                             </div>
+                            @endif
                         </div>
                     </div>
 
@@ -131,6 +133,7 @@
                                         </p>
                                     </div>
                                     @if (!$order->orderGroup->is_pos_order)
+                                    @if($order->orderGroup->billingAddress)
                                     <div class="ms-4">
                                         <h6 class="mb-2">{{ localize('Billing Address') }}</h6>
                                         @php
@@ -145,7 +148,7 @@
                                         </p>
                                     </div>
                                     @endif
-
+                                    @endif
                                 </div>
                             </div>
                         </div>

@@ -36,7 +36,9 @@
                             <a href="javascript:void(0);" onclick="addNewAddress('shipping')" class="fw-semibold"><i class="fas fa-plus me-1"></i> {{ localize('Add Address') }}</a>
                         </div>
                         <div class="row g-4">
-                            @forelse ($addresses as $address)
+                        @forelse ($addresses->filter(function ($address) {
+                                    return $address->document_type == 0;
+                                    }) as $address)
                             <div class="col-lg-6 col-sm-6">
                                 <div class="tt-address-content">
                                     <input type="radio" class="tt-custom-radio" name="shipping_address_id" id="shipping-{{ $address->id }}" value="{{ $address->id }}" onchange="getLogistics({{ $address->country_id }})" @if ($address->is_default) checked @endif
@@ -48,8 +50,17 @@
                                         'address' => $address,
                                         ])
                                         <!-- address -->
-                                        <a href="javascript:void(0);" onclick="editAddress({{ $address->id }})" class="tt-edit-address checkout-radio-link position-absolute">{{ localize('Edit') }}</a>
-                                    </label>
+                                        <!-- address -->
+                                        <a href="javascript:void(0);" onclick="editAddress({{ $address->id }})" class="tt-edit-address checkout-radio-link position-absolute feather-icon" style="top: 10px; right: 34px;">
+                                            <i data-feather="edit-3" class="me-2"></i>
+                                        </a>
+                                        <!-- delete icon -->
+                                        
+
+
+                                        <a href="javascript:void(0);" onclick="deleteAddress(this)" data-url="{{ route('address.delete', $address->id) }}" class="tt-delete-address checkout-radio-link position-absolute feather-icon" style="top: 10px; right: 10px;">
+                                            <i data-feather="trash" class="me-2"></i>
+                                        </a> </label>
 
                                 </div>
                             </div>
@@ -82,49 +93,61 @@
 
 
                         <!-- billing address -->
-                        
+
                         <div class="d-flex justify-content-between align-items-center mb-3 mt-7">
+
                             <h4>{{ localize('Billing Address') }}</h4>
                             <div class="invoice-request">
                                 <span class="me-2">{{ localize('Desideri ricevere la fattura?') }}</span>
-                                <input type="radio" id="invoice-yes" name="invoice_request" value="1" class="tt-custom-radio" onclick="toggleBillingAddresses(true)">
+                                <input type="radio" id="invoice-yes" name="invoice_request" value="1" class="tt-custom-radio" onclick="toggleBillingAddresses(true);saveInvoicePreference('1')">
                                 <label for="invoice-yes" class="me-2">{{ localize('Si') }}</label>
-                                <input type="radio" id="invoice-no" name="invoice_request" value="0" class="tt-custom-radio" checked onclick="toggleBillingAddresses(false)">
+                                <input type="radio" id="invoice-no" name="invoice_request" value="0" class="tt-custom-radio" checked onclick="toggleBillingAddresses(false);saveInvoicePreference('0')">
                                 <label for="invoice-no">{{ localize('No') }}</label>
                             </div>
-                            
+
                         </div>
                         <div id="billing-addresses-container" class="row g-4" style="display: none;">
-                                            <div class="col-12 text-end">
-                                            <a href="javascript:void(0);" onclick="addNewAddress('billing')" class="fw-semibold mt-2"><i class="fas fa-plus me-1"></i> {{ localize('Add Address') }}</a>
+                            <div class="col-12 text-end">
+                                <a href="javascript:void(0);" onclick="addNewAddress('billing')" class="fw-semibold mt-2"><i class="fas fa-plus me-1"></i> {{ localize('Add Address') }}</a>
 
-                                            </div>
-                            @forelse ($addresses as $address)
-                            <div class="col-lg-6 col-sm-6">
-                                <div class="tt-address-content">
-                                    <input type="radio" class="tt-custom-radio" name="billing_address_id" id="billing-{{ $address->id }}" value="{{ $address->id }}" @if ($address->is_default) checked @endif>
-
-                                    <label for="billing-{{ $address->id }}" class="tt-address-info bg-white rounded p-4 position-relative">
-                                        <!-- address -->
-                                        @include('frontend.default.inc.address', [
-                                        'address' => $address,
-                                        ])
-                                        <!-- address -->
-                                        <a href="javascript:void(0);" onclick="editAddress({{ $address->id }})" class="tt-edit-address checkout-radio-link position-absolute">{{ localize('Edit') }}</a>
-                                    </label>
-                                </div>
                             </div>
-                            @empty
-                            <div class="col-12 mt-5">
-                                <div class="tt-address-content">
-                                    <div class="alert alert-secondary text-center">
-                                        {{ localize('Aggiungi il tuo indirizzo di fatturazione') }}
+                            <div class="row g-4">
+                            @forelse ($addresses->filter(function ($address) {
+                                    return $address->document_type > 0;
+                                    }) as $address)
+                                <div class="col-lg-6 col-sm-6">
+                                    <div class="tt-address-content">
+                                        <input type="radio" class="tt-custom-radio" name="billing_address_id" id="billing-{{ $address->id }}" value="{{ $address->id }}" @if ($address->is_default) checked @endif>
+
+                                        <label for="billing-{{ $address->id }}" class="tt-address-info bg-white rounded p-4 position-relative">
+                                            <!-- address -->
+                                            @include('frontend.default.inc.address', [
+                                            'address' => $address,
+                                            ])
+                                            <!-- address -->
+                                            <a href="javascript:void(0);" onclick="editAddress({{ $address->id }})" class="tt-edit-address checkout-radio-link position-absolute feather-icon" style="top: 10px; right: 34px;">
+                                                <i data-feather="edit-3" class="me-2"></i>
+                                            </a>
+                                            <!-- delete icon -->
+                                            <a href="javascript:void(0);" onclick="deleteAddress(this)" data-url="{{ route('address.delete', $address->id) }}" class="tt-delete-address checkout-radio-link position-absolute feather-icon" style="top: 10px; right: 10px;">
+                                                <i data-feather="trash" class="me-2"></i>
+                                            </a>
+                                        </label>
                                     </div>
                                 </div>
+                                @empty
+                                <div class="col-12 mt-5">
+                                    <div class="tt-address-content">
+                                        <div class="alert alert-secondary text-center">
+                                            {{ localize('Aggiungi il tuo indirizzo di fatturazione') }}
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforelse
                             </div>
-                            @endforelse
+
                         </div>
-                       
+
                         <!-- billing address -->
 
                         <!-- Delivery Time -->
@@ -252,4 +275,5 @@
 <!--add address modal start-->
 @include('frontend.default.inc.addressForm', ['countries' => $countries])
 <!--add address modal end-->
+
 @endsection

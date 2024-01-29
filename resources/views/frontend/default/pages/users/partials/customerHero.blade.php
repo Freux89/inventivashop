@@ -7,9 +7,7 @@ $avatar = uploadedAsset($user->avatar);
 @endphp
 
 <div class="account-info d-flex align-items-center gap-6 p-4 p-sm-6 bg-white rounded mb-4 flex-wrap flex-lg-nowrap">
-    <div class="profile-pic bg-shade rounded">
-        <img src="{{ $avatar }}" alt="avatar" class="img-fluid rounded-2">
-    </div>
+   
     <div class="profile-inf-right">
         <h4 class="">{{ $user->name }}</h4>
         <div class="info-meta d-flex align-items-center gap-2 gap-md-4 fs-xs flex-wrap">

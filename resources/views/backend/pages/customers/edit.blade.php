@@ -101,7 +101,7 @@
                                     <div class="tab-pane fade show active" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
                                         <!-- Indirizzi di Spedizione -->
                                         <div class="row">
-                                            @forelse($user->addresses as $address)
+                                            @forelse($user->addresses->where('document_type', 0) as $address)
                                             <div class="col-md-4">
                                                 <div class="card m-3">
                                                     <div class="card-body">
@@ -119,7 +119,7 @@
                                                             <li>{{ $address->city }}</li>
                                                             <li>{{ $address->address }}</li>
                                                         </ul>
-                                                        <a href="{{ route('admin.address.edit', $address->id) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
+                                                        <a href="{{ route('admin.address.edit', ['id' => $address->id, 'type' => 'shipping']) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
                                                         <a href="#" class="btn btn-danger btn-sm confirm-delete" data-href="{{ route('admin.address.delete', $address->id) }}" title="{{ localize('Delete') }}">
                                                             {{ localize('Delete') }}
                                                         </a>
@@ -133,8 +133,10 @@
                                                 </div>
                                             </div>
                                             @endforelse
-                                        </div>
 
+
+                                        </div>
+                                        <a href="{{ route('admin.address.create', ['id' => $user->id, 'type' => 'shipping']) }}" class="btn btn-primary">{{ localize('Aggiungi Indirizzo di Spedizione') }}</a>
                                     </div>
                                     <div class="tab-pane fade" id="billing" role="tabpanel" aria-labelledby="billing-tab">
                                         <!-- Indirizzi di Fatturazione -->
@@ -145,21 +147,25 @@
                                                     <div class="card-body">
 
                                                         <h6 class="card-title">
-                                                            {{ $address->address_name }}
                                                             @if ($address->is_default)
                                                             <span class="badge bg-primary">{{ localize('Predefinito') }}</span>
                                                             @endif
                                                         </h6>
 
                                                         <ul class="list-unstyled">
+                                                            @if($address->document_type == 1)
                                                             <li>{{ $address->company_name }}</li>
+                                                            @elseif($address->document_type == 2)
+                                                            <li>{{ $address->first_name }} {{ $address->last_name }}</li>
+                                                            @endif
+                                                            <li>{{ $address->address }}</li>
                                                             <li>{{ $address->country->name }}</li>
                                                             <li>{{ $address->state->name }}</li>
                                                             <li>{{ $address->city }}</li>
-                                                            <li>{{ $address->address }}</li>
+                                                            
                                                         </ul>
 
-                                                        <a href="{{ route('admin.address.edit', $address->id) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
+                                                        <a href="{{ route('admin.address.edit', ['id' => $address->id, 'type' => 'billing']) }}" class="btn btn-secondary btn-sm">{{ localize('Modifica') }}</a>
                                                         <a href="#" class="btn btn-danger btn-sm confirm-delete" data-href="{{ route('admin.address.delete', $address->id) }}" title="{{ localize('Delete') }}">
                                                             {{ localize('Delete') }}
                                                         </a>
@@ -173,8 +179,10 @@
                                                 </div>
                                             </div>
                                             @endforelse
-                                        </div>
 
+
+                                        </div>
+                                        <a href="{{ route('admin.address.create', ['id' => $user->id, 'type' => 'billing']) }}" class="btn btn-primary">{{ localize('Aggiungi Indirizzo di Fatturazione') }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -184,7 +192,7 @@
 
 
 
-                        <a href="{{ route('admin.address.create', $user->id) }}" class="btn btn-primary">{{ localize('Aggiungi Indirizzo') }}</a>
+
                     </div>
                 </div>
             </div>

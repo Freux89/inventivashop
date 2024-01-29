@@ -179,7 +179,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
         Route::get('/reward-points/convert/{id}', [RewardPointsController::class, 'convert'])->name('customers.convertRewardPoints');
 
         # Wallet history
-        Route::get('/wallet-histories', [WalletController::class, 'index'])->name('customers.walletHistory');
+        // Route::get('/wallet-histories', [WalletController::class, 'index'])->name('customers.walletHistory');
 
         # refund request
         Route::post('/request-refund', [RefundsController::class, 'store'])->name('customers.requestRefund');

@@ -76,6 +76,7 @@ $orderItems = $order->orderItems;
                                 {{ optional(optional($shippingAddress)->country)->name }}
                             </p>
                         </div>
+                        @if($orderGroup->billingAddress)
                         <div class="ms-4">
                             <h6 class="mb-2">{{ localize('Billing Address') }}</h6>
                             @php
@@ -87,6 +88,7 @@ $orderItems = $order->orderItems;
                                 {{ optional(optional($billingAddress)->country)->name }}
                             </p>
                         </div>
+                        @endif
                     </div>
                     @endif
                 </div>

@@ -28270,3 +28270,11 @@ blockquote::before {
     padding-left:0;
     font-size:12px;
 }
+
+.feather-icon{
+    color:#444;
+    font-size:0.765625rem;
+}
+.feather-icon svg{
+    width:14px;
+}

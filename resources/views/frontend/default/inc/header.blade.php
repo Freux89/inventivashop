@@ -247,7 +247,7 @@
                                 <div class="user-menu-wrapper">
                                     <ul class="user-menu">
                                         @auth
-                                        @if (auth()->user()->user_type == 'customer')
+                                        @if (auth()->user()->user_type == 'customer' || auth()->user()->user_type == 'admin' )
                                         <li><a href="{{ route('customers.dashboard') }}"><span class="me-2"><i class="fa-solid fa-user"></i></span>{{ localize('My Account') }}</a>
                                         </li>
                                         <li><a href="{{ route('customers.orderHistory') }}"><span class="me-2"><i class="fa-solid fa-tags"></i></span>{{ localize('My Orders') }}</a>

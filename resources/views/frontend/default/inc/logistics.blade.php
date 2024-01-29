@@ -17,7 +17,7 @@
         </div>
         <div class="radio-right text-end">
             <img src="{{ uploadedAsset($zoneCountry->logistic->thumbnail_image) }}" alt="{{ $zoneCountry->logistic->name }}"
-                class="img-fluid">
+                class="img-fluid" width="100" heoght="100">
         </div>
     </div>
 @empty

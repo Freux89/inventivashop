@@ -36,7 +36,10 @@ class CheckoutController extends Controller
         }
 
         $user = auth()->user();
-        $addresses = $user->addresses()->latest()->get();
+        $addresses = $user->addresses()->whereNotNull('address_name')->latest()->get();
+
+        // Recupera gli indirizzi di fatturazione dove 'address_name' è null
+        $billing_addresses = $user->addresses()->whereNull('address_name')->latest()->get();
 
         $countries = Country::isActive()->get();
 
@@ -44,6 +47,7 @@ class CheckoutController extends Controller
             'carts'     => $carts,
             'user'      => $user,
             'addresses' => $addresses,
+            'billing_addresses' => $billing_addresses,
             'countries' => $countries,
         ]);
     }
