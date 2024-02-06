@@ -113,15 +113,26 @@ class CheckoutController extends Controller
             $orderGroup->phone_no                           = $request->phone;
             $orderGroup->alternative_phone_no               = $request->alternative_phone;
            
-
+            $orderGroup->total_coupon_discount_amount       = 0;
             if (getCoupon() != '') {
                 # todo::[for eCommerce] handle coupon for multi vendor
                 $orderGroup->total_coupon_discount_amount   = getCouponDiscount(getSubTotal($carts, false), getCoupon());
                 # [done->codes below] increase coupon usage counter after successful order
             }
+            
             $logisticZone = LogisticZone::where('id', $request->chosen_logistic_zone_id)->first();
+
+            if (getCoupon() != '') {
+                $coupon = Coupon::where('code', getCoupon())->first();
+                if ($coupon->is_free_shipping == 1) {
+                    $logisticZone->standard_delivery_charge = 0;
+                }
+            }
+
             # todo::[for eCommerce] handle exceptions for standard & express
             $orderGroup->total_shipping_cost = $logisticZone->standard_delivery_charge;
+            // cerca il coupon tramite getCoupon() e controlla se il coupon ha il valore id_free_shipping a 1, se è a 1 allora il total_sipping_cost deve essere 0
+            
             // Verifica se l'assicurazione è stata selezionata e assegna il relativo costo
             if ($request->insured_shipping === 'on') {
                 $orderGroup->total_insured_shipping_cost = $logisticZone->insured_shipping_cost;
@@ -132,7 +143,7 @@ class CheckoutController extends Controller
 
             $orderGroup->sub_total_amount                   = getSubTotal($carts, false, '', false,$logisticZone->standard_delivery_charge,$logisticZone->insured_shipping_cost);
             $orderGroup->total_tax_amount                   = getTotalTax($carts,$logisticZone->standard_delivery_charge,$logisticZone->insured_shipping_cost);
-            $orderGroup->total_coupon_discount_amount       = 0;
+            
 
             // to convert input price to base price
             if (Session::has('currency_code')) {

@@ -375,7 +375,11 @@
 
     function updateCouponPrice(data) {
         $('.coupon-discount-wrapper').toggleClass('d-none');
-        $('.coupon-discount-price').html(data.couponDiscount);
+        if(data.couponDetails.discount_value > 0) {
+            $('.coupon-discount-price').html(data.couponDiscount);
+        } else if(data.couponDetails.is_free_shipping && data.couponDetails.discount_value == 0) {
+            $('.coupon-discount-price').html('{{ localize("Free Shipping") }}');
+        }
     }
 
     // update carts markup

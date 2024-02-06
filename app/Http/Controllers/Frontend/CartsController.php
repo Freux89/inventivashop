@@ -200,6 +200,9 @@ class CartsController extends Controller
             $carts          = Cart::where('guest_user_id', (int) $_COOKIE['guest_user_id'])->where('location_id', session('stock_location_id'))->get();
         }
 
+        $couponDetails = getCouponDetailsByCode($couponCode);
+        
+
         return [
             'success'           => true,
             'message'           => $message,
@@ -208,6 +211,7 @@ class CartsController extends Controller
             'cartCount'         => count($carts),
             'subTotal'          => formatPrice(getSubTotal($carts, $couponDiscount, $couponCode)),
             'couponDiscount'    => formatPrice(getCouponDiscount(getSubTotal($carts, false), $couponCode)),
+            'couponDetails'    => $couponDetails,
         ];
     }
 }

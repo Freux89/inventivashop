@@ -920,6 +920,19 @@ if (!function_exists('getCouponDiscount')) {
     }
 }
 
+if (!function_exists('getCouponDetailsByCode')) {
+    // return Coupon Discount amount
+    function getCouponDetailsByCode($couponCode)
+    {
+        $coupon = Coupon::where('code', $couponCode)->first();
+        if ($coupon) {
+            return $coupon;
+        }
+        return null;
+    }
+    
+}
+
 if (!function_exists('validateCouponForProductsAndCategories')) {
     # check coupon for products & categories
     function validateCouponForProductsAndCategories($cartItems, $coupon)

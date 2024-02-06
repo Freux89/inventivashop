@@ -11,12 +11,7 @@
 
        
 
-        @if (isset($shippingAmount))
-            <tr>
-                <td>(+) {{ localize('Shipping Charge') }}:</td>
-                <td class="text-end">{{ formatPrice($shippingAmount) }}</td>
-            </tr>
-        @endif
+        
 
         
 
@@ -47,6 +42,22 @@
         @endphp
 
 
+        
+
+<!-- Assicurazione -->
+@if (isset($shippingAmount))
+            <tr>
+                <td>(+) {{ localize('Shipping Charge') }}:</td>
+                <td class="text-end">{{ formatPrice($shippingAmount) }}</td>
+            </tr>
+        @endif
+        @if (isset($insuranceCost))
+            <tr>
+                <td>(+) {{ localize('Spedizione assicurata') }}:</td>
+                <td class="text-end">{{ formatPrice($insuranceCost) }}</td>
+            </tr>
+        @endif
+
         @if (getCoupon() != '')
 
             @if (getCouponDiscount(getSubTotal($carts, false), getCoupon()) > 0)
@@ -66,13 +77,6 @@
             @endif
         @endif
 
-<!-- Assicurazione -->
-        @if (isset($insuranceCost))
-            <tr>
-                <td>(+) {{ localize('Spedizione assicurata') }}:</td>
-                <td class="text-end">{{ formatPrice($insuranceCost) }}</td>
-            </tr>
-        @endif
         <tr>
             <td>(+) {{ localize('Tax') }}:</td>
             <td class="text-end">{{ formatPrice(getTotalTax($carts,$shipping,$insurance)) }}</td>
