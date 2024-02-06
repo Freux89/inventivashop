@@ -131,9 +131,9 @@ $orderItems = $order->orderItems;
                                 </div>
                             </div>
                         </td>
-                        <td>{{ formatPrice($item->unit_price) }}</td>
+                        <td>{{ formatPrice($item->unit_price - ($item->total_tax / $item->qty)) }}</td>
                         <td>{{ $item->qty }}</td>
-                        <td>{{ formatPrice($item->total_price) }}</td>
+                        <td>{{ formatPrice($item->total_price - $item->total_tax) }}</td>
 
                         @if (getSetting('enable_refund_system') == 1)
                         <td>
@@ -183,10 +183,7 @@ $orderItems = $order->orderItems;
                             <span> {{ ucwords(str_replace('_', ' ', $orderGroup->payment_method)) }}</span>
                         </td>
 
-                        <td>
-                            <strong class="text-dark d-block text-nowrap">{{ localize('Sub Total') }}</strong>
-                            <span>{{ formatPrice($orderGroup->sub_total_amount) }}</span>
-                        </td>
+                      
 
                         <!-- <td>
                             <strong class="text-dark d-block text-nowrap">{{ localize('Tips') }}</strong>
@@ -195,7 +192,20 @@ $orderItems = $order->orderItems;
 
                         <td>
                             <strong class="text-dark d-block text-nowrap">{{ localize('Shipping Cost') }}</strong>
-                            <span>{{ formatPrice($orderGroup->total_shipping_cost) }}</span>
+                            <span>{{ formatPrice($orderGroup->total_shipping_cost) }}</span> 
+                            @if($orderGroup->total_insured_shipping_cost > 0)
+                                <span>
+                                    + {{ formatPrice($orderGroup->total_insured_shipping_cost) }} ({{ localize('Spedizione assicurata') }})
+                                </span>
+                            @endif
+                            
+                            <!--Se c'è l'assicurazione visualizzare spese assicurazione spedizione-->
+                                
+                            
+                        </td>
+                        <td>
+                            <strong class="text-dark d-block text-nowrap">{{ localize('Sub Total') }}</strong>
+                            <span>{{ formatPrice($orderGroup->sub_total_amount) }}</span>
                         </td>
                         @if ($orderGroup->total_coupon_discount_amount > 0)
                         <td>
@@ -203,7 +213,10 @@ $orderItems = $order->orderItems;
                             <span>{{ formatPrice($orderGroup->total_coupon_discount_amount) }}</span>
                         </td>
                         @endif
-
+                        <td>
+                            <strong class="text-dark d-block text-nowrap">{{ localize('Tasse') }}</strong>
+                            <span>{{ formatPrice($orderGroup->total_tax_amount) }}</span>
+                        </td>
                         <td>
                             <strong class="text-dark d-block text-nowrap">{{ localize('Total Price') }}</strong>
                             <span class="text-primary fw-bold">{{ formatPrice($orderGroup->grand_total_amount) }}</span>

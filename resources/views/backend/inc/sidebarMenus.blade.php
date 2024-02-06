@@ -414,13 +414,13 @@
 
     <!-- campaigns -->
     @can('campaigns')
-        <!-- <li
+        <li
             class="side-nav-item nav-item {{ areActiveRoutes(['admin.campaigns.index', 'admin.campaigns.create', 'admin.campaigns.edit'], 'tt-menu-item-active') }}">
             <a href="{{ route('admin.campaigns.index') }}" class="side-nav-link">
                 <span class="tt-nav-link-icon"> <i data-feather="zap"></i></span>
                 <span class="tt-nav-link-text">{{ localize('Campaigns') }}</span>
             </a>
-        </li> -->
+        </li>
     @endcan
 
     <!-- Fulfillment -->

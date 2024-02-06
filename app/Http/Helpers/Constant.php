@@ -824,7 +824,7 @@ if (!function_exists('variationTaxAmount')) {
 
 if (!function_exists('getSubTotal')) {
     // return sub total price
-    function getSubTotal($carts, $couponDiscount = true, $couponCode = '', $addTax = true)
+    function getSubTotal($carts, $couponDiscount = true, $couponCode = '', $addTax = true, $shippingCost = 0, $insuranceCost = 0)
     {
         $price = 0;
         $amount = 0;
@@ -845,9 +845,13 @@ if (!function_exists('getSubTotal')) {
             if ($couponDiscount) {
                 $amount = getCouponDiscount($price, $couponCode);
             }
+            
         }
 
-        return $price - $amount;
+        $price = $price - $amount + $shippingCost + $insuranceCost;
+
+        return $price;
+
     }
 
 }
@@ -1039,10 +1043,11 @@ if (!function_exists('getTotalTax')) {
     // get Total Tax from
    
 
-function getTotalTax($carts)
+function getTotalTax($carts, $shippingCost = 0, $insuranceCost = 0)
 {
     $IVA = getSetting('global_vat_rate') * 0.01;
-    $total = getSubTotal($carts, false, '', false); // Ottieni il totale escludendo tasse e sconti.
+    $total = getSubTotal($carts, false, '', false, $shippingCost, $insuranceCost); // Ottieni il totale escludendo tasse e sconti.
+
     
     return $total * $IVA;
 }

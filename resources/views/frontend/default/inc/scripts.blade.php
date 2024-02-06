@@ -424,11 +424,26 @@
     //  get logistics to check out -- onchange
     $(document).on('change', '[name=chosen_logistic_zone_id]', function() {
         var chosen_logistic_zone_id = $(this).val();
-        getShippingAmount(chosen_logistic_zone_id);
+        var isInsured = false;
+
+        // Disabilita tutti i checkbox dell'assicurazione
+        $('[name=insured_shipping]').prop('disabled', true);
+        $('[name=insured_shipping]').prop('checked', false);
+        // Abilita il checkbox dell'assicurazione corrispondente al corriere selezionato
+        $('#insured_shipping_' + chosen_logistic_zone_id).prop('disabled', false);
+
+        getShippingAmount(chosen_logistic_zone_id, isInsured);
+    });
+
+
+    $(document).on('change', '[name=insured_shipping]', function() {
+        var chosen_logistic_zone_id = $('[name=chosen_logistic_zone_id]:checked').val();
+        var isInsured = $(this).is(':checked');
+        getShippingAmount(chosen_logistic_zone_id, isInsured);
     });
 
     // get logistics to check out
-    function getShippingAmount(logistic_zone_id) {
+    function getShippingAmount(logistic_zone_id, isInsured) {
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -436,7 +451,8 @@
             url: "{{ route('checkout.getShippingAmount') }}",
             type: 'POST',
             data: {
-                logistic_zone_id: logistic_zone_id
+                logistic_zone_id: logistic_zone_id,
+                insured_shipping: isInsured
             },
             success: function(data) {
                 $('.checkout-sidebar').empty();

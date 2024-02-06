@@ -119,7 +119,7 @@
                                         <h6 class="mb-2">{{ localize('Shipping Address') }}</h6>
                                         @php
                                         $shippingAddress = $order->orderGroup->shippingAddress;
-                                        
+
                                         @endphp
                                         <p class="mb-0">
                                             @if ($order->orderGroup->is_pos_order)
@@ -202,7 +202,7 @@
                                 </td>
 
                                 <td class="tt-tb-price">
-                                    <span class="fw-bold">{{ formatPrice($item->unit_price) }}
+                                    <span class="fw-bold">{{ formatPrice($item->unit_price - ($item->total_tax / $item->qty)) }}
                                     </span>
                                 </td>
                                 <td class="fw-bold">{{ $item->qty }}</td>
@@ -211,7 +211,7 @@
                                     @if ($item->refundRequest && $item->refundRequest->refund_status == 'refunded')
                                     <span class="badge bg-soft-info rounded-pill text-capitalize">{{ $item->refundRequest->refund_status }}</span>
                                     @endif
-                                    <span class="text-accent fw-bold">{{ formatPrice($item->total_price) }}
+                                    <span class="text-accent fw-bold">{{ formatPrice($item->total_price - $item->total_tax) }}
                                     </span>
 
                                 </td>
@@ -225,7 +225,44 @@
                     <div class="card-body">
                         <div class="card-footer border-top-0 px-4 py-3 rounded">
                             <div class="row g-4">
-                                <div class="col-auto">
+                               
+                                <div class="col-auto flex-grow-1">
+                                    <h6 class="mb-1">{{ localize('Shipping Cost') }}</h6>
+                                    <strong>{{ formatPrice($order->orderGroup->total_shipping_cost) }}</strong>
+                                    @if($order->orderGroup->total_insured_shipping_cost > 0)
+                                    <span>
+                                        + {{ formatPrice($order->orderGroup->total_insured_shipping_cost) }} ({{ localize('Spedizione assicurata') }})
+                                    </span>
+                                    @endif
+                                </div>
+                                <div class="col-auto flex-grow-1">
+                                    <h6 class="mb-1">{{ localize('Sub Total') }}</h6>
+                                    <strong>{{ formatPrice($order->orderGroup->sub_total_amount) }}</strong>
+                                </div>
+                                
+
+
+
+
+                                @if ($order->orderGroup->total_coupon_discount_amount > 0)
+                                <div class="col-auto flex-grow-1">
+                                    <h6 class="mb-1">{{ localize('Coupon Discount') }}</h6>
+                                    <strong>{{ formatPrice($order->orderGroup->total_coupon_discount_amount) }}</strong>
+                                </div>
+                                @endif
+                                <div class="col-auto flex-grow-1">
+                                    <h6 class="mb-1">{{ localize('Tasse') }}</h6>
+                                    <strong>{{ formatPrice($order->orderGroup->total_tax_amount) }}</strong>
+                                </div>
+                               
+                                <div class="col-auto text-lg-end flex-grow-1">
+                                    <h6 class="mb-1">{{ localize('Grand Total') }}</h6>
+                                    <strong class="text-accent">{{ formatPrice($order->orderGroup->grand_total_amount) }}</strong>
+                                </div>
+                              
+                            </div>
+                            <div class="row mt-4">
+                            <div class="col-auto flex-grow-1">
                                     <h6 class="mb-1">{{ localize('Payment Method') }}</h6>
                                     <span>{{ ucwords(str_replace('_', ' ', $order->orderGroup->payment_method)) }}</span>
                                 </div>
@@ -233,31 +270,7 @@
                                 <div class="col-auto flex-grow-1">
                                     <h6 class="mb-1">{{ localize('Logistic') }}</h6>
                                     <span>{{ $order->logistic_name }}</span>
-                                    
-                                </div>
 
-                                <div class="col-auto">
-                                    <h6 class="mb-1">{{ localize('Sub Total') }}</h6>
-                                    <strong>{{ formatPrice($order->orderGroup->sub_total_amount) }}</strong>
-                                </div>
-
-
-
-                                <div class="col-auto ps-lg-5">
-                                    <h6 class="mb-1">{{ localize('Shipping Cost') }}</h6>
-                                    <strong>{{ formatPrice($order->orderGroup->total_shipping_cost) }}</strong>
-                                </div>
-
-                                @if ($order->orderGroup->total_coupon_discount_amount > 0)
-                                <div class="col-auto ps-lg-5">
-                                    <h6 class="mb-1">{{ localize('Coupon Discount') }}</h6>
-                                    <strong>{{ formatPrice($order->orderGroup->total_coupon_discount_amount) }}</strong>
-                                </div>
-                                @endif
-
-                                <div class="col-auto text-lg-end ps-lg-5">
-                                    <h6 class="mb-1">{{ localize('Grand Total') }}</h6>
-                                    <strong class="text-accent">{{ formatPrice($order->orderGroup->grand_total_amount) }}</strong>
                                 </div>
                                 <div class="col-auto flex-grow-1">
                                     <h6 class="mb-1">{{ localize('Pacco') }}</h6>
@@ -308,7 +321,11 @@
 
     // payment status
     $('#update_payment_status').on('change', function() {
-        var order_id = {{$order->id}};
+        var order_id = {
+            {
+                $order - > id
+            }
+        };
         var status = $('#update_payment_status').val();
         $.post('{{ route("admin.orders.update_payment_status") }}', {
                 _token: '{{ @csrf_token() }}',
@@ -323,7 +340,11 @@
 
     // delivery status 
     $('#update_delivery_status').on('change', function() {
-        var order_id = {{$order->id}};
+        var order_id = {
+            {
+                $order - > id
+            }
+        };
         var status = $('#update_delivery_status').val();
         $.post('{{ route("admin.orders.update_delivery_status") }}', {
                 _token: '{{ @csrf_token() }}',

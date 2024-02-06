@@ -68,13 +68,26 @@ class CheckoutController extends Controller
     {
         $carts              = Cart::where('user_id', auth()->user()->id)->where('location_id', session('stock_location_id'))->get();
         $logisticZone       = LogisticZone::find((int)$request->logistic_zone_id);
-        $shippingAmount     = $logisticZone->standard_delivery_charge;
-        return getViewRender('pages.partials.checkout.orderSummary', ['carts' => $carts, 'shippingAmount' => $shippingAmount]);
+        $shippingAmount = $logisticZone->standard_delivery_charge;
+        $insuranceCost = null; // Inizializza la variabile per il costo dell'assicurazione
+
+        // Calcola il costo dell'assicurazione se richiesta
+        if ($request->insured_shipping === 'true') {
+            $insuranceCost = $logisticZone->insured_shipping_cost;
+        }
+
+        // Restituisce il render della vista con le nuove variabili
+        return getViewRender('pages.partials.checkout.orderSummary', [
+            'carts' => $carts,
+            'shippingAmount' => $shippingAmount,
+            'insuranceCost' => $insuranceCost // Aggiungi il costo dell'assicurazione alla risposta
+        ]);
     }
 
     # complete checkout process
     public function complete(Request $request)
     {
+       
         $user = auth()->user();
         $userId = $user->id;
         $carts  = Cart::where('user_id', $userId)->where('location_id', session('stock_location_id'))->get();
@@ -88,15 +101,7 @@ class CheckoutController extends Controller
                 return back();
             }
 
-            # check carts available stock -- todo::[update version] -> run this check while storing OrderItems
-            // foreach ($carts as $cart) {
-            //     $productVariationStock = $cart->product_variation->product_variation_stock ? $cart->product_variation->product_variation_stock->stock_qty : 0;
-            //     if ($cart->qty > $productVariationStock) {
-            //         $message = $cart->product_variation->product->collectLocalization('name') . ' ' . localize('is out of stock');
-            //         flash($message)->error();
-            //         return back();
-            //     }
-            // }
+            
 
             # create new order group
             $orderGroup                                     = new OrderGroup;
@@ -107,9 +112,7 @@ class CheckoutController extends Controller
             $orderGroup->packaging_type                     = $request->packaging_type;
             $orderGroup->phone_no                           = $request->phone;
             $orderGroup->alternative_phone_no               = $request->alternative_phone;
-            $orderGroup->sub_total_amount                   = getSubTotal($carts, false, '', false);
-            $orderGroup->total_tax_amount                   = getTotalTax($carts);
-            $orderGroup->total_coupon_discount_amount       = 0;
+           
 
             if (getCoupon() != '') {
                 # todo::[for eCommerce] handle coupon for multi vendor
@@ -118,7 +121,18 @@ class CheckoutController extends Controller
             }
             $logisticZone = LogisticZone::where('id', $request->chosen_logistic_zone_id)->first();
             # todo::[for eCommerce] handle exceptions for standard & express
-            $orderGroup->total_shipping_cost                = $logisticZone->standard_delivery_charge;
+            $orderGroup->total_shipping_cost = $logisticZone->standard_delivery_charge;
+            // Verifica se l'assicurazione è stata selezionata e assegna il relativo costo
+            if ($request->insured_shipping === 'on') {
+                $orderGroup->total_insured_shipping_cost = $logisticZone->insured_shipping_cost;
+            } else {
+                // Se non selezionata, imposta il costo dell'assicurazione a null o a 0, a seconda delle tue esigenze
+                $orderGroup->total_insured_shipping_cost = null; // o 0
+            }
+
+            $orderGroup->sub_total_amount                   = getSubTotal($carts, false, '', false,$logisticZone->standard_delivery_charge,$logisticZone->insured_shipping_cost);
+            $orderGroup->total_tax_amount                   = getTotalTax($carts,$logisticZone->standard_delivery_charge,$logisticZone->insured_shipping_cost);
+            $orderGroup->total_coupon_discount_amount       = 0;
 
             // to convert input price to base price
             if (Session::has('currency_code')) {
@@ -130,7 +144,7 @@ class CheckoutController extends Controller
 
             $orderGroup->total_tips_amount                  = $request->tips / $currentCurrency->rate; // convert to base price;
 
-            $orderGroup->grand_total_amount                 = $orderGroup->sub_total_amount + $orderGroup->total_tax_amount + $orderGroup->total_shipping_cost + $orderGroup->total_tips_amount - $orderGroup->total_coupon_discount_amount;
+            $orderGroup->grand_total_amount                 = $orderGroup->sub_total_amount + $orderGroup->total_tax_amount + $orderGroup->total_tips_amount - $orderGroup->total_coupon_discount_amount;
 
 
             if ($request->payment_method == "wallet") {

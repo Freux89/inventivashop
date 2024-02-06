@@ -5,14 +5,11 @@
     </div>
     <table class="sidebar-table w-100 mt-5">
         <tr>
-            <td>(+) {{ localize('Items') }}({{ count($carts) }}):</td>
+            <td>(+) {{ localize('Totale netto') }}</td>
             <td class="text-end">{{ formatPrice(getSubTotal($carts, false, '', false)) }}</td>
         </tr>
 
-        <tr>
-            <td>(+) {{ localize('Tax') }}:</td>
-            <td class="text-end">{{ formatPrice(getTotalTax($carts)) }}</td>
-        </tr>
+       
 
         @if (isset($shippingAmount))
             <tr>
@@ -21,9 +18,11 @@
             </tr>
         @endif
 
+        
+
         @php
             $is_free_shipping = false;
-            if (getCoupon() != '' && getCouponDiscount(getSubTotal($carts, false), getCoupon()) > 0) {
+            if (getCoupon() != '' ) {
                 $coupon = \App\Models\Coupon::where('code', getCoupon())->first();
                 if (!is_null($coupon) && $coupon->is_free_shipping == 1) {
                     $is_free_shipping = true;
@@ -36,7 +35,15 @@
             if (isset($shippingAmount) && $is_free_shipping == false) {
                 $shipping = $shippingAmount;
             }
-            $total = getSubTotal($carts, false, '', false) + getTotalTax($carts) + $shipping - getCouponDiscount(getSubTotal($carts, false), getCoupon());
+            // Aggiungi il costo dell'assicurazione, se presente
+            $insurance = 0;
+            if (isset($insuranceCost)) {
+                $insurance = $insuranceCost;
+            }
+
+            $total = getSubTotal($carts, false, '', false,$shipping,$insurance) + getTotalTax($carts,$shipping,$insurance) +  - getCouponDiscount(getSubTotal($carts, false), getCoupon());
+            
+            
         @endphp
 
 
@@ -58,6 +65,18 @@
                 </tr>
             @endif
         @endif
+
+<!-- Assicurazione -->
+        @if (isset($insuranceCost))
+            <tr>
+                <td>(+) {{ localize('Spedizione assicurata') }}:</td>
+                <td class="text-end">{{ formatPrice($insuranceCost) }}</td>
+            </tr>
+        @endif
+        <tr>
+            <td>(+) {{ localize('Tax') }}:</td>
+            <td class="text-end">{{ formatPrice(getTotalTax($carts,$shipping,$insurance)) }}</td>
+        </tr>
     </table>
 
     <span class="sidebar-spacer d-block my-4 opacity-50"></span>

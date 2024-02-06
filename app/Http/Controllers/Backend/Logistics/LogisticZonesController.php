@@ -109,6 +109,8 @@ class LogisticZonesController extends Controller
         $logisticZone->name = $request->name;
 
         $logisticZone->standard_delivery_charge = $request->standard_delivery_charge;
+        $logisticZone->packing_cost = $request->packing_cost;
+        $logisticZone->insured_shipping_cost = $request->insured_shipping_cost;
         if ($request->express_delivery_charge) {
             $logisticZone->express_delivery_charge = $request->express_delivery_charge;
         }
