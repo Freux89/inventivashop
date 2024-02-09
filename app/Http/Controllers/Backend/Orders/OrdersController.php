@@ -109,11 +109,11 @@ class OrdersController extends Controller
             'note' => 'Payment status updated to ' . ucwords(str_replace('_', ' ', $request->status)) . '.',
         ]);
 
-        try {
-            $customer->notify(new OrderPaymentStatusUpdated($order));
-        } catch (\Exception $e) {
-            \Log::error('Errore nell\'invio della notifica OrderPlaced: ' . $e->getMessage());
-        }
+        // try {
+        //     $customer->notify(new OrderPaymentStatusUpdated($order));
+        // } catch (\Exception $e) {
+        //     \Log::error('Errore nell\'invio della notifica OrderPlaced: ' . $e->getMessage());
+        // }
 
 
         return true;

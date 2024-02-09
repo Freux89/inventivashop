@@ -321,11 +321,7 @@
 
     // payment status
     $('#update_payment_status').on('change', function() {
-        var order_id = {
-            {
-                $order - > id
-            }
-        };
+        var order_id = {{$order->id}};
         var status = $('#update_payment_status').val();
         $.post('{{ route("admin.orders.update_payment_status") }}', {
                 _token: '{{ @csrf_token() }}',
@@ -340,11 +336,7 @@
 
     // delivery status 
     $('#update_delivery_status').on('change', function() {
-        var order_id = {
-            {
-                $order - > id
-            }
-        };
+        var order_id = {{$order->id}};
         var status = $('#update_delivery_status').val();
         $.post('{{ route("admin.orders.update_delivery_status") }}', {
                 _token: '{{ @csrf_token() }}',
