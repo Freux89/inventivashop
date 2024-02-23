@@ -3,7 +3,9 @@
 @section('title')
 {{ localize('Products') }} {{ getSetting('title_separator') }} {{ getSetting('system_title') }}
 @endsection
-
+@php
+  $agent = new \Jenssegers\Agent\Agent;
+@endphp
 @section('breadcrumb-contents')
 <div class="breadcrumb-content">
     <h2 class="mb-2 text-center">{{ $category ? $category->name : ($tag ? $tag->name : localize('Products')) }}
@@ -53,7 +55,7 @@
                 </div>
             </div>
             @endif
-            @if (count($products) > 0)
+            
             <div class="row g-4">
 
                 <div class="col-xl-3">
@@ -62,7 +64,8 @@
                     </div>
 
                     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasProductFilter" aria-labelledby="offcanvasProductFilterLabel">
-
+                    
+                    @if ($agent->isMobile())
                         <div class="offcanvas-body">
 
                             <div class="text-end">
@@ -73,11 +76,13 @@
                             </nav>
 
                         </div>
+                        @endif
                     </div>
                 </div>
 
                 <!--rightbar-->
                 <div class="col-xl-9">
+                
                     <div class="shop-grid">
                         <!--filter-->
                         <div class="listing-top d-flex align-items-center justify-content-between flex-wrap gap-3 bg-white rounded-2 px-4 py-4 mb-5">
@@ -109,11 +114,12 @@
                                         <path d="M14.9407 8.96973H10.3471C9.67533 8.96973 9.12891 9.51615 9.12891 10.1879V14.7815C9.12891 15.4533 9.67533 15.9997 10.3471 15.9997H14.9407C15.6124 15.9996 16.1589 15.4532 16.1589 14.7815V10.1878C16.1589 9.51609 15.6124 8.96973 14.9407 8.96973Z" fill="#FF7C08" />
                                     </svg>
                                 </a>
-
+                                @if($agent->isMobile())
                                 <button type="button" class="grid-btn d-flex d-xl-none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasProductFilter" aria-controls="offcanvasProductFilter">
                                     <svg width="21" height="16" viewBox="0 0 21 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M2.31378 0C1.12426 0 0.160156 0.9641 0.160156 2.15359C0.160156 3.34309 1.12426 4.30722 2.31378 4.30722C3.50328 4.30722 4.46738 3.34312 4.46738 2.15359C4.46738 0.964066 3.50328 0 2.31378 0ZM2.31378 5.74293C1.12426 5.74293 0.160156 6.70706 0.160156 7.89656C0.160156 9.08608 1.12426 10.0502 2.31378 10.0502C3.50328 10.0502 4.46738 9.08608 4.46738 7.89656C4.46738 6.70706 3.50328 5.74293 2.31378 5.74293ZM2.31378 11.4859C1.12426 11.4859 0.160156 12.45 0.160156 13.6395C0.160156 14.829 1.12426 15.7931 2.31378 15.7931C3.50328 15.7931 4.46738 14.829 4.46738 13.6395C4.46738 12.45 3.50328 11.4859 2.31378 11.4859ZM8.05671 3.58933H19.5426C20.3358 3.58933 20.9783 2.94683 20.9783 2.15359C20.9783 1.36036 20.3358 0.717853 19.5426 0.717853H8.05671C7.26348 0.717853 6.62097 1.36036 6.62097 2.15359C6.62097 2.94683 7.26348 3.58933 8.05671 3.58933ZM19.5426 6.46082H8.05671C7.26348 6.46082 6.62097 7.10332 6.62097 7.89656C6.62097 8.68979 7.26348 9.3323 8.05671 9.3323H19.5426C20.3358 9.3323 20.9783 8.68979 20.9783 7.89656C20.9783 7.10332 20.3358 6.46082 19.5426 6.46082ZM19.5426 12.2038H8.05671C7.26348 12.2038 6.62097 12.8463 6.62097 13.6395C6.62097 14.4327 7.26348 15.0752 8.05671 15.0752H19.5426C20.3358 15.0752 20.9783 14.4327 20.9783 13.6395C20.9783 12.8463 20.3358 12.2038 19.5426 12.2038Z" fill="#5D6374" />
                                     </svg>
+                                    @endif
                                 </button>
 
                                 <a href="{{ route('products.index') }}?view=list" class="grid-btn {{ request()->view == 'list' ? 'active' : '' }} d-none d-xl-flex">
@@ -164,11 +170,12 @@
                         </ul>
                         <!--products-->
                     </div>
+                  
                 </div>
                 <!--rightbar-->
 
             </div>
-            @endif
+            
         </div>
     </section>
     <!--shop grid section end-->

@@ -58,7 +58,6 @@
                         <table class="table tt-footable border-top" data-use-parent-width="true">
                             <thead>
                                 <tr>
-                                    <th class="text-center">{{ localize('S/L') }}</th>
                                     <th>{{ localize('Title') }}</th>
                                     <th data-breakpoints="xs sm">{{ localize('Start Date') }}</th>
                                     <th data-breakpoints="xs sm">{{ localize('End Date') }}</th>
@@ -70,15 +69,9 @@
                             <tbody>
                                 @foreach ($campaigns as $key => $campaign)
                                     <tr>
-                                        <td class="text-center">
-                                            {{ $key + 1 + ($campaigns->currentPage() - 1) * $campaigns->perPage() }}</td>
                                         <td>
-                                            <a class="d-flex align-items-center">
-                                                <div class="avatar avatar-sm">
-                                                    <img class="rounded-circle"
-                                                        src="{{ uploadedAsset($campaign->banner) }}"
-                                                        alt="{{ $campaign->code }}" />
-                                                </div>
+                                            <a href="{{ route('admin.campaigns.edit', ['id' => $campaign->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize" class="d-flex align-items-center">
+                                                
                                                 <h6 class="fs-sm mb-0 ms-2">{{ $campaign->title }}
                                                 </h6>
                                             </a>

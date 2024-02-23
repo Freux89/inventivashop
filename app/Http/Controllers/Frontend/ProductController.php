@@ -167,22 +167,46 @@ class ProductController extends Controller
     return new ProductVariationInfoResource($productVariations);
 }
 
-public function category($categorySlug)
+public function category(Request $request,$categorySlug)
 {
     
     $category = Category::where('slug', $categorySlug)->first();
 
-    $maxRange = Product::max('max_price');
-    $max_value = formatPrice($maxRange, false, false, false, false);
+    
     if (!$category) {
         // Gestire il caso in cui la categoria non esiste
         return redirect()->route('home');
     }
-
+    $maxRange = Product::max('max_price');
+    $max_value = formatPrice($maxRange, false, false, false, false);
     // Filtrare i prodotti per la categoria specificata
-    $products = Product::isPublished()->whereHas('categories', function ($query) use ($category) {
+     // Inizia la query di base per i prodotti
+     $query = Product::isPublished()->whereHas('categories', function ($query) use ($category) {
         $query->where('category_id', $category->id);
-    })->paginate(paginationNumber(9));
+    });
+
+    // Verifica se è stata inviata una richiesta di ricerca
+    if ($request->has('search') && $request->search != '') {
+        $searchKey = $request->search;
+        // Filtra i prodotti basati sul parametro di ricerca
+        $query = $query->where('name', 'like', '%' . $searchKey . '%');
+    } else {
+        $searchKey = null;
+    }
+
+    // Filtraggio per prezzo
+    if ($request->has('min_price')) {
+        $minPrice = $request->min_price;
+        $query = $query->where('price', '>=', $minPrice);
+    }
+
+    if ($request->has('max_price')) {
+        $maxPrice = $request->max_price;
+        $query = $query->where('price', '<=', $maxPrice);
+    }
+
+    // Esegue la query con la paginazione
+    $products = $query->paginate(paginationNumber(9));
 
 
     $breadcrumbs = collect([]);
@@ -201,12 +225,12 @@ public function category($categorySlug)
         'products'    => $products,
         // Imposta le altre variabili a null o ai loro valori di default
         'tag'         => null,
-        'searchKey'   => null,
+        'searchKey'   => $searchKey,
         'per_page'    => 9,
         'sort_by'     => 'new',
         'max_range'   => $maxRange,
-        'min_value'   => 0,
-        'max_value'   => $max_value,
+        'min_value'   => $request->input('min_price', 0),
+        'max_value'   => $request->input('max_price', $max_value),
         'tags'        => Tag::all(),
         'breadcrumbs' => $breadcrumbs,
     ]);
