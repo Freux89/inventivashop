@@ -40,4 +40,9 @@ class VariationValue extends Model
     {
         return $this->hasMany(VariationValueLocalization::class);
     }
+
+    public function workflows()
+    {
+        return $this->belongsToMany(Workflow::class, 'variation_value_workflows');
+    }
 }

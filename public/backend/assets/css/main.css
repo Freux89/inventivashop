@@ -36762,3 +36762,7 @@ button.note-btn.dropdown-toggle:after {
     padding-left:0;
     font-size:12px;
 }
+.card-fixed-height {
+    max-height: 200px; /* Adatta questa altezza alle tue necessità */
+    overflow-y: auto; /* Permette lo scroll verticale se il contenuto supera l'altezza */
+}

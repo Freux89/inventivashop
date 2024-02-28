@@ -25,6 +25,7 @@ use App\Http\Controllers\Backend\Products\VariationsController;
 use App\Http\Controllers\Backend\Products\VariationValuesController;
 use App\Http\Controllers\Backend\Products\MaterialController;
 use App\Http\Controllers\Backend\Products\MaterialDetailController;
+use App\Http\Controllers\Backend\WorkflowController;
 use App\Http\Controllers\Backend\Products\BrandsController;
 use App\Http\Controllers\Backend\Products\UnitsController;
 use App\Http\Controllers\Backend\Products\TaxesController;
@@ -179,24 +180,27 @@ Route::group(
             Route::get('/variations-values/delete/{id}', [VariationValuesController::class, 'delete'])->name('admin.variationValues.delete');
             Route::post('/variations-values/update-positions', [VariationValuesController::class, 'updatePositions'])->name('admin.variationValues.positions');
 
-# materials
-Route::get('/materials', [MaterialController::class, 'index'])->name('admin.materials.index');
-Route::get('/add-materials', [MaterialController::class, 'create'])->name('admin.materials.create');
-Route::post('/material', [MaterialController::class, 'store'])->name('admin.materials.store');
-Route::get('/materials/edit/{id}', [MaterialController::class, 'edit'])->name('admin.materials.edit');
-Route::post('/materials/update', [MaterialController::class, 'update'])->name('admin.materials.update');
-Route::post('/materials/update-status', [MaterialController::class, 'updateStatus'])->name('admin.materials.updateStatus');
-Route::get('/materials/delete/{id}', [MaterialController::class, 'delete'])->name('admin.materials.delete');
+            # materials
+            Route::get('/materials',
+                [MaterialController::class, 'index']
+            )->name('admin.materials.index');
+            Route::get('/add-materials', [MaterialController::class, 'create'])->name('admin.materials.create');
+            Route::post('/material', [MaterialController::class, 'store'])->name('admin.materials.store');
+            Route::get('/materials/edit/{id}', [MaterialController::class, 'edit'])->name('admin.materials.edit');
+            Route::post('/materials/update', [MaterialController::class, 'update'])->name('admin.materials.update');
+            Route::post('/materials/update-status', [MaterialController::class, 'updateStatus'])->name('admin.materials.updateStatus');
+            Route::get('/materials/delete/{id}', [MaterialController::class, 'delete'])->name('admin.materials.delete');
 
-# material details
-Route::get('/material-details', [MaterialDetailController::class, 'index'])->name('admin.materialDetails.index');
-Route::get('/add-material-details', [MaterialDetailController::class, 'create'])->name('admin.materialDetails.create');
-Route::post('/material-detail', [MaterialDetailController::class, 'store'])->name('admin.materialDetails.store');
-Route::get('/material-details/edit/{id}', [MaterialDetailController::class, 'edit'])->name('admin.materialDetails.edit');
-Route::post('/material-details/update', [MaterialDetailController::class, 'update'])->name('admin.materialDetails.update');
-Route::post('/material-details/update-status', [MaterialDetailController::class, 'updateStatus'])->name('admin.materialDetails.updateStatus');
-Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'delete'])->name('admin.materialDetails.delete');
+            # material details
+            Route::get('/material-details', [MaterialDetailController::class, 'index'])->name('admin.materialDetails.index');
+            Route::get('/add-material-details', [MaterialDetailController::class, 'create'])->name('admin.materialDetails.create');
+            Route::post('/material-detail', [MaterialDetailController::class, 'store'])->name('admin.materialDetails.store');
+            Route::get('/material-details/edit/{id}', [MaterialDetailController::class, 'edit'])->name('admin.materialDetails.edit');
+            Route::post('/material-details/update', [MaterialDetailController::class, 'update'])->name('admin.materialDetails.update');
+            Route::post('/material-details/update-status', [MaterialDetailController::class, 'updateStatus'])->name('admin.materialDetails.updateStatus');
+            Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'delete'])->name('admin.materialDetails.delete');
 
+            
 
             # brands
             Route::get('/brands', [BrandsController::class, 'index'])->name('admin.brands.index');
@@ -222,6 +226,9 @@ Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'd
             Route::post('/taxes/update-status', [TaxesController::class, 'updateStatus'])->name('admin.taxes.updateStatus');
             Route::get('/taxes/delete/{id}', [TaxesController::class, 'delete'])->name('admin.taxes.delete');
         });
+
+
+        
 
         #pos 
         Route::get('/pos', [PosController::class, 'index'])->name('admin.pos.index');
@@ -398,6 +405,16 @@ Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'd
             Route::post('/product_discount_edit', [CampaignsController::class, 'productDiscountEdit'])->name('admin.campaigns.productDiscountEdit');
             Route::post('/update-published-status', [CampaignsController::class, 'updatePublishedStatus'])->name('admin.campaigns.updatePublishedStatus');
         });
+
+
+        #workflows
+        Route::get('/workflows',[WorkflowController::class, 'index'] )->name('admin.workflows.index');
+        Route::get('/workflows/create', [WorkflowController::class, 'create'])->name('admin.workflows.create');
+        Route::get('/workflows/edit/{id}', [WorkflowController::class, 'edit'])->name('admin.workflows.edit');
+        Route::post('/workflows', [WorkflowController::class, 'store'])->name('admin.workflows.store');
+        Route::post('/workflows/update/{id}',   [WorkflowController::class, 'update'] )->name('admin.workflows.update');
+        Route::get('/workflows/delete/{id}', [WorkflowController::class, 'delete'])->name('admin.workflows.delete');
+        Route::post('/workflows/update-status', [WorkflowController::class, 'updateStatus'])->name('admin.workflows.updateStatus');
 
         # logistics system
         Route::group(['prefix' => 'logistics'], function () {

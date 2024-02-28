@@ -427,6 +427,17 @@
     <li class="side-nav-title side-nav-item nav-item">
         <span class="tt-nav-title-text">{{ localize('Fulfillment') }}</span>
     </li>
+
+    @can('workflows')
+        <li
+            class="side-nav-item nav-item {{ areActiveRoutes(['admin.workflows.index', 'admin.workflows.create', 'admin.workflows.edit'], 'tt-menu-item-active') }}">
+            <a href="{{ route('admin.workflows.index') }}" class="side-nav-link">
+                <span class="tt-nav-link-icon"><i data-feather="cpu"></i></span>
+                <span class="tt-nav-link-text">{{ localize('Lavorazioni') }}</span>
+            </a>
+        </li>
+    @endcan
+
     <!-- Logistics -->
     @can('logistics')
         <li
