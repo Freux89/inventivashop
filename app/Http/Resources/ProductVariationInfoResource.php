@@ -30,7 +30,8 @@ class ProductVariationInfoResource extends JsonResource
             'price'                     =>  getViewRender('pages.partials.products.variation-pricing', [
                 'product'               =>  $this->resource[0]['product'],
                 'price'                 =>  (float) variationPrice($this->resource[0]['product'], $this->resource),
-                'discounted_price'      =>  (float) variationDiscountedPrice($this->resource[0]['product'], $this->resource)
+                'discounted_price'      =>  (float) variationDiscountedPrice($this->resource[0]['product'], $this->resource),
+                'indicativeDeliveryDays' => (int) indicativeDeliveryDays($this->resource[0]['product'], $this->resource),
             ]),
             'stock'                     =>  $total_stock,
         ];

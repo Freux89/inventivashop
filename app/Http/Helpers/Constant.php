@@ -9,6 +9,7 @@ use App\Models\SystemSetting;
 use App\Models\Variation;
 use App\Models\VariationValue;
 use App\Models\OrderState;
+use App\Models\LogisticZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
@@ -782,6 +783,39 @@ if (!function_exists('variationDiscountedPrice')) {
     
         return $price;
     }
+}
+
+
+
+if (!function_exists('indicativeDeliveryDays')) {
+    function indicativeDeliveryDays($product, $variations)
+{
+    // Ottieni il tempo medio di spedizione dalla zona di spedizione più veloce
+    $fastestShipping = LogisticZone::min('average_delivery_days') ?? 0;
+
+    // Ottieni la durata della lavorazione del prodotto
+    $productWorkDuration = $product->workflows()->first()->duration ?? 0;
+
+    // Calcola la durata totale delle lavorazioni delle varianti selezionate
+    $variantsWorkDuration = 0;
+    
+    foreach ($variations as $variationInfo) {
+        // Estrai l'ID del valore della variante da 'variation_key'
+        list($variationTypeId, $variationValueId) = explode(':', rtrim($variationInfo['variation_key'], '/'));
+        
+        // Cerca l'oggetto VariationValue usando l'ID estratto
+        $variationValue = VariationValue::find($variationValueId);
+        if ($variationValue) {
+            $workDuration = $variationValue->workflows()->first()->duration ?? 0;
+            $variantsWorkDuration += $workDuration;
+        }
+    }
+
+    // La consegna indicativa è la somma dei giorni di lavorazione del prodotto, delle varianti e dei giorni di spedizione
+    $indicativeDeliveryDays = $productWorkDuration + $variantsWorkDuration + $fastestShipping;
+
+    return $indicativeDeliveryDays;
+}
 }
 
 if (!function_exists('variationTaxAmount')) {

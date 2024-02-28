@@ -10,6 +10,7 @@ use App\Models\ProductTag;
 use App\Models\ProductVariation;
 use App\Models\Tag;
 use App\Models\Category;
+use App\Models\LogisticZone;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -127,12 +128,25 @@ class ProductController extends Controller
                 $category = $parent; // Sposta il riferimento alla categoria genitore per il prossimo ciclo
             }
         }
-    
+
         $breadcrumbs = $breadcrumbs->unique('id')->values();
+
+        // Recupera la zona di spedizione con il minor tempo medio di consegna
+        $fastestZone = LogisticZone::orderBy('average_delivery_days', 'asc')->first();
+
+        // Controlla se il prodotto ha delle lavorazioni associate e calcola la loro durata totale
+        
+        $workflowsDuration = $product->workflows->first() ? $product->workflows->first()->duration : 0;
+
+        // Se non ci sono zone di spedizione configurate correttamente, imposta un valore di default
+        $fastestDeliveryDays = $fastestZone ? $fastestZone->average_delivery_days : 0;
+
+        // Calcola la consegna indicativa sommando i giorni di lavorazione ai giorni di spedizione più veloci
+        $indicativeDeliveryDays = $workflowsDuration + $fastestDeliveryDays;
 
         
 
-        return getView('pages.products.show', ['product' => $product, 'relatedProducts' => $relatedProducts, 'product_page_widgets' => $product_page_widgets, 'breadcrumbs' => $breadcrumbs]);
+        return getView('pages.products.show', ['product' => $product, 'relatedProducts' => $relatedProducts, 'product_page_widgets' => $product_page_widgets, 'breadcrumbs' => $breadcrumbs, 'indicativeDeliveryDays' => $indicativeDeliveryDays]);
     }
 
     # product info

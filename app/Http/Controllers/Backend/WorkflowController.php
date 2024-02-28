@@ -129,20 +129,33 @@ class WorkflowController extends Controller
         $workflow->save();
 
         // Gestione dei prodotti associati
-        // Rimozione di tutti i prodotti attualmente associati
-        $workflow->products()->detach();
-        // Se ci sono prodotti selezionati, li associa alla lavorazione
         if ($request->has('products')) {
-            $workflow->products()->attach($request->products);
+            foreach ($request->products as $productId) {
+                // Qui rimuovi l'associazione del prodotto da altre lavorazioni
+                Workflow::whereHas('products', function ($query) use ($productId) {
+                    $query->where('products.id', $productId);
+                })->each(function ($workflow) use ($productId) {
+                    $workflow->products()->detach($productId);
+                });
+            }
+            // Associazione dei prodotti selezionati alla nuova lavorazione
+            
         }
-
-        // Gestione delle varianti associate
-        // Rimozione di tutte le varianti attualmente associate
-        $workflow->variationValues()->detach();
-        // Se ci sono valori di varianti selezionati, li associa alla lavorazione
+$workflow->products()->sync($request->products);
+        // Rimozione delle associazioni dei valori delle varianti selezionati da altre lavorazioni
         if ($request->has('variation_values')) {
-            $workflow->variationValues()->attach($request->variation_values);
+            foreach ($request->variation_values as $variationValueId) {
+                // Qui rimuovi l'associazione del valore della variante da altre lavorazioni
+                Workflow::whereHas('variationValues', function ($query) use ($variationValueId) {
+                    $query->where('variation_values.id', $variationValueId);
+                })->each(function ($workflow) use ($variationValueId) {
+                    $workflow->variationValues()->detach($variationValueId);
+                });
+            }
+            // Associazione dei valori delle varianti selezionati alla nuova lavorazione
+            
         }
+$workflow->variationValues()->sync($request->variation_values);
 
         // Reindirizzamento con messaggio di successo
         return redirect()->route('admin.workflows.index')->with('success', 'Lavorazione aggiornata con successo.');

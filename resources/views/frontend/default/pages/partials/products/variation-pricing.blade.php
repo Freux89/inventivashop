@@ -8,3 +8,10 @@
 @if ($product->unit)
     <small>/{{ $product->unit->collectLocalization('name') }}</small>
 @endif
+
+<div class="mt-2">
+    <span class="fw-bold text-muted">Consegna Indicativa:</span>
+    @if($indicativeDeliveryDays > 0)
+        <span>{{ $indicativeDeliveryDays }} giorni lavorativi</span>
+    @endif
+</div>

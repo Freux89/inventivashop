@@ -35,3 +35,11 @@
 @if ($product->unit)
     <small>/{{ $product->unit->collectLocalization('name') }}</small>
 @endif
+
+<!-- Aggiungi qui il blocco per il tempo di consegna indicativo -->
+<div class="mt-2">
+    <span class="fw-bold text-muted">Consegna Indicativa:</span>
+    @if($indicativeDeliveryDays > 0)
+        <span>{{ $indicativeDeliveryDays }} giorni lavorativi</span>
+    @endif
+</div>
