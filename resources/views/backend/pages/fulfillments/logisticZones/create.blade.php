@@ -23,7 +23,7 @@
 
             <div class="row mb-4 g-4">
                 <!--left sidebar-->
-                <div class="col-xl-9 order-2 order-md-2 order-lg-2 order-xl-1">
+                <div class="col-xl-12 order-2 order-md-2 order-lg-2 order-xl-1">
                     <form action="{{ route('admin.logisticZones.store') }}" method="POST" class="pb-650">
                         @csrf
                         <!--basic information start-->
@@ -73,6 +73,14 @@
                                     <input type="text" name="standard_delivery_time" id="standard_delivery_time"
                                         placeholder="{{ localize('1 - 3 days') }}" class="form-control" required>
                                 </div>
+
+                                <div class="mb-4">
+                                <label for="average_delivery_days" class="form-label">{{ localize('Giorni Medi di Consegna') }}</label>
+                                <input type="number" name="average_delivery_days" id="average_delivery_days" placeholder="{{ localize('e.g., 2') }}" class="form-control" required value="">
+                                <span class="fs-sm text-muted">
+                                    {{ localize('Specifica il tempo medio di consegna in giorni. Il valore deve essere un numero intero.') }}
+                                </span>
+                            </div>
                             </div>
                         </div>
                         <!--basic information end-->

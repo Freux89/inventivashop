@@ -23,7 +23,7 @@
 
         <div class="row mb-4 g-4">
             <!--left sidebar-->
-            <div class="col-xl-9 order-2 order-md-2 order-lg-2 order-xl-1">
+            <div class="col-xl-12 order-2 order-md-2 order-lg-2 order-xl-1">
                 <form action="{{ route('admin.logisticZones.update') }}" method="POST" class="pb-650">
                     @csrf
                     <input type="hidden" name="id" value="{{ $logisticZone->id }}">
@@ -72,18 +72,25 @@
                             <!-- Campo per il costo dell'imballo -->
                             <div class="mb-4">
                                 <label for="packing_cost" class="form-label">{{ localize('Costo imballo') }}</label>
-                                <input type="number" step="0.001" name="packing_cost" id="packing_cost"  class="form-control" min="0" value="{{ $logisticZone->packing_cost ?? '' }}">
+                                <input type="number" step="0.001" name="packing_cost" id="packing_cost" class="form-control" min="0" value="{{ $logisticZone->packing_cost ?? '' }}">
                             </div>
 
                             <!-- Campo per il costo della spedizione assicurata -->
                             <div class="mb-4">
                                 <label for="insured_shipping_cost" class="form-label">{{ localize('Costo assicurazione') }}</label>
-                                <input type="number" step="0.001" name="insured_shipping_cost" id="insured_shipping_cost"  class="form-control" min="0" value="{{ $logisticZone->insured_shipping_cost ?? '' }}">
+                                <input type="number" step="0.001" name="insured_shipping_cost" id="insured_shipping_cost" class="form-control" min="0" value="{{ $logisticZone->insured_shipping_cost ?? '' }}">
                             </div>
 
                             <div class="mb-4">
                                 <label for="name" class="form-label">{{ localize('Standard Delivery Time') }}</label>
                                 <input type="text" name="standard_delivery_time" id="standard_delivery_time" placeholder="{{ localize('1 - 3 days') }}" class="form-control" required value="{{ $logisticZone->standard_delivery_time }}">
+                            </div>
+                            <div class="mb-4">
+                                <label for="average_delivery_days" class="form-label">{{ localize('Giorni Medi di Consegna') }}</label>
+                                <input type="number" name="average_delivery_days" id="average_delivery_days" placeholder="{{ localize('e.g., 2') }}" class="form-control" required value="{{ $logisticZone->average_delivery_days ?? '' }}">
+                                <span class="fs-sm text-muted">
+                                    {{ localize('Specifica il tempo medio di consegna in giorni. Il valore deve essere un numero intero.') }}
+                                </span>
                             </div>
                         </div>
                     </div>

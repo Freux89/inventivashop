@@ -75,6 +75,7 @@ class LogisticZonesController extends Controller
         $logisticZone->logistic_id = $request->logistic_id;
         $logisticZone->standard_delivery_charge = $request->standard_delivery_charge;
         $logisticZone->standard_delivery_time = $request->standard_delivery_time;
+        $logisticZone->average_delivery_days = $request->average_delivery_days;
         $logisticZone->save();
 
         foreach ($request->country_ids as $country_id) {
@@ -116,6 +117,7 @@ class LogisticZonesController extends Controller
         }
 
         $logisticZone->standard_delivery_time = $request->standard_delivery_time;
+        $logisticZone->average_delivery_days = $request->average_delivery_days;
         if ($request->express_delivery_charge) {
             $logisticZone->express_delivery_time = $request->express_delivery_time;
         }
