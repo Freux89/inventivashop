@@ -789,26 +789,26 @@ if (!function_exists('variationDiscountedPrice')) {
 
 if (!function_exists('indicativeDeliveryDays')) {
     function indicativeDeliveryDays($product, $variations)
-{
-    // Ottieni il tempo medio di spedizione dalla zona di spedizione più veloce
-    $fastestShipping = LogisticZone::min('average_delivery_days') ?? 0;
+    {
+        // Ottieni il tempo medio di spedizione dalla zona di spedizione più veloce
+        $fastestShipping = LogisticZone::min('average_delivery_days') ?? 0;
 
-    // Ottieni la durata della lavorazione del prodotto
-    $productWorkDuration = $product->workflows()->first()->duration ?? 0;
+        // Ottieni la durata della lavorazione del prodotto
+        $productWorkDuration = $product->workflows()->first()->duration ?? 0;
 
-    // Calcola la durata totale delle lavorazioni delle varianti selezionate
-    $variantsWorkDuration = 0;
+        // Calcola la durata totale delle lavorazioni delle varianti selezionate
+        $variantsWorkDuration = 0;
     
-    foreach ($variations as $variationInfo) {
-        // Estrai l'ID del valore della variante da 'variation_key'
-        list($variationTypeId, $variationValueId) = explode(':', rtrim($variationInfo['variation_key'], '/'));
+        foreach ($variations as $variationInfo) {
+            // Estrai l'ID del valore della variante da 'variation_key'
+            list($variationTypeId, $variationValueId) = explode(':', rtrim($variationInfo['variation_key'], '/'));
         
-        // Cerca l'oggetto VariationValue usando l'ID estratto
-        $variationValue = VariationValue::find($variationValueId);
-        if ($variationValue) {
-            $workDuration = $variationValue->workflows()->first()->duration ?? 0;
-            $variantsWorkDuration += $workDuration;
-        }
+            // Cerca l'oggetto VariationValue usando l'ID estratto
+            $variationValue = VariationValue::find($variationValueId);
+            if ($variationValue) {
+                $workDuration = $variationValue->workflows()->first()->duration ?? 0;
+                $variantsWorkDuration += $workDuration;
+            }
     }
 
     // La consegna indicativa è la somma dei giorni di lavorazione del prodotto, delle varianti e dei giorni di spedizione
@@ -1099,6 +1099,33 @@ function getTotalTax($carts, $shippingCost = 0, $insuranceCost = 0)
     return $total * $IVA;
 }
 
+}
+
+if (!function_exists('calculateOverallDeliveryTime')) {
+function calculateOverallDeliveryTime($carts,$logistic_zone)
+{
+    $longestDeliveryTime = 0;
+    
+    // Recupera il tempo medio di spedizione più veloce
+    $fastestShipping = LogisticZone::min('average_delivery_days') ?? 0;
+    
+    // Cerca il valore più alto di indicative_delivery_days tra i prodotti presenti nel carrello
+    foreach ($carts as $cart) {
+        // Sottrai il fastestShipping se è stato aggiunto a indicative_delivery_days in precedenza
+        $deliveryDays = max($cart->indicative_delivery_days - $fastestShipping, 0);
+        if ($deliveryDays > $longestDeliveryTime) {
+            $longestDeliveryTime = $deliveryDays;
+        }
+    }
+    
+    // Recupera i tempi di spedizione della spedizione selezionata
+    $selectedShippingTime = LogisticZone::where('id', $logistic_zone->id)->value('average_delivery_days') ?? 0;
+    
+    // Aggiungi i tempi di spedizione selezionati al tempo di consegna più lungo
+    $overallDeliveryTime = $longestDeliveryTime + $selectedShippingTime;
+    
+    return $overallDeliveryTime;
+}
 }
 
 if (!function_exists('getScheduledDeliveryType')) {

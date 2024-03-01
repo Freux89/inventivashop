@@ -81,6 +81,12 @@
             <td>(+) {{ localize('Tax') }}:</td>
             <td class="text-end">{{ formatPrice(getTotalTax($carts,$shipping,$insurance)) }}</td>
         </tr>
+        @isset($logistic_zone)
+        <tr>
+            <td>   {{ localize('Consegna indicativa') }}:</td>
+            <td class="text-end">{{calculateOverallDeliveryTime($carts,$logistic_zone)}} {{localize('giorni lavorativi')}}</td>
+        </tr>
+        @endisset
     </table>
 
     <span class="sidebar-spacer d-block my-4 opacity-50"></span>

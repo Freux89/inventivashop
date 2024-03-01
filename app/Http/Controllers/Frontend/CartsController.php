@@ -56,6 +56,7 @@ class CartsController extends Controller
             $cart = new Cart;
             $cart->qty = (int) $request->quantity;
             $cart->product_id = $productId;
+            $cart->indicative_delivery_days = (int) $request->indicativeDeliveryDays;
             $cart->location_id = session('stock_location_id');
             
             if (Auth::check()) {

@@ -43,12 +43,14 @@ class CheckoutController extends Controller
 
         $countries = Country::isActive()->get();
 
+        $logisticZone = LogisticZone::orderBy('average_delivery_days', 'asc')->first();
+
         return getView('pages.checkout.checkout', [
             'carts'     => $carts,
             'user'      => $user,
             'addresses' => $addresses,
             'billing_addresses' => $billing_addresses,
-            'countries' => $countries,
+            'countries' => $countries
         ]);
     }
 
@@ -56,10 +58,11 @@ class CheckoutController extends Controller
     public function getLogistic(Request $request)
     {
         $logisticZoneCountries = LogisticZoneCountry::where('country_id', $request->country_id)->distinct('logistic_id')->get();
-        
+        $carts = Cart::where('user_id', auth()->user()->id)->where('location_id', session('stock_location_id'))->get();
+
         return [
             'logistics' => getViewRender('inc.logistics', ['logisticZoneCountries' => $logisticZoneCountries]),
-            'summary'   => getViewRender('pages.partials.checkout.orderSummary', ['carts' => Cart::where('user_id', auth()->user()->id)->where('location_id', session('stock_location_id'))->get()])
+            'summary'   => getViewRender('pages.partials.checkout.orderSummary', ['carts' => $carts])
         ];
     }
 
@@ -80,7 +83,8 @@ class CheckoutController extends Controller
         return getViewRender('pages.partials.checkout.orderSummary', [
             'carts' => $carts,
             'shippingAmount' => $shippingAmount,
-            'insuranceCost' => $insuranceCost // Aggiungi il costo dell'assicurazione alla risposta
+            'insuranceCost' => $insuranceCost, // Aggiungi il costo dell'assicurazione alla risposta
+            'logistic_zone' => $logisticZone  
         ]);
     }
 

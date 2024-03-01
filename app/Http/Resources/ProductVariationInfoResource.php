@@ -24,6 +24,9 @@ class ProductVariationInfoResource extends JsonResource
             return $carry + ($item['product_variation_stock'] ? (int) $item['product_variation_stock']->stock_qty : 0);
         }, 0);
     
+
+        $indicativeDeliveryDays = indicativeDeliveryDays($this->resource[0]['product'], $this->resource);
+
         return [
             'ids'                       =>  $ids,
             'id'                        =>  (int) $this->resource[0]['id'],
@@ -31,9 +34,10 @@ class ProductVariationInfoResource extends JsonResource
                 'product'               =>  $this->resource[0]['product'],
                 'price'                 =>  (float) variationPrice($this->resource[0]['product'], $this->resource),
                 'discounted_price'      =>  (float) variationDiscountedPrice($this->resource[0]['product'], $this->resource),
-                'indicativeDeliveryDays' => (int) indicativeDeliveryDays($this->resource[0]['product'], $this->resource),
+                'indicativeDeliveryDays' => $indicativeDeliveryDays
             ]),
             'stock'                     =>  $total_stock,
+            'indicativeDeliveryDays' => $indicativeDeliveryDays
         ];
     }
     

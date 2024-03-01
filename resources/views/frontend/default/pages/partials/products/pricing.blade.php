@@ -37,9 +37,11 @@
 @endif
 
 <!-- Aggiungi qui il blocco per il tempo di consegna indicativo -->
+@isset($indicativeDeliveryDays)
 <div class="mt-2">
     <span class="fw-bold text-muted">Consegna Indicativa:</span>
     @if($indicativeDeliveryDays > 0)
         <span>{{ $indicativeDeliveryDays }} giorni lavorativi</span>
     @endif
 </div>
+@endisset

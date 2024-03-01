@@ -179,7 +179,7 @@
                     // $('.add-to-cart-form input[name=product_variation_id]').val(response.data
                     //     .id);
                     $('.add-to-cart-form input[name=product_variation_id]').val(response.data.ids.join(','));
-
+                    $('.add-to-cart-form input[name=indicativeDeliveryDays]').val(response.data.indicativeDeliveryDays);
                   //  $('.add-to-cart-form input[name=quantity]').prop('max', response.data.stock);
 
                     
