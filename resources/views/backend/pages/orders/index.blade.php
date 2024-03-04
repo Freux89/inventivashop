@@ -111,10 +111,12 @@
                                 </th>
                                 <th>{{ localize('Order Code') }}</th>
                                 <th data-breakpoints="xs sm md">{{ localize('Customer') }}</th>
-                                <th>{{ localize('Data') }}</th>
-                                <th data-breakpoints="xs">{{ localize('Products') }}</th>
+
+
                                 <th data-breakpoints="xs sm">{{ localize('Payment') }}</th>
                                 <th data-breakpoints="xs sm">{{ localize('Status') }}</th>
+                                <th data-breakpoints="xs">{{ localize('Totale') }}</th>
+                                <th>{{ localize('Data') }}</th>
                                 <!-- <th data-breakpoints="xs sm">{{ localize('Type') }}</th> -->
                                 <!-- @if (count($locations) > 0)
                                         <th data-breakpoints="xs sm">{{ localize('Location') }}</th>
@@ -135,25 +137,13 @@
 
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar avatar-md">
-                                            <img class="rounded-circle" src="{{ uploadedAsset(optional($order->user)->avatar) }}" alt="avatar" onerror="this.onerror=null;this.src='{{ staticAsset('backend/assets/img/placeholder-thumb.png') }}';" />
-                                        </div>
+
                                         <div class="ms-2">
                                             <h6 class="fs-sm mb-0">{{ optional($order->user)->name }}</h6>
                                             <span class="text-muted fs-sm">
-                                                {{ optional($order->user)->phone ?? '-' }}</span>
+                                                {{ optional($order->user)->email ?? '-' }}</span>
                                         </div>
                                     </div>
-                                </td>
-
-                                <td>
-                                    <span class="fs-sm">{{ date('d M, Y', strtotime($order->created_at)) }}</span>
-                                </td>
-
-                                <td class="tt-tb-price">
-                                    <span class="fw-bold">
-                                        {{ $order->orderItems()->count() }}
-                                    </span>
                                 </td>
 
                                 <td>
@@ -199,7 +189,12 @@
                                                 </span>
                                             </td>
                                         @endif -->
-
+                                        <td>
+                                        {{formatPrice($order->orderGroup->grand_total_amount)}}
+                                    </td>
+                                <td>
+                                    <span class="fs-sm">{{ date('d M, Y', strtotime($order->created_at)) }}</span>
+                                </td>
                                 <td class="text-end">
                                     @can('manage_orders')
                                     <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm p-0 tt-view-details" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizza dettagli">
