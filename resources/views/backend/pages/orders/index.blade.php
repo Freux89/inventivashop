@@ -190,7 +190,7 @@
                                             </td>
                                         @endif -->
                                         <td>
-                                        {{formatPrice($order->orderGroup->grand_total_amount)}}
+                                        {{ formatPrice($order->orderGroup->grand_total_amount) }}
                                     </td>
                                 <td>
                                     <span class="fs-sm">{{ date('d M, Y', strtotime($order->created_at)) }}</span>
