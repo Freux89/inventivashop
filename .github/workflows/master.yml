@@ -20,4 +20,4 @@ jobs:
         key: ${{ secrets.SITEGROUND_SSH_KEY }}
         port: 18765
         source: "."
-        target: "/home/cristianp81.sg-host.com/public_html"
+        target: "/cristianp81.sg-host.com/public_html"
