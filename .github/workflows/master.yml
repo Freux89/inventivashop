@@ -18,6 +18,6 @@ jobs:
         host: ${{ secrets.SITEGROUND_HOST }}
         username: ${{ secrets.SITEGROUND_USERNAME }}
         key: ${{ secrets.SITEGROUND_SSH_KEY }}
-        port: 22
+        port: 18765
         source: "."
         target: "/www/cristianp81.sg-host.com/public_html"
