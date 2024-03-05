@@ -1,0 +1,23 @@
+name: Deploy to SiteGround
+
+on:
+  push:
+    branches:
+      - master # o il tuo branch di produzione
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Deploy to SiteGround
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SITEGROUND_HOST }}
+        username: ${{ secrets.SITEGROUND_USERNAME }}
+        key: ${{ secrets.SITEGROUND_SSH_KEY }}
+        port: 22
+        source: "."
+        target: "/www/cristianp81.sg-host.com/public_html"
