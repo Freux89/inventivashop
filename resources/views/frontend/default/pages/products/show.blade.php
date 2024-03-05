@@ -83,7 +83,7 @@ $detailedProduct = $product;
             <div class="col-xl-12">
                 <div class="product-details">
                     <!-- product-view-box -->
-                    4
+                    5
                     @include(
                     'frontend.default.pages.partials.products.product-view-box',
                     compact('product'))
