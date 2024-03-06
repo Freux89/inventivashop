@@ -189,7 +189,7 @@ class CheckoutController extends Controller
             $order->shipping_delivery_type          = $request->shipping_delivery_type;
             
             $order->indicative_delivery_days          = calculateOverallDeliveryTime($carts,$logisticZone);
-            
+
             if ($request->shipping_delivery_type == getScheduledDeliveryType()) {
                 $timeSlot = ScheduledDeliveryTimeList::where('id', $request->timeslot)->first(['id', 'timeline']);
                 $timeSlot->scheduled_date = $request->scheduled_date;
@@ -222,7 +222,7 @@ class CheckoutController extends Controller
                     ];
 
                 // Aggiungi le varianti al array
-                foreach ($cart->product_variations as $variation) {
+                
                    
                     foreach ($cart->product_variations as $variation) {
                         // Controlla se la variation_key è null
@@ -234,7 +234,7 @@ class CheckoutController extends Controller
                         }
                     }
                     
-                }
+                
                 
 
                 // Aggiungi altri dettagli come necessario
