@@ -187,7 +187,9 @@ class CheckoutController extends Controller
             $order->logistic_id                     = $logisticZone->logistic_id;
             $order->logistic_name                   = optional($logisticZone->logistic)->name;
             $order->shipping_delivery_type          = $request->shipping_delivery_type;
-
+            
+            $order->indicative_delivery_days          = calculateOverallDeliveryTime($carts,$logisticZone);
+            
             if ($request->shipping_delivery_type == getScheduledDeliveryType()) {
                 $timeSlot = ScheduledDeliveryTimeList::where('id', $request->timeslot)->first(['id', 'timeline']);
                 $timeSlot->scheduled_date = $request->scheduled_date;

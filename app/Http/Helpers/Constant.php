@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ApiCurrencyMiddleWare;
+use Illuminate\Support\Carbon;
 use App\Models\Coupon;
 use App\Models\CouponUsage;
 use App\Models\Localization;
@@ -1126,6 +1127,35 @@ function calculateOverallDeliveryTime($carts,$logistic_zone)
     
     return $overallDeliveryTime;
 }
+}
+
+if (!function_exists('calculateEstimatedDeliveryDate')) {
+    function calculateEstimatedDeliveryDate($created_at, $indicative_delivery_days) {
+
+        if ($indicative_delivery_days == 0) {
+            return 'Data non calcolata';
+        }
+
+        $date = Carbon::createFromFormat('Y-m-d H:i:s', $created_at);
+    
+        // Aggiungi un giorno se l'ordine è stato creato dopo le 12:00
+        if ($date->hour >= 12) {
+            $date->addDay();
+        }
+    
+        $daysAdded = 0;
+        while ($daysAdded < $indicative_delivery_days) {
+            $date->addDay();
+    
+            // Se il giorno successivo non è né sabato (6) né domenica (0), incrementa il conteggio
+            if (!in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY])) {
+                $daysAdded++;
+            }
+        }
+    
+        return $date->format('d M, Y');
+
+    }
 }
 
 if (!function_exists('getScheduledDeliveryType')) {

@@ -117,6 +117,7 @@
                                 <th data-breakpoints="xs sm">{{ localize('Status') }}</th>
                                 <th data-breakpoints="xs">{{ localize('Totale') }}</th>
                                 <th>{{ localize('Data') }}</th>
+                                <th>{{ localize('Consegna stimata') }}</th>
                                 <!-- <th data-breakpoints="xs sm">{{ localize('Type') }}</th> -->
                                 <!-- @if (count($locations) > 0)
                                         <th data-breakpoints="xs sm">{{ localize('Location') }}</th>
@@ -194,6 +195,9 @@
                                     </td>
                                 <td>
                                     <span class="fs-sm">{{ date('d M, Y', strtotime($order->created_at)) }}</span>
+                                </td>
+                                <td>
+                                    <span class="fs-sm">{{ calculateEstimatedDeliveryDate($order->created_at,$order->indicative_delivery_days ) }}</span>
                                 </td>
                                 <td class="text-end">
                                     @can('manage_orders')
