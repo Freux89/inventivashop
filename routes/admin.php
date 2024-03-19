@@ -31,6 +31,7 @@ use App\Http\Controllers\Backend\Products\UnitsController;
 use App\Http\Controllers\Backend\Products\TaxesController;
 use App\Http\Controllers\Backend\Products\CategoriesController;
 use App\Http\Controllers\Backend\Products\ProductsController;
+use App\Http\Controllers\Backend\Products\ConditionGroupController;
 use App\Http\Controllers\Backend\Promotions\CouponsController;
 use App\Http\Controllers\Backend\Promotions\CampaignsController;
 use App\Http\Controllers\Backend\Pages\PagesController;
@@ -200,8 +201,18 @@ Route::group(
             Route::post('/material-details/update-status', [MaterialDetailController::class, 'updateStatus'])->name('admin.materialDetails.updateStatus');
             Route::get('/material-details/delete/{id}', [MaterialDetailController::class, 'delete'])->name('admin.materialDetails.delete');
 
-            
+            Route::get('/conditions', [ConditionGroupController::class, 'index'])->name('admin.conditions.index');
+            Route::get('/add-condition', [ConditionGroupController::class, 'create'])->name('admin.conditions.create');
+            Route::post('/condition', [ConditionGroupController::class, 'store'])->name('admin.conditions.store');
+            Route::get('/conditions/edit/{id}', [ConditionGroupController::class, 'edit'])->name('admin.conditions.edit');
+            Route::post('/conditions/update/{id}', [ConditionGroupController::class, 'update'])->name('admin.conditions.update');
+            Route::get('/conditions/delete/{id}', [ConditionGroupController::class, 'delete'])->name('admin.conditions.delete');
+            Route::get('/conditions/delete/{id}', [ConditionGroupController::class, 'delete'])->name('admin.conditions.delete');
 
+            Route::get('/product/variants', [ConditionGroupController::class, 'getProductVariations'])->name('admin.product.variations');
+            Route::get('/product/variant-values', [ConditionGroupController::class, 'getVariantValues'])->name('admin.product.variant.values');
+
+            
             # brands
             Route::get('/brands', [BrandsController::class, 'index'])->name('admin.brands.index');
             Route::post('/brand', [BrandsController::class, 'store'])->name('admin.brands.store');

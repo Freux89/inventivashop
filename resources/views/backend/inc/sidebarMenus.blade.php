@@ -13,7 +13,7 @@
         $productsActiveRoutes = ['admin.brands.index', 'admin.brands.edit', 'admin.units.index', 'admin.units.edit', 'admin.variations.index', 'admin.variations.edit', 'admin.variationValues.index', 'admin.variationValues.edit', 'admin.taxes.index', 'admin.taxes.edit', 'admin.categories.index', 'admin.categories.create', 'admin.categories.edit', 'admin.products.index', 'admin.products.create', 'admin.products.edit'];
     @endphp
 
-    @canany(['products', 'categories', 'variations', 'brands', 'units', 'taxes'])
+    @canany(['products', 'categories', 'variations','conditions','materials', 'brands', 'units', 'taxes'])
         <li class="side-nav-item nav-item {{ areActiveRoutes($productsActiveRoutes, 'tt-menu-item-active') }}">
             <a data-bs-toggle="collapse" href="#sidebarProducts"
                 aria-expanded="{{ areActiveRoutes($productsActiveRoutes, 'true') }}" aria-controls="sidebarProducts"
@@ -54,6 +54,13 @@
                                     'admin.variationValues.index',
                                     'admin.variationValues.edit',
                                 ]) }}">{{ localize('All Variations') }}</a>
+                        </li>
+                    @endcan
+                    @can('conditions')
+                        <li
+                            class="{{ areActiveRoutes(['admin.conditions.index', 'admin.conditions.create', 'admin.conditions.edit'], 'tt-menu-item-active') }}">
+                            <a href="{{ route('admin.conditions.index') }}"
+                                class="{{ areActiveRoutes(['admin.conditions.index', 'admin.conditions.create', 'admin.conditions.edit']) }}">{{ localize('Condizioni') }}</a>
                         </li>
                     @endcan
                     @can('materials')
