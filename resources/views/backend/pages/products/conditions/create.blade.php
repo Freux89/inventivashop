@@ -4,17 +4,6 @@
 {{ localize('Aggiungi Condizioni') }} {{ getSetting('title_separator') }} {{ getSetting('system_title') }}
 @endsection
 
-<style>
-    .condition-div {
-        background-color: #eeeeee;
-        border-radius: 10px;
-    }
-
-    .shutdown-action-div {
-        background-color: #f3f3f3;
-        border-radius: 10px;
-    }
-</style>
 
 @section('contents')
 <section class="tt-section pt-4">

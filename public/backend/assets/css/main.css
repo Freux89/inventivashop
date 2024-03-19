@@ -36766,3 +36766,7 @@ button.note-btn.dropdown-toggle:after {
     max-height: 200px; /* Adatta questa altezza alle tue necessità */
     overflow-y: auto; /* Permette lo scroll verticale se il contenuto supera l'altezza */
 }
+.shutdown-action-div {
+        background-color: var(--bs-card-cap-bg);
+        border-radius: 10px;
+    }
