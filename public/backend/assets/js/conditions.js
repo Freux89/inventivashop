@@ -105,6 +105,8 @@ $(document).ready(function () {
       }
       // Se l'utente conferma, pulisci le condizioni create
       $("#conditionFields").empty().hide();
+      selectedVariantValues = [];
+      selectedActionVariants = {};
     }
 
     // Aggiorna il valore corrente dopo la gestione della conferma
