@@ -111,6 +111,8 @@
 <script type="text/javascript">
     var variantsUrl = "{{ route('admin.product.variations') }}";
     var variantValuesUrl = "{{ route('admin.product.variant.values') }}";
+    var selectedVariantValues = [];
+    var selectedActionVariants = {};
 </script>
 <script src="{{ staticAsset('backend/assets/js/conditions.js') }}"></script>
 
