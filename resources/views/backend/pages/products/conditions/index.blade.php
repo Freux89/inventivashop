@@ -67,7 +67,7 @@
                                     <tr data-id="{{ $product->conditionGroups->first()->id }}">
                                         <td class="text-start">
 
-                                            <a href="{{ route('admin.conditions.edit', ['id' => $product->conditionGroups->first()->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}" class="d-inline-block">
+                                            <a href="{{ route('admin.conditions.edit', ['id' => $product->conditionGroups->first()->id, 'lang_key' => config('app.locale')]) }}" class="d-inline-block">
 
                                                 <h6 class="fs-sm mb-0">
                                                     {{ $product->name }}

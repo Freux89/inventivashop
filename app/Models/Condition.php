@@ -13,4 +13,8 @@ class Condition extends Model
     {
         return $this->hasMany(Action::class);
     }
+    public function productVariation()
+    {
+        return $this->belongsTo(ProductVariation::class);
+    }
 }

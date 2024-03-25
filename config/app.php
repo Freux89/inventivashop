@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => env('DEFAULT_LANGUAGE', 'en'),
+    'locale' => env('DEFAULT_LANGUAGE', 'it'),
     'currency_code' => env('DEFAULT_CURRENCY', 'usd'),
     'theme' => env('APP_THEME', 'default'),
 

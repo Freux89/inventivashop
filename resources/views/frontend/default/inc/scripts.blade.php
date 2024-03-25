@@ -175,7 +175,7 @@
                     $('.all-pricing').addClass('d-none');
                     $('.variation-pricing').removeClass('d-none');
                     $('.variation-pricing').html(response.data.price);
-
+                    $('#variants-container').html(response.data.variations_html);
                     // $('.add-to-cart-form input[name=product_variation_id]').val(response.data
                     //     .id);
                     $('.add-to-cart-form input[name=product_variation_id]').val(response.data.ids.join(','));
@@ -213,7 +213,7 @@
     // cart func
     function cartFunc() {
         // on selection of variation
-        $('.product-radio-btn input,.product-select').on('change', function() {
+        $('#variants-container').on('change', '.product-radio-btn input, .product-select', function() {
             getVariationInfo();
         });
 

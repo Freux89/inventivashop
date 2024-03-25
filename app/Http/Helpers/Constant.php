@@ -12,6 +12,7 @@ use App\Models\VariationValue;
 use App\Models\OrderState;
 use App\Models\LogisticZone;
 use Illuminate\Http\Request;
+use App\Models\Condition;
 use Illuminate\Support\Facades\Config;
 
 if (!function_exists('getTheme')) {
@@ -717,6 +718,33 @@ if (!function_exists('generateVariationOptions')) {
 }
 
 }
+
+if(!function_exists('prepareConditionsForVariations')){
+    function prepareConditionsForVariations($product, $productVariationIds){
+        $valuesToDisable = [];
+    
+        // Carica i gruppi di condizioni con le relative condizioni, azioni, e varianti prodotto influenzate
+        $filteredConditions = Condition::whereIn('product_variation_id', $productVariationIds)->with('actions.productVariations')->get();
+
+    
+        
+            foreach ($filteredConditions as $condition) {
+                foreach ($condition->actions as $action) {
+                    foreach ($action->productVariations as $affectedVariation) {
+                        
+                        $affectedValueId = $affectedVariation->variant_value_id;
+
+                        $valuesToDisable[] = $affectedValueId;
+                    }
+                }
+            }
+        
+    
+        // Restituisci l'array dei valori da disabilitare, assicurati che siano unici per evitare duplicati
+        return array_unique($valuesToDisable);
+    }
+}
+
 
 if (!function_exists('variationPrice')) {
     // return price of a variation

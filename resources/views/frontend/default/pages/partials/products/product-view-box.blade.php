@@ -46,7 +46,10 @@
                         @if (!$isVariantProduct) value="{{ $product->variations[0]->id }}" @endif>
 
                     <!-- variations -->
-                    @include('frontend.default.pages.partials.products.variations', compact('product'))
+                    <div id="variants-container">
+                        @include('frontend.default.pages.partials.products.variations', compact('product'))
+                    </div>
+                    
                     <!-- variations -->
 
                     <div class="d-flex align-items-center gap-3 flex-wrap mt-5">

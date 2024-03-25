@@ -13,7 +13,7 @@
 <ul class="product-radio-btn mt-1 mb-3 d-flex align-items-center gap-2 @if ($loop->last) mb-6 @endif">
     @foreach ($variation['values'] as $value)
     <li>
-        <input type="radio" name="variation_value_for_variation_{{ $variation['id'] }}" value="{{ $value['id'] }}" id="val-{{ $value['id'] }}">
+        <input type="radio" name="variation_value_for_variation_{{ $variation['id'] }}" value="{{ $value['id'] }}" id="val-{{ $value['id'] }}" {{ in_array($value['id'], $variation_value_ids ?? []) ? 'checked' : '' }} {{ in_array($value['id'], $conditionEffects ?? []) ? 'disabled' : '' }}>
         <label for="val-{{ $value['id'] }}">{{ $value['name'] }}</label>
     </li>
     @endforeach
@@ -22,7 +22,8 @@
 <select name="variation_value_for_variation_{{ $variation['id'] }}" class="product-select form-control" required>
 <option value="">Seleziona</option>
     @foreach ($variation['values'] as $value)
-    <option value="{{ $value['id'] }}">{{ $value['name'] }}</option>
+    
+    <option value="{{ $value['id'] }}" {{ in_array($value['id'], $variation_value_ids ?? []) ? 'selected' : '' }} {{ in_array($value['id'], $conditionEffects ?? []) ? 'disabled' : '' }}>{{ $value['name'] }}</option>
     @endforeach
 </select>
 @elseif ($variation['display_type'] == 'color')
@@ -30,7 +31,7 @@
     <div class="position-relative me-n4">
         @foreach ($variation['values'] as $value)
         <li>
-            <input type="radio" name="variation_value_for_variation_{{ $variation['id'] }}" value="{{ $value['id'] }}" id="val-{{ $value['id'] }}">
+            <input type="radio" name="variation_value_for_variation_{{ $variation['id'] }}" value="{{ $value['id'] }}" id="val-{{ $value['id'] }}" {{ in_array($value['id'], $variation_value_ids ?? []) ? 'checked' : '' }} {{ in_array($value['id'], $conditionEffects ?? []) ? 'disabled' : '' }}>
             <label for="val-{{ $value['id'] }}" class="px-1 py-2">
                 <span class="px-3 py-2 rounded" style="background-color:{{ $value['code'] }}">
                 </span>

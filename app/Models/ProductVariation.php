@@ -73,4 +73,21 @@ class ProductVariation extends Model
             }
         });
     }
+
+    public function getVariantIdAttribute()
+    {
+        list($variantId, ) = explode(':', rtrim($this->variation_key, '/'));
+        return (int) $variantId;
+    }
+
+    /**
+     * Restituisce l'ID del valore variante da variation_key.
+     *
+     * @return int
+     */
+    public function getVariantValueIdAttribute()
+    {
+        list(, $valueId) = explode(':', rtrim($this->variation_key, '/'));
+        return (int) $valueId;
+    }
 }
