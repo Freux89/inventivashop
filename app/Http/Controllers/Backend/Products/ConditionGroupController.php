@@ -79,14 +79,20 @@ class ConditionGroupController extends Controller
                     ]);
                     $condition->save();
 
-                    foreach ($conditionData['action'] ?? [] as $actionData) {
-                        if (!empty($actionData['shutdownVariantValue'])) { // Controlla che l'azione abbia valori varianti selezionati
-                            $action = new Action([
-                                'condition_id' => $condition->id,
-                                'action_type' => 'Spegni', // Tipo di azione, "Spegni" come default
-                            ]);
-                            $action->save();
+                    
 
+                    foreach ($conditionData['action'] ?? [] as $actionData) {
+                        $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
+                      
+                        $action = new Action([
+                            'condition_id' => $condition->id,
+                            'action_type' => 'Spegni',
+                            'variant_id' => $actionData['shutdownVariant'],
+                            'apply_to_all' => $applyToAll,
+                        ]);
+                        $action->save();
+                    
+                        if (!$applyToAll) {
                             foreach ($actionData['shutdownVariantValue'] as $variantValueId) {
                                 $actionProductVariation = new ActionProductVariation([
                                     'action_id' => $action->id,
@@ -151,13 +157,17 @@ class ConditionGroupController extends Controller
                     $condition->save();
     
                     foreach ($conditionData['action'] ?? [] as $actionData) {
-                        if (!empty($actionData['shutdownVariantValue'])) { // Controlla che l'azione abbia valori varianti selezionati
-                            $action = new Action([
-                                'condition_id' => $condition->id,
-                                'action_type' => 'Spegni', // Tipo di azione, "Spegni" come default
-                            ]);
-                            $action->save();
-
+                        $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
+                      
+                        $action = new Action([
+                            'condition_id' => $condition->id,
+                            'action_type' => 'Spegni',
+                            'variant_id' => $actionData['shutdownVariant'],
+                            'apply_to_all' => $applyToAll,
+                        ]);
+                        $action->save();
+                    
+                        if (!$applyToAll) {
                             foreach ($actionData['shutdownVariantValue'] as $variantValueId) {
                                 $actionProductVariation = new ActionProductVariation([
                                     'action_id' => $action->id,
@@ -167,6 +177,7 @@ class ConditionGroupController extends Controller
                             }
                         }
                     }
+                    
                 }
             }
     

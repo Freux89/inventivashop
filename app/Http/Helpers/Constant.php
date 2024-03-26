@@ -728,16 +728,25 @@ if(!function_exists('prepareConditionsForVariations')){
 
     
         
-            foreach ($filteredConditions as $condition) {
-                foreach ($condition->actions as $action) {
+        foreach ($filteredConditions as $condition) {
+            foreach ($condition->actions as $action) {
+                if ($action->apply_to_all) {
+                    // Se l'azione si applica a tutti i valori, aggiungi l'ID della variante all'array $variantsToDisable
+                    $variantsToDisable[] = $action->variant_id;
+                } else {
                     foreach ($action->productVariations as $affectedVariation) {
-                        
                         $affectedValueId = $affectedVariation->variant_value_id;
-
                         $valuesToDisable[] = $affectedValueId;
                     }
                 }
             }
+        }
+    
+        // Se ci sono varianti da disabilitare completamente, raccogli tutti i valori varianti per quelle varianti
+        if (!empty($variantsToDisable)) {
+            $variantValuesToDisable = VariationValue::whereIn('variation_id', $variantsToDisable)->pluck('id')->toArray();
+            $valuesToDisable = array_merge($valuesToDisable, $variantValuesToDisable);
+        }
         
     
         // Restituisci l'array dei valori da disabilitare, assicurati che siano unici per evitare duplicati

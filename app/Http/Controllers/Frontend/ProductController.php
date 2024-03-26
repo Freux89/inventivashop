@@ -161,6 +161,7 @@ class ProductController extends Controller
     public function getVariationInfo(Request $request)
 {
     $product_id = $request->product_id;
+    
     $variation_ids = $request->variation_id;
 
     $product_price = Product::find($product_id)->price;
@@ -178,7 +179,7 @@ class ProductController extends Controller
     }
     
     
-    return new ProductVariationInfoResource($productVariations);
+    return new ProductVariationInfoResource($productVariations,$product_id);
 }
 
 public function category(Request $request,$categorySlug)

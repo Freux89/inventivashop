@@ -1,5 +1,17 @@
 @if (count(generateVariationOptions($product->ordered_variation_combinations)) > 0)
 @foreach (generateVariationOptions($product->ordered_variation_combinations) as $variation)
+
+@php
+    // Determina se tutti i valori sono disabilitati
+    $allDisabled = true;
+    foreach ($variation['values'] as $value) {
+        if (!in_array($value['id'], $conditionEffects ?? [])) {
+            $allDisabled = false;
+            break;
+        }
+    }
+@endphp
+
 <input type="hidden" name="variation_id[]" value="{{ $variation['id'] }}" class="variation-for-cart">
 <input type="hidden" name="product_id" value="{{ $product->id }}">
 
@@ -19,7 +31,7 @@
     @endforeach
 </ul>
 @elseif ($variation['display_type'] == 'select')
-<select name="variation_value_for_variation_{{ $variation['id'] }}" class="product-select form-control" required>
+<select name="variation_value_for_variation_{{ $variation['id'] }}" class="product-select form-control" {{ $allDisabled ? '' : 'required' }}>
 <option value="">Seleziona</option>
     @foreach ($variation['values'] as $value)
     

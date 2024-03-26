@@ -1,4 +1,3 @@
-
 @php
 if(isset($condition)){
 $productVariation = App\Models\ProductVariation::find($condition->product_variation_id);
@@ -14,7 +13,7 @@ $selectedValueId = $condition->product_variation_id;
     <div class="card-header" id="heading{{ $conditionIndex }}">
         <h5 class="mb-0">
             <button class="btn btn-link w-100 text-start" data-bs-toggle="collapse" type="button" data-bs-target="#collapse{{ $conditionIndex }}" aria-expanded="true" aria-controls="collapse{{ $conditionIndex }}">
-                Condizione {{ $conditionIndex + 1 }} 
+                Condizione {{ $conditionIndex + 1 }}
                 <i class="fas fa-trash float-end ms-3 delete-condition" style="cursor:pointer;" title="Elimina condizione"></i>
                 <i class="fas @if(!isset($selectedValueId)) fa-chevron-up @else fa-chevron-down @endif float-end"></i>
             </button>
@@ -51,26 +50,34 @@ $selectedValueId = $condition->product_variation_id;
                 @if(isset($condition))
                 @forelse($condition->actions as $actionIndex => $action)
                 @php
-                $productVariation = $action->productVariations->first();
-                $variationKeys = explode(':', rtrim($productVariation->variation_key, '/'));
-                $selectedVariantId = $variationKeys[0];
-                $values = app('App\Http\Controllers\Backend\Products\ConditionGroupController')->getVariantValuesArray($productId, $selectedVariantId);
-                $selectedValuesId = $action->productVariations->pluck('id');
-                @endphp
-                @include('backend.pages.partials.conditions.actionVariantSelect', [
-                    'actionIndex' => $actionIndex,
-                    'conditionIndex' => $conditionIndex,
-                    'selectedVariantId' => $selectedVariantId,
-                    'variations' => $variations,
-                    'action' => $action,
-                    'values' => $values,
-                    'selectedValuesId' => $selectedValuesId
-                ])
-
+                $applyToAll = $action->apply_to_all;
+                $selectedActionVariantId = $action->variant_id;
+                $values = app('App\Http\Controllers\Backend\Products\ConditionGroupController')->getVariantValuesArray($productId, $selectedActionVariantId);
+                $selectedValuesId = collect([]);
                 
 
+                if (!$applyToAll) {
+                $productVariation = $action->productVariations->first();
+                if ($productVariation) {
+                $variationKeys = explode(':', rtrim($productVariation->variation_key, '/'));
+                
+                $selectedValuesId = $action->productVariations->pluck('id');
+                }
+                }
+                @endphp
+                @include('backend.pages.partials.conditions.actionVariantSelect', [
+                'actionIndex' => $actionIndex,
+                'conditionIndex' => $conditionIndex,
+                'selectedActionVariantId' => $selectedActionVariantId,
+                'selectedVariantId' => $selectedVariantId,
+                'variations' => $variations,
+                'action' => $action,
+                'values' => $values,
+                'selectedValuesId' => $selectedValuesId,
+                'applyToAll' => $applyToAll,
+                ])
                 @empty
-
+                <!-- Gestisci il caso in cui non ci siano azioni -->
                 @endforelse
                 @endif
             </div>

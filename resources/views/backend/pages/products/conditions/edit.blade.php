@@ -110,16 +110,12 @@
 
         // Supponendo che ogni condizione abbia un array di `actions`
         condition.actions.forEach(function(action, actionIndex) {
-        if (action.product_variations && action.product_variations.length > 0) {
+        if (action.variant_id) {
             // Ottieni il variation_key della prima product_variation associata
-            let variationKey = action.product_variations[0].variation_key;
-            if (variationKey) {
-                // Estrai la prima cifra dal variation_key
-                let firstNumber = variationKey.match(/\d+/) ? variationKey.match(/\d+/)[0] : null;
-                if (firstNumber) {
-                    selectedActionVariants[conditionIndex][actionIndex] = firstNumber;
-                }
-            }
+            
+            selectedActionVariants[conditionIndex][actionIndex] = action.variant_id.toString();
+                
+            
         }
     });
     });
