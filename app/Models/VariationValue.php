@@ -10,7 +10,7 @@ use App;
 class VariationValue extends Model
 {
     use HasFactory;
-    
+
     protected $with = ['variation_value_localizations'];
     protected $fillable = [
         'position',
@@ -23,11 +23,11 @@ class VariationValue extends Model
 
         static::addGlobalScope(new OrderByPositionScope);
     }
-    
+
     public function scopeIsActive($query)
     {
         return $query->where('is_active', 1);
-    } 
+    }
 
     public function collectLocalization($entity = '', $lang_key = '')
     {
@@ -44,5 +44,25 @@ class VariationValue extends Model
     public function workflows()
     {
         return $this->belongsToMany(Workflow::class, 'variation_value_workflows');
+    }
+
+    protected static function booted()
+    {
+        static::deleted(function ($variationValue) {
+            
+                // Gestisci il soft delete
+                $productVariations = ProductVariation::all();
+
+                foreach ($productVariations as $productVariation) {
+                    
+                    // Utilizza l'accessor per ottenere l'ID del valore variante in snake case
+                    if ($productVariation->variant_value_id === $variationValue->id) {
+                        
+                        $productVariation->delete(); // o ->forceDelete() se vuoi una cancellazione forzata
+                    }
+                }
+                ProductVariationCombination::where('variation_value_id', $variationValue->id)->delete();
+          
+        });
     }
 }

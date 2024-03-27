@@ -76,8 +76,21 @@ class ProductVariation extends Model
 
     public function getVariantIdAttribute()
     {
-        list($variantId, ) = explode(':', rtrim($this->variation_key, '/'));
-        return (int) $variantId;
+        // Verifica se variation_key è null o non contiene ':'.
+        if ($this->variation_key === null || !strpos($this->variation_key, ':')) {
+            return null; // Restituisce null o un altro valore appropriato.
+        }
+
+        // Procede con l'elaborazione se variation_key non è null e contiene ':'.
+        $parts = explode(':', rtrim($this->variation_key, '/'));
+
+        // Assicurati che l'array $parts abbia almeno un elemento prima di tentare di accedere all'indice [0].
+        if (count($parts) >= 1) {
+            return (int) $parts[0];
+        }
+
+        // Restituisce null (o un altro valore predefinito) se il formato non è corretto.
+        return null;
     }
 
     /**
@@ -87,7 +100,20 @@ class ProductVariation extends Model
      */
     public function getVariantValueIdAttribute()
     {
-        list(, $valueId) = explode(':', rtrim($this->variation_key, '/'));
-        return (int) $valueId;
+        // Prima verifica se variation_key è null.
+        if ($this->variation_key === null) {
+            return null; // o un altro valore che consideri appropriato per indicare l'assenza di dati.
+        }
+
+        // Successivamente, procedi con l'elaborazione se variation_key non è null.
+        $parts = explode(':', rtrim($this->variation_key, '/'));
+
+        // Verifica che l'array $parts abbia almeno due elementi prima di tentare di accedere all'indice [1].
+        if (count($parts) >= 2) {
+            return (int) $parts[1];
+        }
+
+        // Restituisce null (o un altro valore predefinito) se il formato non è corretto.
+        return null;
     }
 }

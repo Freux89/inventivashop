@@ -61,4 +61,21 @@ class Variation extends Model
         }])
         ->get();
     }
+
+    protected static function booted()
+    {
+        static::deleted(function ($variant) {
+            // Recupera tutti i ProductVariation
+            $productVariations = ProductVariation::all();
+
+            foreach ($productVariations as $productVariation) {
+                // Utilizza l'accessor per ottenere l'ID della variante
+                if ($productVariation->variant_id === $variant->id) {
+                    // Cancella il ProductVariation associato alla variante eliminata
+                    $productVariation->delete(); // o ->forceDelete() se desideri una cancellazione forzata
+                }
+            }
+            ProductVariationCombination::where('variation_id', $variant->id)->delete();
+        });
+    }
 }
