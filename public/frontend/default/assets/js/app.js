@@ -41,12 +41,12 @@ jQuery(function ($) {
 
     //3.sticky header
     $(window).on("scroll", function () {
-        let scrollbarPosition = $(this).scrollTop();
-        if (scrollbarPosition > 100) {
-            $(".header-sticky").addClass("sticky-on");
-        } else {
-            $(".header-sticky").removeClass("sticky-on");
-        }
+        // let scrollbarPosition = $(this).scrollTop();
+        // if (scrollbarPosition > 100) {
+        //     $(".header-sticky").addClass("sticky-on");
+        // } else {
+        //     $(".header-sticky").removeClass("sticky-on");
+        // }
     });
 
     // 2. swiper slider for all carousel
