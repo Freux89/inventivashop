@@ -265,6 +265,7 @@ M
                 </div>
             </div>
             <div class="row">
+                
             <nav class="gshop-navmenu d-none d-lg-block p-0 my-3">
                             <ul class="d-flex align-itmes-center justify-content-start">
                                 <li><a href="{{ route('home') }}">{{ localize('Home') }}</a></li>
@@ -323,6 +324,8 @@ M
                                         @endforeach
                                     </ul>
                                 </li>
+
+                                
                             </ul>
                         </nav>
             </div>

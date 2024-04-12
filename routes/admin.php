@@ -26,6 +26,8 @@ use App\Http\Controllers\Backend\Products\VariationValuesController;
 use App\Http\Controllers\Backend\Products\MaterialController;
 use App\Http\Controllers\Backend\Products\MaterialDetailController;
 use App\Http\Controllers\Backend\WorkflowController;
+use App\Http\Controllers\Backend\MenuController;
+use App\Http\Controllers\Backend\MenuItemController;
 use App\Http\Controllers\Backend\Products\BrandsController;
 use App\Http\Controllers\Backend\Products\UnitsController;
 use App\Http\Controllers\Backend\Products\TaxesController;
@@ -383,6 +385,25 @@ Route::group(
 
         # media manager 
         Route::get('/media-manager', [MediaManagerController::class, 'index'])->name('admin.mediaManager.index');
+
+
+        # menu manager
+
+        Route::get('/menus', [MenuController::class, 'index'])->name('admin.menus.index');
+        Route::get('/menus/create', [MenuController::class, 'create'])->name('admin.menus.create');
+        Route::get('/menus/edit/{id}', [MenuController::class, 'edit'])->name('admin.menus.edit');
+        Route::post('/menus', [MenuController::class, 'store'])->name('admin.menus.store');
+        Route::put('/menus/update/{id}', [MenuController::class, 'update'])->name('admin.menus.update');
+        Route::get('/menus/delete/{id}', [MenuController::class, 'destroy'])->name('admin.menus.delete');
+
+        // MenuItems
+        Route::get('/menus/{menu}/items', [MenuItemController::class, 'index'])->name('admin.menuitems.index');
+        Route::get('/menus/{menu}/items/create', [MenuItemController::class, 'create'])->name('admin.menuitems.create');
+        Route::get('/menus/{menu}/items/edit/{id}', [MenuItemController::class, 'edit'])->name('admin.menuitems.edit');
+        Route::post('/menus/{menu}/items', [MenuItemController::class, 'store'])->name('admin.menuitems.store');
+        Route::post('/menus/{menu}/items/update/{id}', [MenuItemController::class, 'update'])->name('admin.menuitems.update');
+        Route::get('/menus/{menu}/items/delete/{id}', [MenuItemController::class, 'destroy'])->name('admin.menuitems.delete');
+
 
         # bulk-emails
         Route::controller(NewslettersController::class)->group(function () {

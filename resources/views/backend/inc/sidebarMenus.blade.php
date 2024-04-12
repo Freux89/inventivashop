@@ -300,6 +300,15 @@
         <span class="tt-nav-title-text">{{ localize('Contents') }}</span>
     </li>
 
+    @can('menus')
+    <li class="side-nav-item nav-item {{ areActiveRoutes(['admin.menus.index', 'admin.menus.create', 'admin.menus.edit'], 'tt-menu-item-active') }}">
+        <a href="{{ route('admin.menus.index') }}" class="side-nav-link">
+            <span class="tt-nav-link-icon"><i data-feather="menu"></i></span>
+            <span class="tt-nav-link-text">{{ localize('Gestione Menu') }}</span>
+        </a>
+    </li>
+@endcan
+
     <!-- tags -->
     @php
         $tagsActiveRoutes = ['admin.tags.index', 'admin.tags.edit'];
