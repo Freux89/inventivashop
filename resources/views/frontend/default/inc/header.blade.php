@@ -1,4 +1,4 @@
-<header class="gheader position-relative z-2 header-sticky">
+<header class="gheader position-relative z-2 header-sticky pb-6 pb-lg-0">
     
     <div class="ghead-topbar bg-gray d-none d-lg-block">
         <div class="container">
@@ -141,7 +141,7 @@
     </div>
     </div>
     <div class="container">
-        <div class="gshop-navbar rounded position-relative py-6 px-2 px-md-6">
+        <div class="gshop-navbar rounded position-relative pt-6 px-2 px-md-6">
             <div class="row align-items-center justify-content-between">
 <div class="col-4 d-block d-md-none">
 M

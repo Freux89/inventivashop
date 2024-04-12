@@ -10441,7 +10441,6 @@ progress {
     }
 }
 .display-4 {
-    font-size: calc(1.475rem + 2.7vw);
     font-weight: 700;
     line-height: 1;
     color:var(--in-primary-dark-3);
@@ -26522,9 +26521,6 @@ body {
         transform: translate3d(0, 0, 0);
     }
 }
-.gshop-hero {
-    margin-top: -55px;
-}
 .gshop-hero .leaf-shape {
     right: 60px;
     top: 40px;
@@ -28364,4 +28360,15 @@ blockquote::before {
 .promo-banner{
     background-color:var(--in-primary-dark-5);
     color:var(--in-primary-dark-7);
+}
+
+.features-strip{
+    background-color:var(--in-primary-dark-6);
+    color:var(--in-primary-dark-3);
+    height:135px;
+    font-weight: 700;
+    font-size: 14px;
+}
+.features-strip svg{
+    margin-bottom:10px;
 }
