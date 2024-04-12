@@ -14108,7 +14108,7 @@ fieldset:disabled .btn {
     border-top-right-radius: 0;
 }
 .nav {
-    --bs-nav-link-padding-x: 1rem;
+    --bs-nav-link-padding-x: 1.8rem;
     --bs-nav-link-padding-y: 0.5rem;
     --bs-nav-link-font-weight: ;
     --bs-nav-link-color: var(--bs-link-color);

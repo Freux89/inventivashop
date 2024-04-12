@@ -2,12 +2,12 @@
     
     <div class="ghead-topbar bg-gray d-none d-lg-block">
         <div class="container">
-            <div class="row align-items-center px-6">
+            <div class="row align-items-center px-8">
                 <div class="col-12 p-0">
-                    <div class="topbar-nav">
+                    <div class="topbar-nav fw-bold">
                         <ul class="nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="#">FAQ</a>
+                                <a class="nav-link ps-0" href="#">FAQ</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Blog</a>
@@ -152,7 +152,7 @@ M
                         <img src="{{ asset('public/frontend/default/assets/img/logo-dark.svg') }}" alt="logo" class="img-fluid logo-dark">
                     </a>
                 </div>
-                <div class="col-xxl-5 col-xl-6 col-md-5 col-3 d-none d-md-block">
+                <div class="col-xxl-5 col-xl-6 col-md-5 col-3 d-none d-md-block ps-6">
                     <form class="search-form d-flex align-items-center" action="{{ route('products.index') }}">
                         <button type="submit" class="submit-icon-btn-secondary"><i class="fa-solid fa-magnifying-glass"></i></button>
 
