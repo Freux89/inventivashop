@@ -46,7 +46,7 @@ $section = [
 
 
             @foreach ($section['columns'] as $column)
-            <div class="col-6 col-md-{{ $column['columnWidth'] }} p-0">
+            <div class="{{ $column['columnWidth'] == 3 ? 'col-6' : 'col-12' }} col-md-{{ $column['columnWidth'] }} p-0 mb-6 mb-md-0">
                 <img src="{{ uploadedAsset($column['imageId']) }}" alt="Image {{ $loop->index + 1 }}" class="img-fluid img-adaptive-height">
                 <div class="title fw-bold" style="color: {{ $column['columnTitleColor'] }}">{{ $column['columnTitle'] }}</div>
                 <ul class="star-rating fs-sm d-inline-flex text-warning w-100">
