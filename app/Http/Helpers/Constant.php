@@ -378,15 +378,20 @@ if (!function_exists('renderStarRating')) {
 if (!function_exists('renderStarRatingFront')) {
     # render ratings frontend
     function renderStarRatingFront($rating, $maxRating = 5)
-    {
-        $fullStar = '<li><i class="fas fa-star"></i></li>';
+{
+    $fullStar = '<li><i class="fas fa-star"></i></li>';
+    $emptyStar = '<li><i class="far fa-star"></i></li>'; // assuming you're using FontAwesome's regular star for empty ones
 
-        $rating = $rating <= $maxRating ? $rating : $maxRating;
-        $fullStarCount = (int)$rating;
+    $rating = $rating <= $maxRating ? $rating : $maxRating;
+    $fullStarCount = (int)$rating;
+    $emptyStarCount = $maxRating - $fullStarCount;
 
-        $html = str_repeat($fullStar, $fullStarCount);
-        echo $html;
-    }
+    $html = str_repeat($fullStar, $fullStarCount);
+    $html .= str_repeat($emptyStar, $emptyStarCount);
+
+    echo $html; // or return $html; if you prefer to use return instead of echo
+}
+
 }
 
 if (!function_exists('formatPrice')) {

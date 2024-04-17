@@ -32,16 +32,24 @@
 
     //isotop filter grid 
     function initIsotop() {
-        var $filter_grid = $(".filter_group").isotope({});
-        $(".filter-btns").on("click", "button", function() {
-            var filterValue = $(this).attr("data-filter");
-            $filter_grid.isotope({
-                filter: filterValue,
-            });
-            $(this).parent().find("button.active").removeClass("active");
-            $(this).addClass("active");
+    var $filter_grid = $(".filter_group").isotope({
+        itemSelector: '.filter_item',  // Assicurati di includere la selezione degli elementi
+        layoutMode: 'fitRows'         // Questo mantiene gli elementi allineati correttamente
+    });
+
+    // Applica il filtro iniziale basato sul bottone con classe 'active'
+    var initialFilter = $(".filter-btns button.active").attr("data-filter");
+    $filter_grid.isotope({ filter: initialFilter });
+
+    $(".filter-btns").on("click", "button", function() {
+        var filterValue = $(this).attr("data-filter");
+        $filter_grid.isotope({
+            filter: filterValue,
         });
-    }
+        $(this).siblings('button').removeClass("active");
+        $(this).addClass("active");
+    });
+}
 
     // copy coupon code
     $(function() {

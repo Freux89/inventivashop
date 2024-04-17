@@ -7592,7 +7592,7 @@ img.mfp-img {
     font-style: normal;
 }
 :root {
-    --swiper-theme-color: #007aff;
+    --swiper-theme-color: var(--in-primary-2);
 }
 .swiper {
     margin-left: auto;
@@ -7624,6 +7624,19 @@ img.mfp-img {
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
 }
+
+.carousel-section .swiper-slide {
+    border-top: 2px solid var(--in-primary-2);
+    padding-top: 15px;
+}
+.carousel-section .swiper-slide .title {
+    color:var(--in-primary-dark-3);
+    font-weight:700;
+    font-size:18px;
+    margin-top:25px;
+    margin-bottom: 10px;
+}
+
 .swiper-android .swiper-slide,
 .swiper-wrapper {
     -webkit-transform: translate3d(0px, 0, 0);
@@ -7898,7 +7911,7 @@ img.mfp-img {
     display: none;
 }
 .swiper-pagination {
-    position: absolute;
+   margin-top:40px;
     text-align: center;
     -webkit-transition: 0.3s opacity;
     transition: 0.3s opacity;
@@ -7957,16 +7970,15 @@ img.mfp-img {
 .swiper-pagination-bullet {
     width: var(
         --swiper-pagination-bullet-width,
-        var(--swiper-pagination-bullet-size, 8px)
+        var(--swiper-pagination-bullet-size, 15px)
     );
     height: var(
         --swiper-pagination-bullet-height,
-        var(--swiper-pagination-bullet-size, 8px)
+        var(--swiper-pagination-bullet-size, 15px)
     );
     display: inline-block;
     border-radius: 50%;
-    background: var(--swiper-pagination-bullet-inactive-color, #000);
-    opacity: var(--swiper-pagination-bullet-inactive-opacity, 0.2);
+    background: var(--in-secondary-5);
 }
 button.swiper-pagination-bullet {
     border: none;
@@ -8020,7 +8032,7 @@ button.swiper-pagination-bullet {
 .swiper-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet,
 .swiper-pagination-horizontal.swiper-pagination-bullets
     .swiper-pagination-bullet {
-    margin: 0 var(--swiper-pagination-bullet-horizontal-gap, 4px);
+    margin: 0 var(--swiper-pagination-bullet-horizontal-gap, 2px);
 }
 .swiper-horizontal
     > .swiper-pagination-bullets.swiper-pagination-bullets-dynamic,
@@ -10039,6 +10051,8 @@ a.ui-button:active,
     --in-primary-dark-6:#f4f8f8;
     --in-primary-dark-7:#ffffff;
     --in-primary-dark-8:#000000;
+
+    
 }
 *,
 *::before,
@@ -10547,11 +10561,10 @@ progress {
     --bs-gutter-x: 1.5rem;
     --bs-gutter-y: 0;
     width: 100%;
-    padding-right: calc(var(--bs-gutter-x) * 0.5);
-    padding-left: calc(var(--bs-gutter-x) * 0.5);
     margin-right: auto;
     margin-left: auto;
 }
+
 
 @media (min-width: 1980px) {
     .container-xxl,
@@ -10562,6 +10575,17 @@ progress {
     .container {
         max-width: 1920px;
     }
+}
+
+.content-wrapper{
+    max-width:1680px;
+    width:100%;
+    margin:0 auto;
+}
+@media (max-width: 1680px) {
+    .content-wrapper {
+            padding: 0 1.5rem;
+        }
 }
 .row {
     --bs-gutter-x: 1.5rem;
@@ -23965,6 +23989,7 @@ body {
     visibility: hidden;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
+    display:none;
 }
 .gshop-header-user:hover .header-icon svg path {
     fill: rgb(var(--bs-primary-rgb));
@@ -23973,6 +23998,7 @@ body {
     top: 100%;
     opacity: 1;
     visibility: visible;
+    display:block;
 }
 .gshop-header-search .dropdown-menu {
     min-width: 20rem;
@@ -24008,6 +24034,7 @@ body {
     right: -50px;
     z-index: 2;
     opacity: 0;
+    display:none;
     visibility: hidden;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
@@ -24064,6 +24091,7 @@ body {
     opacity: 1;
     visibility: visible;
     top: 100%;
+    display:block;
 }
 .gshop-header-contact::before {
     left: -24px;
@@ -24743,6 +24771,13 @@ body {
 }
 .horizontal-product-card .card-content .star-rating {
     font-size: 12px;
+}
+.star-rating i{
+    color: var(--in-primary-1);
+}
+.star-rating li {
+    margin-right: 5px;
+    font-size: 14px;
 }
 .horizontal-product-card .card-content .title {
     color: #191d28;
@@ -25988,6 +26023,12 @@ body {
 }
 .tt-theme-dark {
     display: none;
+}
+.section-title{
+    color:var(--in-primary-dark-3);
+    font-size:28px;
+    font-weight:700;
+    margin-bottom: 30px;
 }
 [data-bs-theme="light"] .digi-testimonial-title,
 [data-bs-theme="light"] .bg-dark .bg-light-subtle h1,
@@ -27926,6 +27967,38 @@ blockquote::before {
 .banner-subscribe .btn {
     border-radius: 0 4px 4px 0;
 }
+
+.filter-btns{
+    background-color:var(--in-primary-dark-5);
+    position:relative;
+    
+}
+.filter-btns .arrow-indicator{
+    position: absolute; 
+    right: 15px; 
+    top: 20px;
+}
+.filter-btns button {
+    position: relative;
+}
+
+.filter-btns button,.filter-btns button.active{
+    color:#fff;
+}
+
+.filter-btns button.active::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -24px; /* adjust this value based on your specific alignment needs */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--in-primary-dark-5); /* change the color as needed */
+    transform: translateX(-50%);
+}
+
 .filter-btns-underline {
     border-bottom: 1px solid rgba(233, 233, 233, 0.5);
 }
@@ -27956,6 +28029,19 @@ blockquote::before {
     right: auto;
     left: 0;
 }
+
+.item-filter a.title{
+font-size:20px;
+font-weight:700;
+text-decoration: underline;
+
+}
+.item-filter span{
+    display:block;
+    font-weight:700;
+    color:var(--in-primary-dark-5);
+}
+
 .healthcare-hero-single {
     padding: 90px 0 90px 32px;
     position: relative;
@@ -28371,4 +28457,41 @@ blockquote::before {
 }
 .features-strip svg{
     margin-bottom:10px;
+}
+
+
+.filter-options {
+    overflow-x: auto;
+    overflow-y:hidden;
+    
+    white-space: nowrap;
+    margin-right: 40px;
+    scrollbar-width: none;  /* Nasconde la scrollbar su Firefox */
+}
+
+.filter-options::-webkit-scrollbar {
+    display: none;  /* Nasconde la scrollbar su WebKit browsers */
+}
+
+
+.arrow-indicator {
+    display: none; /* Default state */
+}
+
+/* Sezione colums-layout */
+
+.img-adaptive-height {
+    width: 100%; /* assicura che l'immagine riempia completamente la larghezza del contenitore */
+    object-fit: cover; /* mantiene le proporzioni mentre potrebbe tagliare l'immagine */
+    object-position: center; /* centra l'immagine nel suo contenitore */
+}
+
+.colums-layout-section .title{
+    font-size:18px;
+    margin-top:55px;
+    margin-bottom:15px;
+}
+
+.colums-layout-section .btn{
+    margin-top:45px;
 }

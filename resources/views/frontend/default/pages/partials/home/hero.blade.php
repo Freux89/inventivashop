@@ -21,7 +21,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-5 col-6 p-0">
-                                <div class="hero-right-content bg-secondary-9 p-9">
+                                <div class="hero-right-content bg-secondary-9 p-6 p-xl-9">
                                    {{--
                                     <span
                                         class="gshop-subtitle fs-5 text-secondary mb-2 d-block">{{ $slider->sub_title }}</span>

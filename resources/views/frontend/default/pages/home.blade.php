@@ -10,12 +10,28 @@
     <!--hero section end-->
 
     <!--category section start-->
-    @include('frontend.default.pages.partials.home.category')
+    {{-- @include('frontend.default.pages.partials.home.category') --}}
     <!--category section end-->
 
+    <!-- Qui verrà inserito un blocco dove verranno caricate più sezioni -->
+    <!-- I più venduti start-->
+        @include('frontend.default.pages.partials.sections.carousel')
+    <!-- I più venduti end-->
+
     <!--featured products start-->
-    @include('frontend.default.pages.partials.home.featuredProducts')
+    {{-- @include('frontend.default.pages.partials.home.featuredProducts') --}}
     <!--featured products end-->
+
+
+    <!-- Trava il tuo prodotto start -->
+        @include('frontend.default.pages.partials.sections.filters-bar')
+    <!-- Trava il tuo prodotto end -->
+
+
+    <!-- Fatti per illuminare di notte start -->
+    @include('frontend.default.pages.partials.sections.colums-layout')
+    <!-- Fatti per illuminare di notte end -->
+
 
     <!--trending products start-->
     @include('frontend.default.pages.partials.home.trendingProducts')
@@ -26,7 +42,7 @@
     <!--banner section end-->
 
     <!--banner section start-->
-    @include('frontend.default.pages.partials.home.bestDeals')
+    {{-- @include('frontend.default.pages.partials.home.bestDeals')--}} 
     <!--banner section end-->
 
     <!--banner 2 section start-->
@@ -38,11 +54,11 @@
     <!--feedback section end-->
 
     <!--products listing start-->
-    @include('frontend.default.pages.partials.home.products')
+   {{-- @include('frontend.default.pages.partials.home.products')  --}} 
     <!--products listing end-->
 
     <!--blog section start-->
-    @include('frontend.default.pages.partials.home.blogs', ['blogs' => $blogs])
+   {{--  @include('frontend.default.pages.partials.home.blogs', ['blogs' => $blogs])  --}} 
     <!--blog section end-->
 @endsection
 

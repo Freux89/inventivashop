@@ -2,7 +2,7 @@
     
     <div class="ghead-topbar bg-gray d-none d-lg-block">
         <div class="container">
-            <div class="row align-items-center px-8">
+            <div class="row align-items-center px-6 m-0">
                 <div class="col-12 p-0">
                     <div class="topbar-nav fw-bold">
                         <ul class="nav">
@@ -35,39 +35,7 @@
                 {{ getSetting('topbar_email') }}
                 </a>
                 </li>
-                <!-- <li class="nav-item dropdown tt-language-dropdown">
-                            <span class="me-1">
-                                <svg width="12" height="17" viewBox="0 0 12 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M6.00011 8.16427C7.44543 8.16427 8.62131 6.98781 8.62131 5.54175C8.62131 4.09569 7.44543 2.91925 6.00011 2.91925C4.55478 2.91925 3.37891 4.09569 3.37891 5.54175C3.37891 6.98781 4.55478 8.16427 6.00011 8.16427ZM6.00011 3.85662C6.92883 3.85662 7.68441 4.61259 7.68441 5.54175C7.68441 6.47093 6.92886 7.2269 6.00011 7.2269C5.07136 7.2269 4.31581 6.47093 4.31581 5.54175C4.31581 4.61259 5.07139 3.85662 6.00011 3.85662Z" fill="white" stroke="white" stroke-width="0.3" />
-                                    <path d="M3.14593 10.2541C3.85594 11.2159 3.57069 10.8418 5.61579 13.7635C5.80167 14.0301 6.19695 14.0314 6.38389 13.7639C8.43824 10.8284 8.15557 11.2002 8.85403 10.254C9.56155 9.29555 10.2932 8.30443 10.6941 7.14299C11.2744 5.46171 11.0236 3.79818 9.9879 2.45881C9.98787 2.45881 9.98787 2.45878 9.98784 2.45878C9.03913 1.23225 7.54834 0.5 5.99998 0.5C4.45163 0.5 2.96083 1.23225 2.01209 2.45884C0.976407 3.79821 0.725568 5.46177 1.30588 7.14305C1.70675 8.30446 2.43841 9.29558 3.14593 10.2541ZM2.75305 3.03246C3.52562 2.03369 4.73944 1.43737 5.99998 1.43737C7.26052 1.43737 8.47434 2.03369 9.24691 3.03246L9.24684 3.03243C10.0828 4.11343 10.2822 5.46462 9.80852 6.83705C9.4544 7.86293 8.76606 8.79539 8.10039 9.69717C7.5821 10.3993 7.73721 10.1845 5.99998 12.6763C4.26456 10.187 4.41771 10.399 3.89957 9.69717C3.2339 8.79539 2.54556 7.86289 2.19144 6.83705C1.71775 5.46459 1.91718 4.11343 2.75305 3.03246Z" fill="white" stroke="white" stroke-width="0.3" />
-                                    <path d="M3.53116 12.2865C3.393 12.0677 3.10369 12.0023 2.88495 12.1405L1.55299 12.9823C1.26243 13.1659 1.26214 13.591 1.55299 13.7748L5.75031 16.4276C5.90312 16.5242 6.09787 16.5241 6.25065 16.4276L10.448 13.7748C10.7386 13.5912 10.7388 13.1661 10.448 12.9823L9.116 12.1405C8.8972 12.0023 8.60792 12.0677 8.46979 12.2865C8.3316 12.5053 8.39693 12.7948 8.61567 12.933L9.32065 13.3786L6.00046 15.4769L2.6803 13.3786L3.38529 12.933C3.60402 12.7948 3.66933 12.5053 3.53116 12.2865Z" fill="white" stroke="white" stroke-width="0.3" />
-                                </svg>
-                            </span>
-
-                            @if (\App\Models\Location::count() > 1)
-                            @php
-                            if (Session::has('stock_location_id')) {
-                            $location_id = session('stock_location_id');
-                            } else {
-                            $location_id = \App\Models\Location::where('is_default', 1)->first()->id;
-                            }
-                            $location = \App\Models\Location::where('id', $location_id)->first();
-                            @endphp
-
-                            <a href="#" class="dropdown-toggle text-capitalize " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $location->name }}</a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                @foreach (\App\Models\Location::where('is_published', 1)->get() as $key => $location)
-                                <li>
-                                    <a class="dropdown-item fs-xs text-capitalize" href="javascript:void(0);" onclick="changeLocation(this)" data-location="{{ $location->id }}">
-                                        {{ $location->name }}
-                                    </a>
-                                </li>
-                                @endforeach
-                            </ul>
-                            @else
-                            {{ getSetting('topbar_location') }}
-                            @endif
-                        </li> -->
+                
 
 
                 @php
@@ -142,11 +110,11 @@
     </div>
     <div class="container">
         <div class="gshop-navbar rounded position-relative pt-6 px-2 px-md-6">
-            <div class="row align-items-center justify-content-between">
+            <div class="row align-items-center justify-content-between m-0">
 <div class="col-4 d-block d-md-none">
 M
 </div>
-                <div class="col-xxl-2 col-xl-3 col-md-3 col-4">
+                <div class="col-xxl-2 col-xl-3 col-md-3 col-4 p-0">
                     <a href="{{ route('home') }}" class="logo">
                         <img src="{{ uploadedAsset(getSetting('navbar_logo')) }}" alt="logo" class="img-fluid logo-light">
                         <img src="{{ asset('public/frontend/default/assets/img/logo-dark.svg') }}" alt="logo" class="img-fluid logo-dark">
