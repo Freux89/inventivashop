@@ -96,8 +96,12 @@
         const filterOptions = document.querySelector('.filter-options');
         if (filterOptions.offsetWidth < filterOptions.scrollWidth) {
             arrowIndicator.style.display = 'inline';
+            filterOptions.style.overflowX = 'auto';
+            filterOptions.style.overflowY = 'hidden';
         } else {
             arrowIndicator.style.display = 'none';
+            filterOptions.style.overflowX = 'visible';
+            filterOptions.style.overflowY = 'visible';
         }
     }
 
