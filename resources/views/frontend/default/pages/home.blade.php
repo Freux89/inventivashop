@@ -15,7 +15,7 @@
 
     <!-- Qui verrà inserito un blocco dove verranno caricate più sezioni -->
     <!-- I più venduti start-->
-        @include('frontend.default.pages.partials.sections.carousel')
+    @include('frontend.default.pages.partials.sections.carousel',['carouselType' => 'squared'])
     <!-- I più venduti end-->
 
     <!--featured products start-->
@@ -34,7 +34,7 @@
 
 
     <!--trending products start-->
-    @include('frontend.default.pages.partials.home.trendingProducts')
+    @include('frontend.default.pages.partials.sections.carousel',['carouselType' => 'rounded'])
     <!--trending products end-->
 
     <!--banner section start-->

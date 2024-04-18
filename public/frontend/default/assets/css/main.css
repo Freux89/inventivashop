@@ -7624,10 +7624,14 @@ img.mfp-img {
     -webkit-box-sizing: content-box;
     box-sizing: content-box;
 }
-
+/*Sezione carousel */
 .carousel-section .swiper-slide {
     border-top: 2px solid var(--in-primary-2);
     padding-top: 15px;
+}
+.carousel-section.rounded-style .swiper-slide{
+    border:0;
+    padding:5px;
 }
 .carousel-section .swiper-slide .title {
     color:var(--in-primary-dark-3);
@@ -7637,6 +7641,34 @@ img.mfp-img {
     margin-bottom: 10px;
 }
 
+.carousel-section .swiper-slide img {
+    width: 100%;  /* Larghezza completa rispetto al suo contenitore, per responsività */
+    height: auto; /* Altezza auto per mantenere le proporzioni mentre la larghezza cambia */
+    aspect-ratio: 238 / 205; /* Mantiene il rapporto aspetto originale */
+    object-fit: cover;  /* Copre l'area del contenitore senza deformare l'immagine */
+    object-position: center; /* Centra l'immagine per evitare tagli strani */
+    
+}
+
+.carousel-section.rounded-style img{
+    
+    border-radius: 50%;  /* Rende l'immagine rotonda */
+    object-fit: cover;   /* Assicura che il contenuto sia coperto senza essere deformato */
+    aspect-ratio: 1 / 1;  /* Mantiene le proporzioni per un cerchio perfetto */
+    width: 100%;          /* Larghezza come percentuale del contenitore per responsività */
+    max-width: 210px;     /* Larghezza massima per mantenere le dimensioni desiderate */
+    height: auto;         /* Altezza auto per mantenere le proporzioni mentre la larghezza cambia */
+    border: 7px solid white; /* Bordo bianco esterno */
+    box-shadow: 0 0 0 1px var(--in-primary-2);/* Simula un bordo nero esterno */
+    margin: auto;         /* Centra l'immagine orizzontalmente nel suo contenitore */
+}
+.carousel-section.rounded-style .swiper-slide{
+   text-align:center;
+}
+
+.carousel-section.rounded-style .section-title{
+    margin-bottom:110px;
+}
 .swiper-android .swiper-slide,
 .swiper-wrapper {
     -webkit-transform: translate3d(0px, 0, 0);
