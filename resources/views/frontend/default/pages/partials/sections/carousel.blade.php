@@ -12,7 +12,7 @@ $section = [
 'showStars' => false, // Booleano che indica se mostrare o meno le stelline
 'items' => [
 ['imageId' => 32, 'title' => 'Categoria 1', 'stars' => 4],
-['imageId' => 66, 'title' => 'Categoria 2', 'stars' => 3],
+['imageId' => 47, 'title' => 'Categoria 2', 'stars' => 3],
 ['imageId' => 58, 'title' => 'Categoria 3', 'stars' => 5],
 ['imageId' => 58, 'title' => 'Categoria 4', 'stars' => 4],
 ['imageId' => 58, 'title' => 'Categoria 5', 'stars' => 2],
