@@ -29,20 +29,28 @@
 
 
     <!-- Fatti per illuminare di notte start -->
-    @include('frontend.default.pages.partials.sections.colums-layout')
+    @include('frontend.default.pages.partials.sections.colums-layout',['sectionType' => 1])
     <!-- Fatti per illuminare di notte end -->
 
 
-    <!--trending products start-->
+    <!--Categorie start-->
     @include('frontend.default.pages.partials.sections.carousel',['carouselType' => 'rounded'])
-    <!--trending products end-->
+    <!--Categorie end-->
 
+    <!--Presentazione start-->
+    @include('frontend.default.pages.partials.sections.colums-layout',['sectionType' => 2])
+    <!--Presentazione end-->
+
+    <!-- Recensioni start -->
+    @include('frontend.default.pages.partials.sections.reviews')
+    <!-- Recensioni end -->
+    {{-- 
     <!--banner section start-->
     @include('frontend.default.pages.partials.home.banners')
     <!--banner section end-->
 
     <!--banner section start-->
-    {{-- @include('frontend.default.pages.partials.home.bestDeals')--}} 
+     @include('frontend.default.pages.partials.home.bestDeals')
     <!--banner section end-->
 
     <!--banner 2 section start-->
@@ -54,12 +62,13 @@
     <!--feedback section end-->
 
     <!--products listing start-->
-   {{-- @include('frontend.default.pages.partials.home.products')  --}} 
+    @include('frontend.default.pages.partials.home.products')
     <!--products listing end-->
 
     <!--blog section start-->
-   {{--  @include('frontend.default.pages.partials.home.blogs', ['blogs' => $blogs])  --}} 
+    @include('frontend.default.pages.partials.home.blogs', ['blogs' => $blogs])  
     <!--blog section end-->
+    --}} 
 @endsection
 
 @section('scripts')

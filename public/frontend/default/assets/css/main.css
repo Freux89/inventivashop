@@ -7639,6 +7639,7 @@ img.mfp-img {
     font-size:18px;
     margin-top:25px;
     margin-bottom: 10px;
+    display:block;
 }
 
 .carousel-section .swiper-slide img {
@@ -19342,7 +19343,7 @@ fieldset:disabled .btn {
 }
 .bg-dark {
     --bs-bg-opacity: 1;
-    background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+    background-color: var(--in-primary-dark-3) !important;
 }
 .bg-dark-light {
     --bs-bg-opacity: 1;
@@ -24278,14 +24279,14 @@ body {
 }
 .footer-nav li a {
     color: #fff;
-    font-size: 14px;
+    font-size: 18px;
     display: block;
     padding: 5px 0;
     opacity: 0.8;
 }
 .footer-nav li a:hover {
     padding-left: 3px;
-    color: #801854;
+    color: var(--in-secondary-5);
     opacity: 1;
 }
 .supported-payment-box {
@@ -28518,12 +28519,107 @@ text-decoration: underline;
     object-position: center; /* centra l'immagine nel suo contenitore */
 }
 
-.colums-layout-section .title{
+.columns-layout-section .title{
     font-size:18px;
     margin-top:55px;
     margin-bottom:15px;
 }
 
-.colums-layout-section .btn{
+.columns-layout-section .btn{
     margin-top:45px;
+}
+
+@media (min-width: 768px) {
+    .divider-border-right {
+        border-right:1px solid var(--in-primary-dark-3);
+    }
+}
+
+
+/* Reviews section */
+
+.ts-rating-light.skyscraper_horizontal{
+    background-color:#fff !important;
+}
+.ts-rating-light.skyscraper_horizontal .ts-header,.ts-rating-light.skyscraper_horizontal .ts-title{
+    display:none !important;
+}
+
+.ts-rating-light.skyscraper_horizontal .ts-reviews .ts-reviews-list li{
+    width:16.6% !important;
+}
+
+.ts-rating-light.skyscraper_horizontal *{
+    font-family:"Supreme", sans-serif !important;
+    font-size: 14px !important;
+    line-height: 18px !important;
+}
+.ts-review-stars {
+    width: 100%;
+}
+.ts-review {
+    display: flex !important;
+}
+.ts-review-wrapper {
+    width: 100% !important;
+    overflow: hidden;
+}
+.ts-review-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+.ts-rating-light.skyscraper_horizontal{
+    border:0 !important;
+}
+.ts-rating-light.skyscraper_horizontal .ts-wrapper{
+    max-width:1680px;
+    margin:0 auto;
+}
+.ts-rating-light.skyscraper_horizontal .ts-footer{
+    background-color: var(--in-primary-1) !important;
+    height: 40px !important;
+    position: absolute;
+    bottom: 0;
+    text-align: center !important;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    
+    padding-left:0 !important;
+}
+.ts-rating-light.skyscraper_horizontal{
+    height:300px !important;
+    
+}
+
+.ts-rating-light.skyscraper_horizontal .ts-footer .footerReviewCount{
+    float:none !important;
+    font-size:16px !important;
+}
+.footerArrow {
+    
+        position: absolute;
+        top: 0; /* Allinea la freccia al margine superiore */
+        left: 55%; /* Inizia al centro */
+        transform: translateX(50%); /* Sposta a destra del 50% della propria larghezza dal centro */
+        
+        background: url('/path/to/arrow-image.png') no-repeat center center; /* Sostituire con il percorso corretto dell'immagine */
+        background-size: contain; /* Mantiene le proporzioni dell'immagine */
+        z-index: 1; /* Assicura che la freccia sia sotto il testo */
+    
+    border-width:0 25px 22px 0 !important;
+}
+.ts-rating-light.skyscraper_horizontal .ts-footer .footerReviewCount{
+    padding-right: 0 !important;
+    background-image:none !important;
+}
+
+
+/*footer*/
+
+.footer-widget .title{
+    font-size:22px;
+    font-weight:700;
+
+
 }

@@ -11,14 +11,14 @@ $section = [
 'itemTitleFontSize' => '22px', // Dimensione del font del titolo degli item
 'showStars' => false, // Booleano che indica se mostrare o meno le stelline
 'items' => [
-['imageId' => 32, 'title' => 'Categoria 1', 'stars' => 4],
-['imageId' => 47, 'title' => 'Categoria 2', 'stars' => 3],
-['imageId' => 58, 'title' => 'Categoria 3', 'stars' => 5],
-['imageId' => 58, 'title' => 'Categoria 4', 'stars' => 4],
-['imageId' => 58, 'title' => 'Categoria 5', 'stars' => 2],
-['imageId' => 58, 'title' => 'Categoria 6', 'stars' => 3],
-['imageId' => 58, 'title' => 'Categoria 7', 'stars' => 4],
-['imageId' => 58, 'title' => 'Categoria 8', 'stars' => 5]
+['imageId' => 32, 'title' => 'Categoria 1','url' => '#', 'stars' => 4],
+['imageId' => 47, 'title' => 'Categoria 2','url' => '#', 'stars' => 3],
+['imageId' => 58, 'title' => 'Categoria 3','url' => '#', 'stars' => 5],
+['imageId' => 58, 'title' => 'Categoria 4','url' => '#', 'stars' => 4],
+['imageId' => 58, 'title' => 'Categoria 5','url' => '#', 'stars' => 2],
+['imageId' => 58, 'title' => 'Categoria 6','url' => '#', 'stars' => 3],
+['imageId' => 58, 'title' => 'Categoria 7','url' => '#', 'stars' => 4],
+['imageId' => 58, 'title' => 'Categoria 8','url' => '#', 'stars' => 5]
 ]
 ];
 } else {
@@ -31,14 +31,14 @@ $section = [
 'itemTitleFontSize' => '18px', // Dimensione del font del titolo degli item
 'showStars' => true, // Booleano che indica se mostrare o meno le stelline
 'items' => [
-['imageId' => 58, 'title' => 'Categoria 1', 'stars' => 4],
-['imageId' => 58, 'title' => 'Categoria 2', 'stars' => 3],
-['imageId' => 58, 'title' => 'Categoria 3', 'stars' => 5],
-['imageId' => 58, 'title' => 'Categoria 4', 'stars' => 4],
-['imageId' => 58, 'title' => 'Categoria 5', 'stars' => 2],
-['imageId' => 58, 'title' => 'Categoria 6', 'stars' => 3],
-['imageId' => 58, 'title' => 'Categoria 7', 'stars' => 4],
-['imageId' => 58, 'title' => 'Categoria 8', 'stars' => 5]
+['imageId' => 58, 'title' => 'Categoria 1','url' => '#', 'stars' => 4],
+['imageId' => 58, 'title' => 'Categoria 2','url' => '#', 'stars' => 3],
+['imageId' => 58, 'title' => 'Categoria 3','url' => '#', 'stars' => 5],
+['imageId' => 58, 'title' => 'Categoria 4','url' => '#', 'stars' => 4],
+['imageId' => 58, 'title' => 'Categoria 5','url' => '#', 'stars' => 2],
+['imageId' => 58, 'title' => 'Categoria 6','url' => '#', 'stars' => 3],
+['imageId' => 58, 'title' => 'Categoria 7','url' => '#', 'stars' => 4],
+['imageId' => 58, 'title' => 'Categoria 8','url' => '#', 'stars' => 5]
 ]
 ];
 }
@@ -56,7 +56,7 @@ $section = [
                 @foreach ($section['items'] as $item)
                 <div class="swiper-slide"> <!-- Centratura del contenuto -->
                     <img src="{{ uploadedAsset($item['imageId']) }}" alt="Image {{ $item['title'] }}" class="img-fluid">
-                    <div class="title" style="font-size: {{ $section['itemTitleFontSize'] }}">{{ $item['title'] }}</div>
+                    <a class="title" style="font-size: {{ $section['itemTitleFontSize'] }}" href="{{ $item['url'] }}">{{ $item['title'] }}</a>
                     @if ($section['showStars'])
                     <ul class="star-rating fs-sm d-inline-flex justify-content-center text-warning">
                         {{ renderStarRatingFront($item['stars'], 5) }}
