@@ -86,7 +86,7 @@ $section = [
                         <div class="card-title fw-bold mt-4" style="color: {{ $column['titleImageColor'] }}; ">{{ $column['titleImage'] }}</div>
                         @endif
                         <p class="card-text">Questa è una breve descrizione che descrive i dettagli della card.</p>
-                        <a href="https://example.com" class="btn btn-primary">Scopri di più</a>
+                        <a href="https://example.com" class="subtext-link mt-6">Scopri di più</a>
                     </div>
                 </div>
 
