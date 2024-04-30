@@ -2,9 +2,7 @@
     
 
     <div class="container">
-    <div class="promo-banner text-center py-1">
-        Spedizioni gratuite per ordini a partire da 50€!
-    </div>
+    
         <div class="gshop-hero-slider swiper d-none d-lg-block">
             <div class="swiper-wrapper">
 

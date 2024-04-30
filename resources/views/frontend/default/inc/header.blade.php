@@ -299,4 +299,7 @@ M
             </div>
         </div>
     </div>
+    <div class="container promo-banner text-center py-1 mt-6 mt-lg-0">
+        Spedizioni gratuite per ordini a partire da 50€!
+    </div>
 </header>

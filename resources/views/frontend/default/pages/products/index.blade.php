@@ -4,48 +4,64 @@
 {{ localize('Products') }} {{ getSetting('title_separator') }} {{ getSetting('system_title') }}
 @endsection
 @php
-  $agent = new \Jenssegers\Agent\Agent;
+$agent = new \Jenssegers\Agent\Agent;
 @endphp
-@section('breadcrumb-contents')
-<div class="breadcrumb-content">
-    <h2 class="mb-2 text-center">{{ $category ? $category->name : ($tag ? $tag->name : localize('Products')) }}
-    </h2>
-    <nav>
-        <ol class="breadcrumb justify-content-center">
-            <li class="breadcrumb-item fw-bold" aria-current="page"><a href="{{ route('home') }}">{{ localize('Home') }}</a></li>
-            @foreach ($breadcrumbs as $breadcrumb)
-            <li class="breadcrumb-item fw-bold" aria-current="page">
-                <a href="{{ route('category.show', ['categorySlug' => $breadcrumb->slug]) }}">{{ $breadcrumb->name }}</a>
-            </li>
-            @endforeach
-            <li class="breadcrumb-item active fw-bold" aria-current="page">{{ $category ? $category->name : ($tag ? $tag->name : localize('Products')) }}</li>
-        </ol>
-    </nav>
-</div>
-@endsection
+
+
+
 
 @section('contents')
-<!--breadcrumb-->
-@include('frontend.default.inc.breadcrumb')
-<!--breadcrumb-->
+
+<div class="hero-category">
+    <div class="container">
+        <div class="row m-0 h-100">
+            <div class="col-12 col-md-6">
+                <div class="hero-content">
+                    <div class="breadcrumb-content">
+                        <nav>
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item fw-bold" aria-current="page"><a href="{{ route('home') }}">{{ localize('Home') }}</a></li>
+                                @foreach ($breadcrumbs as $breadcrumb)
+                                <li class="breadcrumb-item fw-bold" aria-current="page">
+                                    <a href="{{ route('category.show', ['categorySlug' => $breadcrumb->slug]) }}">{{ $breadcrumb->name }}</a>
+                                </li>
+                                @endforeach
+                                <li class="breadcrumb-item active fw-bold" aria-current="page">{{ $category ? $category->name : ($tag ? $tag->name : localize('Products')) }}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <h1 class="mb-2">{{ $category ? $category->name : ($tag ? $tag->name : localize('Products')) }} </h1>
+                    <p>Nel competitivo settore alberghiero, la prima impressione è fondamentale per impressionare i clienti e fidelizzarli. La segnaletica all’interno di un hotel svolge un ruolo cruciale nell’orientare gli ospiti, creare un’esperienza di soggiorno piacevole e garantire un flusso efficiente all’interno della struttura.</p>
+                </div>
+
+            </div>
+            <div class="col-12 col-md-6 p-0">
+                <div class="hero-image">
+                    <img src="{{uploadedAsset(47)}}" alt="{{$category->name}}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Blocco sezioni prima delle categorie -->
 
 <form class="filter-form" action="{{ Request::fullUrl() }}" method="GET">
     <!--shop grid section start-->
     <section class="gshop-gshop-grid ptb-120">
-        <div class="container">
+        <div class="content-wrapper">
             @if (isset($category) && $category->childrenCategories->isNotEmpty())
 
-            <div class="row">
+            <div class="row subcategories-container">
                 <div class="col-xl-12">
                     <div class="row">
                         @foreach ($category->childrenCategories as $subCategory)
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100">
-                                <img src="{{ uploadedAsset($subCategory->thumbnail_image) }}" class="card-img-top" alt="{{ $subCategory->name }}">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $subCategory->name }}</h5>
-                                    <p class="card-text">{{ $subCategory->description }}</p>
-                                    <a href="{{ route('category.show', ['categorySlug' => $subCategory->slug]) }}" class="btn btn-primary">Esplora</a>
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 col-xxl-2 mb-4">
+                            <div class="card border-0">
+                                <img src="{{ uploadedAsset($subCategory->thumbnail_image) }}" class="card-img-top img-category" alt="{{ $subCategory->name }}">
+                                <div class="card-body text-center">
+                                    <a href="{{ route('category.show', ['categorySlug' => $subCategory->slug]) }}" class="name-category">{{ $subCategory->name }}</a>
                                 </div>
                             </div>
                         </div>
@@ -55,7 +71,29 @@
                 </div>
             </div>
             @endif
-            
+<!-- Categorie correlate -->
+            @if (isset($category) && $category->childrenCategories->isNotEmpty())
+
+            <div class="row subcategories-container">
+                <div class="col-xl-12">
+                    <div class="related-categories-title">Guarda queste altre soluzioni</div>
+                    <div class="row">
+                        @foreach ($category->childrenCategories as $subCategory)
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 col-xxl-2 mb-4">
+                            <div class="card border-0">
+                                <img src="{{ uploadedAsset($subCategory->thumbnail_image) }}" class="card-img-top img-category" alt="{{ $subCategory->name }}">
+                                <div class="card-body text-center">
+                                    <a href="{{ route('category.show', ['categorySlug' => $subCategory->slug]) }}" class="name-category">{{ $subCategory->name }}</a>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                </div>
+            </div>
+            @endif
+            @if (isset($category) && $category->products->isNotEmpty())
             <div class="row g-4">
 
                 <div class="col-xl-3">
@@ -64,8 +102,8 @@
                     </div>
 
                     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasProductFilter" aria-labelledby="offcanvasProductFilterLabel">
-                    
-                    @if ($agent->isMobile())
+
+                        @if ($agent->isMobile())
                         <div class="offcanvas-body">
 
                             <div class="text-end">
@@ -82,7 +120,7 @@
 
                 <!--rightbar-->
                 <div class="col-xl-9">
-                
+
                     <div class="shop-grid">
                         <!--filter-->
                         <div class="listing-top d-flex align-items-center justify-content-between flex-wrap gap-3 bg-white rounded-2 px-4 py-4 mb-5">
@@ -170,12 +208,12 @@
                         </ul>
                         <!--products-->
                     </div>
-                  
+
                 </div>
                 <!--rightbar-->
 
             </div>
-            
+            @endif
         </div>
     </section>
     <!--shop grid section end-->
@@ -183,6 +221,30 @@
 
 
 </form>
+
+<!-- Blocco sezioni dopo le categorie -->
+
+<!--colums-layout start-->
+@include('frontend.default.pages.partials.sections.colums-layout',['sectionType' => 3])
+<!--colums-layout end-->
+
+<!--Faq start-->
+@include('frontend.default.pages.partials.sections.faq',['sectionType' => 1])
+<!--Faq end-->
+
+
+<!--colums-layout start-->
+@include('frontend.default.pages.partials.sections.colums-layout',['sectionType' => 1])
+<!--colums-layout end-->
+
+<!--colums-card start-->
+@include('frontend.default.pages.partials.sections.colums-card',['sectionType' => 1])
+<!--colums-card end-->
+
+<!-- Recensioni start -->
+@include('frontend.default.pages.partials.sections.reviews')
+    <!-- Recensioni end -->
+
 @endsection
 
 @section('scripts')

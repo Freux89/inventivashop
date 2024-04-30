@@ -42,7 +42,10 @@ class Category extends Model
     {
         return $this->belongsToMany(ProductCategory::class);
     }
-
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_categories', 'category_id', 'product_id');
+    }
     public function brands()
     {
         return $this->belongsToMany(Brand::class, 'category_brands', 'category_id', 'brand_id');
