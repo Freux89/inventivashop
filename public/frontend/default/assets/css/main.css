@@ -28752,7 +28752,7 @@ text-decoration: underline;
 }
 button.accordion-button {
     box-shadow: none !important;
-    color:var(--in-primary-dark-3) !important;
+    color:var(--in-primary-dark-3);
     font-size:24px;
     font-weight:bold;
 

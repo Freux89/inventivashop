@@ -15,7 +15,7 @@
 
     <!-- Qui verrà inserito un blocco dove verranno caricate più sezioni -->
     <!-- I più venduti start-->
-    @include('frontend.default.pages.partials.sections.carousel',['carouselType' => 'squared'])
+    @include('frontend.default.pages.partials.sections.carousel',['sectionId' => 10])
     <!-- I più venduti end-->
 
     <!--featured products start-->
@@ -24,21 +24,23 @@
 
 
     <!-- Trava il tuo prodotto start -->
-        @include('frontend.default.pages.partials.sections.filters-bar')
+   
+    @include('frontend.default.pages.partials.sections.filter-grid',['sectionId' => 12])    
     <!-- Trava il tuo prodotto end -->
 
 
     <!-- Fatti per illuminare di notte start -->
-    @include('frontend.default.pages.partials.sections.colums-layout',['sectionType' => 1])
+    @include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 1])
     <!-- Fatti per illuminare di notte end -->
 
 
-    <!--Categorie start-->
-    @include('frontend.default.pages.partials.sections.carousel',['carouselType' => 'rounded'])
-    <!--Categorie end-->
+    <!--Carosello start-->
+    @include('frontend.default.pages.partials.sections.carousel',['sectionId' => 11])
+    <!--Carosello end-->
 
     <!--Presentazione start-->
-    @include('frontend.default.pages.partials.sections.colums-layout',['sectionType' => 2])
+    <!-- @include('frontend.default.pages.partials.sections.colums-layout',['sectionType' => 2]) -->
+    @include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 3])
     <!--Presentazione end-->
 
     <!-- Recensioni start -->

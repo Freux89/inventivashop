@@ -1,65 +1,27 @@
-<!-- Tipo 1 -->
 @php
 
-if (isset($carouselType) && $carouselType == 'rounded') {
-$section = [
-'sectionBackgroundColor' => '#f4f8f8',
-'sectionTitle' => 'Categorie',
-'titleFontSize' => '46px', // Dimensione del font del titolo della sezione
-'titleAlignment' => 'center', // Allineamento del titolo della sezione
-'carouselStyle' => 'rounded', // 'squared' o 'rounded' per gli item del carosello
-'itemTitleFontSize' => '22px', // Dimensione del font del titolo degli item
-'showStars' => false, // Booleano che indica se mostrare o meno le stelline
-'items' => [
-['imageId' => 32, 'title' => 'Categoria 1','url' => '#', 'stars' => 4],
-['imageId' => 47, 'title' => 'Categoria 2','url' => '#', 'stars' => 3],
-['imageId' => 58, 'title' => 'Categoria 3','url' => '#', 'stars' => 5],
-['imageId' => 58, 'title' => 'Categoria 4','url' => '#', 'stars' => 4],
-['imageId' => 58, 'title' => 'Categoria 5','url' => '#', 'stars' => 2],
-['imageId' => 58, 'title' => 'Categoria 6','url' => '#', 'stars' => 3],
-['imageId' => 58, 'title' => 'Categoria 7','url' => '#', 'stars' => 4],
-['imageId' => 58, 'title' => 'Categoria 8','url' => '#', 'stars' => 5]
-]
-];
-} else {
-$section = [
-'sectionBackgroundColor' => '#fff',
-'sectionTitle' => 'I più venduti',
-'titleFontSize' => '24px', // Dimensione del font del titolo della sezione
-'titleAlignment' => 'left', // Allineamento del titolo della sezione
-'carouselStyle' => 'squared', // 'squared' o 'rounded' per gli item del carosello
-'itemTitleFontSize' => '18px', // Dimensione del font del titolo degli item
-'showStars' => true, // Booleano che indica se mostrare o meno le stelline
-'items' => [
-['imageId' => 58, 'title' => 'Categoria 1','url' => '#', 'stars' => 4],
-['imageId' => 58, 'title' => 'Categoria 2','url' => '#', 'stars' => 3],
-['imageId' => 58, 'title' => 'Categoria 3','url' => '#', 'stars' => 5],
-['imageId' => 58, 'title' => 'Categoria 4','url' => '#', 'stars' => 4],
-['imageId' => 58, 'title' => 'Categoria 5','url' => '#', 'stars' => 2],
-['imageId' => 58, 'title' => 'Categoria 6','url' => '#', 'stars' => 3],
-['imageId' => 58, 'title' => 'Categoria 7','url' => '#', 'stars' => 4],
-['imageId' => 58, 'title' => 'Categoria 8','url' => '#', 'stars' => 5]
-]
-];
-}
+$section = App\Models\Section::with('items')->findOrFail($sectionId);
+
 
 @endphp
 
 <!-- Swiper -->
-<section class="carousel-section  py-9 position-relative z-1 overflow-hidden {{ $section['carouselStyle'] == 'rounded' ? 'rounded-style' : '' }}" style="background-color:{{$section['sectionBackgroundColor']}}">
+<section class="carousel-section  py-9 position-relative z-1 overflow-hidden {{ $section->settings['layout'] == 'rounded' ? 'rounded-style' : '' }}" style="background-color:{{$section->settings['backgroundColor']}}">
     <div class="content-wrapper">
-        <div class="section-title" style="font-size: {{ $section['titleFontSize'] }}; text-align: {{ $section['titleAlignment'] }};">
-            {{ localize($section['sectionTitle']) }}
+        <div class="section-title" style="font-size: {{ $section->settings['titleSize'] }}px; text-align: {{ $section->settings['titleAlignment'] }};color: {{ $section->settings['titleColor'] }};">
+            {{ localize($section->settings['title']) }}
         </div>
         <div class="swiper mySwiper">
             <div class="swiper-wrapper">
-                @foreach ($section['items'] as $item)
+                @foreach ($section->items as $item)
                 <div class="swiper-slide"> <!-- Centratura del contenuto -->
-                    <img src="{{ uploadedAsset($item['imageId']) }}" alt="Image {{ $item['title'] }}" class="img-fluid">
-                    <a class="title" style="font-size: {{ $section['itemTitleFontSize'] }}" href="{{ $item['url'] }}">{{ $item['title'] }}</a>
-                    @if ($section['showStars'])
+                    <img src="{{ uploadedAsset($item->settings['image']) }}" alt="Image {{ $item->settings['title'] }}" class="img-fluid">
+                    <a class="title" style="font-size: {{ $item->settings['titleSize'] }}px; color: {{ $item->settings['titleColor'] }};" href="{{ $item->settings['url'] }}">
+                        {{ $item->settings['title'] }}
+                    </a>
+                    @if (isset($item->settings['starRating']))
                     <ul class="star-rating fs-sm d-inline-flex justify-content-center text-warning">
-                        {{ renderStarRatingFront($item['stars'], 5) }}
+                        {{ renderStarRatingFront($item->settings['starRating'], 5) }}
                     </ul>
                     @endif
                 </div>

@@ -308,6 +308,14 @@
         </a>
     </li>
 @endcan
+@can('sections')
+    <li class="side-nav-item nav-item {{ areActiveRoutes(['admin.sections.index', 'admin.sections.create', 'admin.sections.edit'], 'tt-menu-item-active') }}">
+        <a href="{{ route('admin.sections.index') }}" class="side-nav-link">
+            <span class="tt-nav-link-icon"><i data-feather="layers"></i></span>
+            <span class="tt-nav-link-text">{{ localize('Gestione Sezioni') }}</span>
+        </a>
+    </li>
+@endcan
 
     <!-- tags -->
     @php

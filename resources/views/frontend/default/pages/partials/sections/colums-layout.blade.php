@@ -48,9 +48,7 @@ $section = [
 ];
 } else if ($sectionType == 2) {
 $section = [
-'sectionTitle' => 'Altra Sezione',
-'sectionTitleColor' => '#FFFFFF',
-'showTitle' => false,
+
 'sectionBackgroundColor' => '#ffffff',
 'sectionPaddingY' => 9,
 'divider' => true,
@@ -84,9 +82,8 @@ $section = [
 }
 else if ($sectionType == 3) {
 $section = [
-'sectionTitle' => 'Sezione a 2 colonne con video',
+'sectionTitle' => '',
 'sectionTitleColor' => '#FFFFFF',
-'showTitle' => false,
 'sectionBackgroundColor' => '#F4F8F8',
 'divider' => false,
 'sectionPaddingY' => 0,
@@ -117,9 +114,12 @@ $section = [
 }
 @endphp
 
+
+
+
 <section class="columns-layout-section py-{{$section['sectionPaddingY']}} position-relative z-1 overflow-hidden" style="background-color:{{ $section['sectionBackgroundColor'] }};">
     <div class="content-wrapper">
-        @if ($section['showTitle'])
+    @if (isset($section->settings['title']) && $section->settings['title'] !== '')
         <div class="section-title" style="color: {{ $section['sectionTitleColor'] }};">
             {{ localize($section['sectionTitle']) }}
         </div>

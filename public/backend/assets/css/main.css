@@ -36770,3 +36770,26 @@ button.note-btn.dropdown-toggle:after {
         background-color: var(--bs-card-cap-bg);
         border-radius: 10px;
     }
+     .color-picker {
+        width: 40px; /* Larghezza del quadrato */
+        height: 40px; /* Altezza del quadrato */
+        padding: 0; /* Rimuove il padding interno se presente */
+        border: none; /* Rimuove il bordo se presente */
+        cursor: pointer; /* Cambia il cursore per indicare che l'elemento è cliccabile */
+        -webkit-appearance: none; /* Rimuove lo stile di default su Chrome */
+        outline: none; /* Rimuove l'outline quando è selezionato */
+        box-shadow: 0 0 0 1px #b3b3b3;
+    border-radius: 0;
+    }
+    /* Stile per rimuovere la freccia su Chrome che appare su hover */
+    .color-picker::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+    .color-picker::-webkit-color-swatch {
+        border: none;
+    }
+
+    .wh-x2{
+        height:2em;
+        width:4em !important;
+    }

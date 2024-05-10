@@ -225,20 +225,22 @@ $agent = new \Jenssegers\Agent\Agent;
 <!-- Blocco sezioni dopo le categorie -->
 
 <!--colums-layout start-->
-@include('frontend.default.pages.partials.sections.colums-layout',['sectionType' => 3])
+
+@include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 4])
 <!--colums-layout end-->
 
 <!--Faq start-->
-@include('frontend.default.pages.partials.sections.faq',['sectionType' => 1])
+@include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 6])
 <!--Faq end-->
 
 
 <!--colums-layout start-->
-@include('frontend.default.pages.partials.sections.colums-layout',['sectionType' => 1])
+@include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 1])
 <!--colums-layout end-->
 
 <!--colums-card start-->
-@include('frontend.default.pages.partials.sections.colums-card',['sectionType' => 1])
+
+@include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 5])
 <!--colums-card end-->
 
 <!-- Recensioni start -->

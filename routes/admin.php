@@ -27,6 +27,8 @@ use App\Http\Controllers\Backend\Products\MaterialController;
 use App\Http\Controllers\Backend\Products\MaterialDetailController;
 use App\Http\Controllers\Backend\WorkflowController;
 use App\Http\Controllers\Backend\MenuController;
+use App\Http\Controllers\Backend\Sections\SectionController;
+use App\Http\Controllers\Backend\Sections\SectionItemController;
 use App\Http\Controllers\Backend\MenuItemController;
 use App\Http\Controllers\Backend\Products\BrandsController;
 use App\Http\Controllers\Backend\Products\UnitsController;
@@ -404,6 +406,27 @@ Route::group(
         Route::post('/menus/{menu}/items/update/{id}', [MenuItemController::class, 'update'])->name('admin.menuitems.update');
         Route::get('/menus/{menu}/items/delete/{id}', [MenuItemController::class, 'destroy'])->name('admin.menuitems.delete');
 
+        // Sections
+        Route::get('/sections', [SectionController::class, 'index'])->name('admin.sections.index');
+        Route::get('/sections/create', [SectionController::class, 'create'])->name('admin.sections.create');
+        Route::get('/sections/edit/{id}', [SectionController::class, 'edit'])->name('admin.sections.edit');
+        Route::post('/sections', [SectionController::class, 'store'])->name('admin.sections.store');
+        Route::put('/sections/update/{id}', [SectionController::class, 'update'])->name('admin.sections.update');
+
+        Route::get('/sections/delete/{id}', [SectionController::class, 'delete'])->name('admin.sections.delete');
+        Route::post('/sections/update-status', [SectionController::class, 'updateStatus'])->name('admin.sections.updateStatus');
+
+        // Section items
+
+        Route::get('/sections/{sectionId}/items/create/{type}', [SectionItemController::class, 'create'])->name('admin.items.create');
+        Route::get('/items/edit/{id}', [SectionItemController::class, 'edit'])->name('admin.items.edit');
+        Route::post('/sections/{sectionId}/items', [SectionItemController::class, 'store'])->name('admin.items.store');
+        Route::put('/items/update/{id}', [SectionItemController::class, 'update'])->name('admin.items.update');
+        Route::get('/items/duplicate/{id}', [SectionItemController::class, 'duplicate'])->name('admin.items.duplicate');
+
+        Route::get('/items/delete/{id}', [SectionItemController::class, 'delete'])->name('admin.items.delete');
+        Route::post('/items/update-status', [SectionItemController::class, 'updateStatus'])->name('admin.items.updateStatus');
+        Route::post('/items/update-positions', [SectionItemController::class, 'updatePositions'])->name('admin.items.positions');
 
         # bulk-emails
         Route::controller(NewslettersController::class)->group(function () {
