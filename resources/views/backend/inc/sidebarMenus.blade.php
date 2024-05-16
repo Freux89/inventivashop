@@ -310,10 +310,27 @@
 @endcan
 @can('sections')
     <li class="side-nav-item nav-item {{ areActiveRoutes(['admin.sections.index', 'admin.sections.create', 'admin.sections.edit'], 'tt-menu-item-active') }}">
-        <a href="{{ route('admin.sections.index') }}" class="side-nav-link">
-            <span class="tt-nav-link-icon"><i data-feather="layers"></i></span>
-            <span class="tt-nav-link-text">{{ localize('Gestione Sezioni') }}</span>
-        </a>
+    <a data-bs-toggle="collapse" href="#sidebarSections"
+                aria-expanded="{{areActiveRoutes(['admin.section_positions.index', 'admin.section_positions.create', 'admin.section_positions.edit'], 'true') }}" aria-controls="sidebarSections"
+                class="side-nav-link tt-menu-toggle">
+                <span class="tt-nav-link-icon"><i data-feather="layers"></i></span>
+                <span class="tt-nav-link-text">{{ localize('Sezioni') }}</span>
+            </a>    
+    
+        <div class="collapse {{areActiveRoutes(['admin.section_positions.index', 'admin.section_positions.create', 'admin.section_positions.edit'], 'show') }}" id="sidebarSections">
+                <ul class="side-nav-second-level">
+
+                <li class="{{ areActiveRoutes(['admin.sections.index', 'admin.sections.create', 'admin.sections.edit'], 'tt-menu-item-active') }}">
+                            <a href="{{ route('admin.sections.index') }}"
+                                class="{{ areActiveRoutes(['admin.sections.index', 'admin.sections.create', 'admin.sections.edit']) }}">{{ localize('Gestione sezioni') }}</a>
+                        </li>
+                        <li class="{{ areActiveRoutes(['admin.section_positions.index', 'admin.section_positions.create', 'admin.section_positions.edit'], 'tt-menu-item-active') }}">
+                            <a href="{{ route('admin.section_positions.index') }}"
+                                class="{{ areActiveRoutes(['admin.section_positions.index', 'admin.section_positions.create', 'admin.section_positions.edit']) }}">{{ localize('Posizione sezioni') }}</a>
+                        </li>
+            
+                </ul>
+            </div>
     </li>
 @endcan
 

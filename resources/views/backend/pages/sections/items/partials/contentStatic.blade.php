@@ -2,7 +2,9 @@
 
 
     @php
-    $section = $item->section;
+    if (isset($item) && isset($item->section)) {
+        $section = $item->section; 
+    }
     if($section->type == 'filtergrid'){
 
     $categoryList = isset($section->settings['categories']) ? $section->settings['categories'] : '';
@@ -54,11 +56,13 @@
             <strong>{{ localize('Categorie') }}</strong>
         </div>
         <div class="col-md-12">
-        <label for="categories_item" class="form-label">{{ localize('Scegli le categorie di appartenenza') }}</label>
+            <label for="categories_item" class="form-label">{{ localize('Scegli le categorie di appartenenza') }}</label>
             <select class="form-control select2" name="categories_item[]" class="w-100" data-toggle="select2" data-placeholder="{{ localize('Seleziona categorie') }}" multiple>
                 @foreach($categories as $category)
-                <option value="{{$category}}" {{ in_array($category, $item->settings['categories_item']) ? 'selected' : '' }}>{{$category}}</option>
-                @endforeach
+
+                <option value="{{$category}}" {{ (isset($item) && isset($item->settings['categories_item']) && in_array($category, $item->settings['categories_item'])) ? 'selected' : '' }}>
+                    {{$category}}
+                </option> @endforeach
             </select>
             <span class="fs-sm text-muted">{{ localize('Puoi selezionare più di una categoria') }}</span>
 

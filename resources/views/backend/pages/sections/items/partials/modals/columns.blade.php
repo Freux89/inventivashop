@@ -9,7 +9,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <select class="form-control" id="typeSelect">
+                    <select class="form-control" id="TypeSelect">
                         <option value="">Seleziona un tipo</option>
                         <option value="image-content">Immagine + Contenuto</option>
                         <option value="only-image">Solo Immagine</option>

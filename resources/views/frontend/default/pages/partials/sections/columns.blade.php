@@ -1,9 +1,5 @@
 @php
-
-$section = App\Models\Section::with('items')->findOrFail($sectionId);
 $columnLayout =  explode("-", $section->settings['columnLayout']);
-
-
 @endphp
 
 <section class="columns-layout-section py-{{$section->settings['paddingY']}} position-relative z-1 overflow-hidden" style="background-color:{{ $section->settings['backgroundColor'] }};">

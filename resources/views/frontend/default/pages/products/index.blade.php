@@ -44,6 +44,7 @@ $agent = new \Jenssegers\Agent\Agent;
     </div>
 
 </div>
+@include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_before_content'])
 
 <!-- Blocco sezioni prima delle categorie -->
 
@@ -223,25 +224,10 @@ $agent = new \Jenssegers\Agent\Agent;
 </form>
 
 <!-- Blocco sezioni dopo le categorie -->
-
-<!--colums-layout start-->
-
-@include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 4])
-<!--colums-layout end-->
-
-<!--Faq start-->
-@include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 6])
-<!--Faq end-->
+@include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_after_content'])
 
 
-<!--colums-layout start-->
-@include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 1])
-<!--colums-layout end-->
 
-<!--colums-card start-->
-
-@include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 5])
-<!--colums-card end-->
 
 <!-- Recensioni start -->
 @include('frontend.default.pages.partials.sections.reviews')

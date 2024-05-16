@@ -1,6 +1,5 @@
 @php
 
-$section = App\Models\Section::with('items')->findOrFail($sectionId);
 $categoriesString = $section->settings['categories'] ?? '';
 $categories = explode(',', $categoriesString);
 

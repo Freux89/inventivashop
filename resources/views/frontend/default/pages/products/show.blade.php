@@ -77,6 +77,8 @@ $detailedProduct = $product;
 <!--breadcrumb-->
 
 <!--product details start-->
+@include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_before_content'])
+
 <section class="product-details-area ptb-120">
     <div class="container">
         <div class="row g-4">
@@ -129,6 +131,7 @@ $detailedProduct = $product;
 'relatedProducts' => $relatedProducts,
 ])
 <!--related products slider end-->
+@include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_after_content'])
 
 @section('scripts')
 <script type="application/ld+json">

@@ -28,6 +28,7 @@ use App\Http\Controllers\Backend\Products\MaterialDetailController;
 use App\Http\Controllers\Backend\WorkflowController;
 use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Backend\Sections\SectionController;
+use App\Http\Controllers\Backend\Sections\SectionPositionController;
 use App\Http\Controllers\Backend\Sections\SectionItemController;
 use App\Http\Controllers\Backend\MenuItemController;
 use App\Http\Controllers\Backend\Products\BrandsController;
@@ -427,6 +428,18 @@ Route::group(
         Route::get('/items/delete/{id}', [SectionItemController::class, 'delete'])->name('admin.items.delete');
         Route::post('/items/update-status', [SectionItemController::class, 'updateStatus'])->name('admin.items.updateStatus');
         Route::post('/items/update-positions', [SectionItemController::class, 'updatePositions'])->name('admin.items.positions');
+
+
+        // Section Positions
+        Route::get('/section-positions', [SectionPositionController::class, 'index'])->name('admin.section_positions.index');
+        Route::get('/section-positions/create', [SectionPositionController::class, 'create'])->name('admin.section_positions.create');
+        Route::get('/section-positions/edit/{id}', [SectionPositionController::class, 'edit'])->name('admin.section_positions.edit');
+        Route::post('/section-positions', [SectionPositionController::class, 'store'])->name('admin.section_positions.store');
+        Route::put('/section-positions/update/{id}', [SectionPositionController::class, 'update'])->name('admin.section_positions.update');
+
+        Route::get('/section-positions/delete/{id}', [SectionPositionController::class, 'delete'])->name('admin.section_positions.delete');
+        Route::post('/section-positions/update-positions', [SectionPositionController::class, 'updatePositions'])->name('admin.section_positions.positions');
+        Route::get('/section-positions/entities/{type}', [SectionPositionController::class, 'getEntities'])->name('admin.section_positions.entities');
 
         # bulk-emails
         Route::controller(NewslettersController::class)->group(function () {

@@ -21,6 +21,7 @@
     <!--breadcrumb-->
     @include('frontend.default.inc.breadcrumb')
     <!--breadcrumb-->
+    @include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_before_content'])
 
     <!--page section start-->
     <section class="blog-details py-5">
@@ -35,4 +36,6 @@
         </div>
     </section>
     <!--page section end-->
+    @include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_after_content'])
+
 @endsection

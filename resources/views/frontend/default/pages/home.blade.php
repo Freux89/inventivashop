@@ -15,7 +15,7 @@
 
     <!-- Qui verrà inserito un blocco dove verranno caricate più sezioni -->
     <!-- I più venduti start-->
-    @include('frontend.default.pages.partials.sections.carousel',['sectionId' => 10])
+    
     <!-- I più venduti end-->
 
     <!--featured products start-->
@@ -23,24 +23,10 @@
     <!--featured products end-->
 
 
-    <!-- Trava il tuo prodotto start -->
-   
-    @include('frontend.default.pages.partials.sections.filter-grid',['sectionId' => 12])    
-    <!-- Trava il tuo prodotto end -->
+    @include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_home'])
 
 
-    <!-- Fatti per illuminare di notte start -->
-    @include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 1])
-    <!-- Fatti per illuminare di notte end -->
 
-
-    <!--Carosello start-->
-    @include('frontend.default.pages.partials.sections.carousel',['sectionId' => 11])
-    <!--Carosello end-->
-
-    <!--Presentazione start-->
-    <!-- @include('frontend.default.pages.partials.sections.colums-layout',['sectionType' => 2]) -->
-    @include('frontend.default.pages.partials.sections.columns-layout',['sectionId' => 3])
     <!--Presentazione end-->
 
     <!-- Recensioni start -->

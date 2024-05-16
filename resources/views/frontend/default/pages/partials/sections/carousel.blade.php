@@ -1,9 +1,4 @@
-@php
 
-$section = App\Models\Section::with('items')->findOrFail($sectionId);
-
-
-@endphp
 
 <!-- Swiper -->
 <section class="carousel-section  py-9 position-relative z-1 overflow-hidden {{ $section->settings['layout'] == 'rounded' ? 'rounded-style' : '' }}" style="background-color:{{$section->settings['backgroundColor']}}">

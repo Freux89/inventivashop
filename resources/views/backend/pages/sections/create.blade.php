@@ -5,11 +5,16 @@
 @endsection
 
 @section('contents')
+<section class="tt-section pt-4">
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card tt-page-header">
+                    <div class="card-body d-lg-flex align-items-center justify-content-lg-between">
+                        <div class="tt-page-title">
+                            <h2 class="h5 mb-lg-0">{{ localize('Crea Sezione') }}</h2>
+                        </div>
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="mb-4">{{ localize('Crea nuova Sezione') }}</h1>
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -19,6 +24,14 @@
                     </ul>
                 </div>
             @endif
+            </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+            <div class="card mb-4" id="section-1">
+                        <div class="card-body">
             <form method="POST" action="{{ route('admin.sections.store') }}">
                 @csrf
                 <div class="mb-3">
@@ -36,7 +49,11 @@
                
                 <button type="submit" class="btn btn-primary">{{ localize('Salva') }}</button>
             </form>
+</div></div>
+</div>
+</div>
         </div>
     </div>
 </div>
+</section>
 @endsection
