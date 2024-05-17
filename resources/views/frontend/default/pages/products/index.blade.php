@@ -72,32 +72,11 @@ $agent = new \Jenssegers\Agent\Agent;
                 </div>
             </div>
             @endif
-<!-- Categorie correlate -->
-            @if (isset($category) && $category->childrenCategories->isNotEmpty())
 
-            <div class="row subcategories-container">
-                <div class="col-xl-12">
-                    <div class="related-categories-title">Guarda queste altre soluzioni</div>
-                    <div class="row">
-                        @foreach ($category->childrenCategories as $subCategory)
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 col-xxl-2 mb-4">
-                            <div class="card border-0">
-                                <img src="{{ uploadedAsset($subCategory->thumbnail_image) }}" class="card-img-top img-category" alt="{{ $subCategory->name }}">
-                                <div class="card-body text-center">
-                                    <a href="{{ route('category.show', ['categorySlug' => $subCategory->slug]) }}" class="name-category">{{ $subCategory->name }}</a>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-
-                </div>
-            </div>
-            @endif
             @if (isset($category) && $category->products->isNotEmpty())
-            <div class="row g-4">
+            <div class="row g-4 mb-9">
 
-                <div class="col-xl-3">
+                <div class="col-xl-3 border-end pe-9">
                     <div class="d-none d-xl-block">
                         @include('frontend.default.pages.products.inc.productSidebar')
                     </div>
@@ -120,11 +99,11 @@ $agent = new \Jenssegers\Agent\Agent;
                 </div>
 
                 <!--rightbar-->
-                <div class="col-xl-9">
+                <div class="col-xl-9 px-9">
 
                     <div class="shop-grid">
                         <!--filter-->
-                        <div class="listing-top d-flex align-items-center justify-content-between flex-wrap gap-3 bg-white rounded-2 px-4 py-4 mb-5">
+                        <!-- <div class="listing-top d-flex align-items-center justify-content-between flex-wrap gap-3 bg-white rounded-2 px-4 py-4 mb-5">
                             <p class="mb-0 fw-bold">{{ localize('Showing') }}
                                 {{ $products->firstItem() }}-{{ $products->lastItem() }} {{ localize('of') }}
                                 {{ $products->total() }} {{ localize('results') }}
@@ -167,7 +146,7 @@ $agent = new \Jenssegers\Agent\Agent;
                                     </svg>
                                 </a>
                             </div>
-                        </div>
+                        </div> -->
                         <!--filter-->
 
                         <!--products-->
@@ -213,6 +192,28 @@ $agent = new \Jenssegers\Agent\Agent;
                 </div>
                 <!--rightbar-->
 
+            </div>
+            @endif
+            <!-- Categorie correlate -->
+            @if (isset($category) && $category->childrenCategories->isNotEmpty())
+
+            <div class="row subcategories-container">
+                <div class="col-xl-12">
+                    <div class="related-categories-title">Guarda queste altre soluzioni</div>
+                    <div class="row">
+                        @foreach ($category->childrenCategories as $subCategory)
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 col-xxl-2 mb-4">
+                            <div class="card border-0">
+                                <img src="{{ uploadedAsset($subCategory->thumbnail_image) }}" class="card-img-top img-category" alt="{{ $subCategory->name }}">
+                                <div class="card-body text-center">
+                                    <a href="{{ route('category.show', ['categorySlug' => $subCategory->slug]) }}" class="name-category">{{ $subCategory->name }}</a>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                </div>
             </div>
             @endif
         </div>

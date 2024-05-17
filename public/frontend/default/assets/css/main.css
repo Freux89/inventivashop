@@ -15204,7 +15204,7 @@ fieldset:disabled .btn {
     ); /* rtl: var(--bs-breadcrumb-divider, "/") */
 }
 .breadcrumb-item.active {
-    color: var(--bs-breadcrumb-item-active-color);
+    color: var(--in-primary-3);
 }
 .pagination {
     --bs-pagination-padding-x: 0.75rem;
@@ -18212,7 +18212,7 @@ fieldset:disabled .btn {
 }
 .border-end {
     border-right: var(--bs-border-width) var(--bs-border-style)
-        var(--bs-border-color) !important;
+        var(--in-primary-dark-5) !important;
 }
 .border-end-0 {
     border-right: 0 !important;
@@ -19341,10 +19341,7 @@ fieldset:disabled .btn {
 }
 .bg-danger {
     --bs-bg-opacity: 1;
-    background-color: rgba(
-        var(--bs-danger-rgb),
-        var(--bs-bg-opacity)
-    ) !important;
+    background-color: var(--in-primary-dark-1)!important;
 }
 .bg-light {
     --bs-bg-opacity: 1;
@@ -24827,6 +24824,7 @@ body {
 .horizontal-product-card .card-content .title {
     color: #191d28;
 }
+
 .horizontal-product-card .card-content .pricing span.h4 {
     font-size: 1.0625rem;
 }
@@ -24882,7 +24880,7 @@ body {
     padding: 0 10px 10px;
 }
 .vertical-product-card {
-    border: 1px solid #f4f4f4;
+    
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
 }
@@ -24924,15 +24922,22 @@ body {
     padding: 24px 32px;
 }
 .vertical-product-card .card-content .card-title {
-    color: #191d28;
+    color: var(--in-primary-dark-3);
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
+    font-size:18px;
 }
 .vertical-product-card .card-content .card-title:hover {
     color: #4e8893;
 }
 .vertical-product-card .card-content .price span.h4 {
     font-size: 1.0625rem;
+}
+.vertical-product-card .card-content .price{
+    color:var(--in-primary-dark-3)
+}
+.vertical-product-card .card-content .price .big-price span{
+ font-size:28px !important;
 }
 .vertical-product-card .card-btn {
     padding: 0 24px 32px;
@@ -25465,7 +25470,7 @@ body {
     transform: translateY(4px);
 }
 .breadcrumb .breadcrumb-item a {
-    color: #5d6374;
+    color: var(--in-primary-dark-5);
 }
 .breadcrumb .breadcrumb-item a:hover {
     color: #801854;

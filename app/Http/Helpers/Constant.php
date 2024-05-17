@@ -444,7 +444,7 @@ if (!function_exists('formatPrice')) {
                 $symbolAlignment    = Session::has('currency_symbol_alignment') ? Session::get('currency_symbol_alignment') : env('DEFAULT_CURRENCY_SYMBOL_ALIGNMENT');
             }
             if ($symbolAlignment == 0) {
-                return $symbol . $price;
+                return $symbol . ' ' . $price;
             } else if ($symbolAlignment == 1) {
                 return $price . $symbol;
             } else if ($symbolAlignment == 2) {

@@ -34,32 +34,24 @@
                 <i class="fas fa-medal"></i> {{ $product->reward_points }}
             </span>
         @endif
-        <!--product category start-->
-        <div class="mb-2 tt-category tt-line-clamp tt-clamp-1">
-            @if ($product->categories()->count() > 0)
-                @foreach ($product->categories as $category)
-                    <a href="{{ route('category.show', ['categorySlug' => $category->slug]) }}"
-                        class="d-inline-block text-muted fs-xxs">{{ $category->collectLocalization('name') }}
-                        @if (!$loop->last)
-                            ,
-                        @endif
-                    </a>
-                @endforeach
-            @endif
-        </div>
-        <!--product category end-->
+        
 
         <a href="{{ route('products.show', $product->slug) }}"
             class="card-title fw-semibold mb-2 tt-line-clamp tt-clamp-1">{{ $product->collectLocalization('name') }}
         </a>
-<div class="card-description">
-{{$product->collectLocalization('short_description') }}
-</div>
-        <div class="price">
+        <ul class="star-rating fs-sm d-inline-flex justify-content-center text-warning">
+                        {{ renderStarRatingFront(4, 5) }}
+                    </ul>
+
+        <div class="price mt-3">
+            {{localize('da')}}
+            <strong class="big-price">
             @include('frontend.default.pages.partials.products.pricing', [
                 'product' => $product,
                 'onlyPrice' => true,
             ])
+            </strong>
+          
         </div>
 
 
@@ -85,8 +77,7 @@
         @endphp
 
         
-            <a href="{{ route('products.show', $product->slug) }}" class="btn btn-outline-secondary btn-md border-secondary d-block mt-4"
-                >{{ localize('Apri') }}</a>
+            
         
 
     </div>
