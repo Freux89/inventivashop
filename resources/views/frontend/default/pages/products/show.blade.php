@@ -53,41 +53,26 @@ $detailedProduct = $product;
 @endsection
 
 
-@section('breadcrumb-contents')
-<div class="breadcrumb-content">
-    <h1 class="mb-2 text-center">{{ $product->name }}</h1>
-    <nav>
-        <ol class="breadcrumb justify-content-center">
-            <li class="breadcrumb-item fw-bold" aria-current="page"><a href="{{ route('home') }}">{{ localize('Home') }}</a></li>
-            @foreach ($breadcrumbs as $breadcrumb)
-            <li class="breadcrumb-item fw-bold" aria-current="page">
-                <a href="{{ route('category.show', ['categorySlug' => $breadcrumb->slug]) }}">{{ $breadcrumb->name }}</a>
-            </li>
-            @endforeach
-            <li class="breadcrumb-item active fw-bold" aria-current="page">{{ $product->name }}</li>
-        </ol>
-    </nav>
 
-</div>
-@endsection
+
+
 
 @section('contents')
 <!--breadcrumb-->
-@include('frontend.default.inc.breadcrumb')
+
 <!--breadcrumb-->
 
 <!--product details start-->
 @include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_before_content'])
 
-<section class="product-details-area ptb-120">
-    <div class="container">
+<section class="product-details-area ptb-4">
+    <div class="content-wrapper">
         <div class="row g-4">
             <div class="col-xl-12">
                 <div class="product-details">
                     <!-- product-view-box -->
                     
-                    @include(
-                    'frontend.default.pages.partials.products.product-view-box',
+                    @include('frontend.default.pages.partials.products.product-view-box',
                     compact('product'))
                     <!-- product-view-box -->
 
@@ -132,36 +117,215 @@ $detailedProduct = $product;
 ])
 <!--related products slider end-->
 @include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_after_content'])
+@endsection
+
 
 @section('scripts')
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "{{ route('home') }}"
-    },
-    @foreach ($breadcrumbs as $index => $breadcrumb)
-    {
-      "@type": "ListItem",
-      "position": {{ $index + 2 }},
-      "name": "{{ $breadcrumb->name }}",
-      "item": "{{ route('category.show', ['categorySlug' => $breadcrumb->slug]) }}"
-    },
-    @endforeach
-    {
-      "@type": "ListItem",
-      "position": {{ count($breadcrumbs) + 2 }},
-      "name": "{{ $product->name }}"
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+<script>
+  let isAutoSelecting = false;
+  const viewModes = {}; // Oggetto per tracciare la modalità di visualizzazione per ogni variante
+
+  
+
+  function showLoading() {
+        
+        document.querySelector('.loading-overlay').classList.remove('d-none');
     }
-  ]
+
+    function hideLoading() {
+        document.querySelector('.loading-overlay').classList.add('d-none');
+    }
+
+function initializeSwiper() {
+    const swiperViews = [];
+    
+
+   
+
+    function updateArrows(swiperInstance) {
+        const totalSlides = swiperInstance.slides.length;
+        const activeIndex = swiperInstance.activeIndex;
+
+        const prevArrow = swiperInstance.el.querySelector('.swiper-button-prev');
+        const nextArrow = swiperInstance.el.querySelector('.swiper-button-next');
+
+        prevArrow.style.display = activeIndex === 0 ? 'none' : 'flex';
+        nextArrow.style.display = (activeIndex >= totalSlides - swiperInstance.params.slidesPerView) ? 'none' : 'flex';
+    }
+
+    function selectFirstEnabledSlide(swiperInstance) {
+        const slides = swiperInstance.el.querySelectorAll('.swiper-slide .gallery-item-block');
+        let firstEnabledSlide = null;
+
+        slides.forEach(slide => {
+            if (!slide.classList.contains('disabled') && !firstEnabledSlide) {
+                firstEnabledSlide = slide;
+            }
+        });
+
+        if (firstEnabledSlide) {
+            slides.forEach(s => s.classList.remove('selected'));
+            firstEnabledSlide.classList.add('selected');
+            firstEnabledSlide.querySelector('input[type="radio"]').checked = true;
+            isAutoSelecting = true;
+        }
+    }
+
+    document.querySelectorAll('.swiper-container').forEach(swiperContainer => {
+        const variationId = swiperContainer.getAttribute('data-variation-id');
+        const swiper = new Swiper(swiperContainer, {
+            slidesPerView: 5,
+            spaceBetween: 0,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            on: {
+                init: function () {
+                    const slides = this.el.querySelectorAll('.swiper-slide .gallery-item-block');
+                    slides.forEach(slide => {
+                        slide.addEventListener('click', function() {
+                            if (!this.classList.contains('disabled')) {
+                                slides.forEach(s => s.classList.remove('selected'));
+                                this.classList.add('selected');
+                                this.querySelector('input[type="radio"]').checked = true;
+                                if (!isAutoSelecting) {
+                                    showLoading();
+                                    getVariationInfo();
+                                }
+                                isAutoSelecting = false;
+                                syncGridWithSwiper(this.dataset.valueId);
+                            }
+                        });
+                    });
+                    updateArrows(this);
+                },
+                slideChange: function() {
+                    updateArrows(this);
+                },
+            }
+        });
+
+        const selectedSlide = swiper.el.querySelector('.swiper-slide .gallery-item-block.selected');
+        if (!selectedSlide) {
+            selectFirstEnabledSlide(swiper);
+            setTimeout(() => {
+                if (isAutoSelecting) {
+                    showLoading();
+                    getVariationInfo();
+                    isAutoSelecting = false;
+                }
+            }, 0);
+        } else if (selectedSlide && selectedSlide.classList.contains('disabled')) {
+            selectedSlide.classList.remove('selected');
+            selectedSlide.querySelector('input[type="radio"]').checked = false;
+            selectFirstEnabledSlide(swiper);
+            setTimeout(() => {
+                if (isAutoSelecting) {
+                    showLoading();
+                    getVariationInfo();
+                    isAutoSelecting = false;
+                }
+            }, 0);
+        }
+         // Ripristina la modalità di visualizzazione corretta
+         if (viewModes[variationId] === 'grid') {
+            const gridContainer = document.querySelector(`.grid-container[data-variation-id="${variationId}"]`);
+            if (gridContainer) {
+                gridContainer.classList.remove('d-none');
+                swiperContainer.classList.add('d-none');
+            }
+        }
+    });
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    initializeSwiper();
+    initializeGrid();
+    setupToggleView();
+});
+
+
+
+// Funzione per inizializzare la griglia
+function initializeGrid() {
+    const gridItems = document.querySelectorAll('.grid-item');
+    gridItems.forEach(item => {
+        item.addEventListener('click', function() {
+            if (!this.classList.contains('disabled')) {
+                gridItems.forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+                syncSwiperWithGrid(this.dataset.valueId);
+            }
+        });
+    });
+}
+
+// Funzione per sincronizzare la griglia con lo swiper
+function syncGridWithSwiper(valueId) {
+    const gridItems = document.querySelectorAll('.grid-item');
+    gridItems.forEach(item => {
+        if (item.dataset.valueId === valueId) {
+            item.classList.add('selected');
+        } else {
+            item.classList.remove('selected');
+        }
+    });
+}
+
+// Funzione per sincronizzare lo swiper con la griglia
+function syncSwiperWithGrid(valueId) {
+    const swiperItems = document.querySelectorAll('.swiper-slide .gallery-item-block');
+    swiperItems.forEach(item => {
+        if (item.dataset.valueId === valueId) {
+            item.classList.add('selected');
+            item.querySelector('input[type="radio"]').checked = true;
+        } else {
+            item.classList.remove('selected');
+        }
+    });
+    showLoading();
+    getVariationInfo();
+}
+
+// Funzione per impostare il pulsante di cambio vista
+function setupToggleView() {
+    document.querySelectorAll('.toggle-view').forEach(button => {
+        button.addEventListener('click', function() {
+            
+            const variationId = button.closest('[data-variation-id]').getAttribute('data-variation-id');
+            const swiperContainer = document.querySelector(`.swiper-container[data-variation-id="${variationId}"]`);
+            const gridContainer = document.querySelector(`.grid-container[data-variation-id="${variationId}"]`);
+
+            const showButton = button.closest('.toggle-buttons').querySelector('.toggle-view[data-action="show"]');
+            const hideButton = button.closest('.toggle-buttons').querySelector('.toggle-view[data-action="hide"]');
+
+            if (gridContainer.classList.contains('d-none')) {
+                gridContainer.classList.remove('d-none');
+                swiperContainer.classList.add('d-none');
+                viewModes[variationId] = 'grid';
+                showButton.classList.add('d-none');
+                hideButton.classList.remove('d-none');
+                 // Aggiorna la modalità corrente per la variante
+            } else {
+                gridContainer.classList.add('d-none');
+                swiperContainer.classList.remove('d-none');
+                viewModes[variationId] = 'swiper'; // Aggiorna la modalità corrente per la variante
+                
+                showButton.classList.remove('d-none');
+                hideButton.classList.add('d-none');
+            }
+        });
+    });
+}
+
+
+
+
 </script>
 
-@endsection
 
 @endsection
+

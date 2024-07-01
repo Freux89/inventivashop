@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductTag;
 use App\Models\ProductVariation;
+use App\Models\VariationValue;
 use App\Models\Tag;
 use App\Models\Category;
 use App\Models\LogisticZone;
@@ -120,16 +121,20 @@ class ProductController extends Controller
             $product_page_widgets = json_decode(getSetting('product_page_widgets'));
         }
     
-        $breadcrumbs = collect([]);
-        foreach ($product->categories as $category) {
-            $breadcrumbs->push($category); // Aggiungi la categoria corrente ai breadcrumbs
-            while ($parent = $category->parentCategory) {
-                $breadcrumbs->prepend($parent); // Aggiungi la categoria genitore ai breadcrumbs
-                $category = $parent; // Sposta il riferimento alla categoria genitore per il prossimo ciclo
+        $breadcrumbs = session()->get('breadcrumb', collect());
+
+        // Se il breadcrumb è vuoto, crea un breadcrumb di default basato sulla categoria principale del prodotto
+        if ($breadcrumbs->isEmpty()) {
+            $category = $product->categories()->first(); // Supponiamo che ogni prodotto abbia una categoria principale
+            if ($category) {
+                // Costruisci il breadcrumb con le categorie parent
+                $currentCategory = $category;
+                while ($currentCategory) {
+                    $breadcrumbs->prepend($currentCategory); // Aggiungi la categoria corrente all'inizio del breadcrumb
+                    $currentCategory = $currentCategory->parentCategory; // Sposta il riferimento alla categoria parent per il prossimo ciclo
+                }
             }
         }
-
-        $breadcrumbs = $breadcrumbs->unique('id')->values();
 
         // Recupera la zona di spedizione con il minor tempo medio di consegna
         $fastestZone = LogisticZone::orderBy('average_delivery_days', 'asc')->first();
@@ -160,10 +165,11 @@ class ProductController extends Controller
     # product variation info
     public function getVariationInfo(Request $request)
 {
+   
     $product_id = $request->product_id;
-    
+    $quantity = $request->quantity;
     $variation_ids = $request->variation_id;
-
+    
     $product_price = Product::find($product_id)->price;
     $total_price = $product_price;
     $productVariations = [];
@@ -174,19 +180,21 @@ class ProductController extends Controller
         $productVariation = ProductVariation::where('variation_key', $variation_key)->where('product_id', $product_id)->first();
 
         if ($productVariation) {
+            // Includi le informazioni della tabella VariationValue
+            $variationValue = VariationValue::find($productVariation->variant_value_id);
+            $productVariation->variation_value_info = $variationValue;
             $productVariations[] = $productVariation;
         }
     }
-    
-    
-    return new ProductVariationInfoResource($productVariations,$product_id);
+
+    return new ProductVariationInfoResource($productVariations, $product_id, $quantity);
 }
 
 public function category(Request $request,$categorySlug)
 {
     
     $category = Category::where('slug', $categorySlug)->first();
-
+    
     
     if (!$category) {
         // Gestire il caso in cui la categoria non esiste
@@ -224,16 +232,20 @@ public function category(Request $request,$categorySlug)
     $products = $query->paginate(paginationNumber(9));
 
 
-    $breadcrumbs = collect([]);
+    $breadcrumb = collect([]);
+
+    // Costruisci il breadcrumb con le categorie parent
     $currentCategory = $category;
-
-    // Risali la gerarchia delle categorie fino a quando non ci sono più categorie genitore
-    while ($parent = $currentCategory->parentCategory) {
-        $breadcrumbs->prepend($parent);
-        $currentCategory = $parent; // Sposta il riferimento alla categoria genitore per il prossimo ciclo
+    while ($currentCategory) {
+        $breadcrumb->prepend($currentCategory); // Aggiungi la categoria corrente all'inizio del breadcrumb
+        $currentCategory = $currentCategory->parentCategory; // Sposta il riferimento alla categoria parent per il prossimo ciclo
     }
+ // Rimuovi l'ultimo elemento (la categoria corrente) dal breadcrumb
+ 
+    // Salva il breadcrumb nella sessione
+    session()->put('breadcrumb', $breadcrumb);
 
-    $breadcrumbs = $breadcrumbs->unique('id')->values();
+    
 
     return getView('pages.products.index', [
         'category'    => $category,
@@ -247,7 +259,7 @@ public function category(Request $request,$categorySlug)
         'min_value'   => $request->input('min_price', 0),
         'max_value'   => $request->input('max_price', $max_value),
         'tags'        => Tag::all(),
-        'breadcrumbs' => $breadcrumbs,
+        'breadcrumbs' => $breadcrumb,
     ]);
 }
 

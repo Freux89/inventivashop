@@ -704,7 +704,8 @@ if (!function_exists('generateVariationOptions')) {
                 $val = array(
                     'id'   => $value,
                     'name' => $variationValue->collectLocalization('name'),
-                    'code' => $variationValue->color_code
+                    'code' => $variationValue->color_code,
+                    'image' => $variationValue->image
                 );
                 array_push($variationValues, $val);
             }

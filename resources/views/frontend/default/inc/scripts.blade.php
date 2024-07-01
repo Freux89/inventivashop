@@ -172,33 +172,72 @@
 
     // get selected variation information
     function getVariationInfo() {
-        if ($('.add-to-cart-form input[name=quantity]').val()) {
-            let data = $('.add-to-cart-form').serializeArray();
-            $.ajax({
-                type: "POST",
-                url: '{{ route('products.getVariationInfo') }}',
-                data: data,
-                success: function(response) {
+    if ($('.add-to-cart-form input[name=quantity]').val()) {
+        let data = $('.add-to-cart-form').serializeArray();
 
-                    $('.all-pricing').addClass('d-none');
-                    $('.variation-pricing').removeClass('d-none');
-                    $('.variation-pricing').html(response.data.price);
-                    $('#variants-container').html(response.data.variations_html);
-                    // $('.add-to-cart-form input[name=product_variation_id]').val(response.data
-                    //     .id);
-                    $('.add-to-cart-form input[name=product_variation_id]').val(response.data.ids.join(','));
-                    $('.add-to-cart-form input[name=indicativeDeliveryDays]').val(response.data.indicativeDeliveryDays);
-                  //  $('.add-to-cart-form input[name=quantity]').prop('max', response.data.stock);
-
-                    
-                        $('.add-to-cart-btn').prop('disabled', false);
-                        $('.add-to-cart-btn .add-to-cart-text').html(TT.localize.addToCart);
-                        $('.qty-increase-decrease input[name=quantity]').val(1);
-                    
-                }
+        const activeSlideData = [];
+        document.querySelectorAll('.swiper-container').forEach(swiperContainer => {
+            const selectedSlide = swiperContainer.querySelector('.swiper-slide .gallery-item-block.selected');
+            const selectedSlideId = selectedSlide ? selectedSlide.getAttribute('data-value-id') : null;
+            activeSlideData.push({
+                index: swiperContainer.swiper.activeIndex,
+                selectedSlideId: selectedSlideId
             });
-        }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '{{ route('products.getVariationInfo') }}',
+            data: data,
+            success: function(response) {
+                $('.all-pricing').addClass('d-none');
+                $('.variation-pricing').removeClass('d-none');
+                $('.variation-pricing').html(response.data.recap_body_html);
+                $('#variants-container').html(response.data.variations_html);
+                $('.add-to-cart-form input[name=product_variation_id]').val(response.data.filteredIds.join(','));
+                $('.add-to-cart-form input[name=indicativeDeliveryDays]').val(response.data.indicativeDeliveryDays);
+                $('.add-to-cart-btn').prop('disabled', false);
+                $('.add-to-cart-btn .add-to-cart-text').html(TT.localize.addToCart);
+
+                initializeSwiper();
+                initializeGrid();
+                setupToggleView();
+
+
+
+                 // Ripristina la modalità di visualizzazione
+                 Object.keys(viewModes).forEach(variationId => {
+                    if (viewModes[variationId] === 'grid') {
+                        const swiperContainer = document.querySelector(`.swiper-container[data-variation-id="${variationId}"]`);
+                        const gridContainer = document.querySelector(`.grid-container[data-variation-id="${variationId}"]`);
+                        if (gridContainer && swiperContainer) {
+                            gridContainer.classList.remove('d-none');
+                            swiperContainer.classList.add('d-none');
+                        }
+                    }
+                });
+
+                if (!isAutoSelecting) {
+                    document.querySelectorAll('.swiper-container').forEach((swiperContainer, index) => {
+                        swiperContainer.swiper.slideTo(activeSlideData[index].index, 0);
+                        if (activeSlideData[index].selectedSlideId) {
+                            const slideToSelect = swiperContainer.querySelector(`.swiper-slide .gallery-item-block[data-value-id="${activeSlideData[index].selectedSlideId}"]`);
+                            if (slideToSelect) {
+                                slideToSelect.classList.add('selected');
+                                slideToSelect.querySelector('input[type="radio"]').checked = true;
+                            }
+                        }
+                    });
+                }
+
+                hideLoading();
+            },
+            error: function() {
+                hideLoading();
+            }
+        });
     }
+}
 
     // check if it can be added to cart
     function isValidForAddingToCart() {
@@ -232,6 +271,7 @@
             if (maxValue == undefined || parseInt(prevValue) < parseInt(maxValue)) {
                 $('.qty-increase-decrease input[name=quantity]').val(parseInt(prevValue) + 1)
             }
+            getVariationInfo();
         });
 
         // decrease qty
@@ -240,6 +280,7 @@
             if (prevValue > 1) {
                 $('.qty-increase-decrease input[name=quantity]').val(parseInt(prevValue) - 1)
             }
+            getVariationInfo();
         });
 
         // add to cart form submit
@@ -550,5 +591,7 @@ document.addEventListener('DOMContentLoaded', function() {
         feather.replace();
     }
     initFeather();
+
+
 
 </script>

@@ -7886,9 +7886,7 @@ img.mfp-img {
     margin-top: calc(0px - var(--swiper-navigation-size) / 2);
     z-index: 10;
     cursor: pointer;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
+    display: none !important;
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
@@ -7896,6 +7894,12 @@ img.mfp-img {
     -ms-flex-pack: center;
     justify-content: center;
     color: var(--swiper-navigation-color, var(--swiper-theme-color));
+}
+.swiper-container:hover .swiper-button-next,
+.swiper-container:hover .swiper-button-prev {
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
 }
 .swiper-button-next.swiper-button-disabled,
 .swiper-button-prev.swiper-button-disabled {
@@ -25041,6 +25045,31 @@ body {
 .product-info .pricing span.h4 {
     font-size: 1.25rem;
 }
+.product-info .description-short {
+    font-size: 20px;
+}
+.start-conf{
+    color:var(--in-primary-dark-5);
+    border-bottom:1px solid #C4C4C4;
+}
+.quickview-product-slider .swiper-slide img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+    aspect-ratio: 16 / 9;
+}
+
+.product-thumbnail-slider {
+    display: none; /* Nascondi il thumbnail slider */
+}
+.summary-box {
+    background-color:var(--in-primary-dark-6);
+}
+.summary-box .title{
+    background-color:var(--in-secondary-6);
+    color:#fff;
+}
 .banner-box {
     padding: 50px 24px;
 }
@@ -28761,4 +28790,277 @@ button.accordion-button {
     font-size:24px;
     font-weight:bold;
 
+}
+
+
+
+.recap-body {
+    padding: 20px;
+}
+.recap-body-upper {
+    border-bottom: 1px solid #e3e3e3;
+}
+.line {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.label {
+    font-weight: bold;
+    color: #333;
+}
+
+.value {
+    text-align: right;
+    color: #666;
+}
+
+.total-label {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+
+.btn.green-btn {
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn.green-btn:hover {
+    background-color: #218838;
+}
+
+.icon-cart {
+    margin-right: 5px;
+}
+
+
+
+/*variants images*/
+.gallery-slider-block {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    overflow: hidden; /* Ensure no overflow */
+    position: relative;
+}
+
+.gallery-slider-block .swiper-wrapper {
+    display: flex;
+    align-items: flex-start;
+}
+
+.gallery-slider-block .swiper-slide {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: auto; /* Ensure slides adjust to content */
+    flex: 0 0 20%; /* Each slide takes 20% of the container for 5 slides per view */
+}
+
+.gallery-item-block {
+    padding: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.gallery-item-block.disabled, .grid-item.disabled .gallery-item-block{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.gallery-item-block.selected .picture-box, .grid-item.selected .gallery-item-block .picture-box{
+    border: 3px solid var(--in-primary-4);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.picture-box {
+    width: 185px;
+    height: 185px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid transparent;
+    overflow: hidden;
+}
+
+.gallery-item-block .inner {
+    width: 100%;
+    height: 100%;
+}
+.variant-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.gallery-slider-block .swiper-button-next,
+.gallery-slider-block .swiper-button-prev {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 40px; /* Set button width */
+    height: 40px; /* Set button height */
+    background-color: rgba(0, 0, 0, 0.5); /* Set semi-transparent background */
+   
+    color: #fff; /* Set arrow color */
+    
+    justify-content: center;
+    align-items: center;
+    font-size: 20px; /* Set arrow size */
+}
+
+.gallery-slider-block:hover .swiper-button-next,
+.gallery-slider-block:hover .swiper-button-prev {
+    display: flex;
+}
+
+.gallery-slider-block .swiper-button-next {
+    right: 0;
+}
+
+.gallery-slider-block .swiper-button-prev {
+    left: 0;
+}
+
+.variant-label {
+    display: block;
+    margin-top: 10px;
+    text-align: left;
+    width: 100%;
+    color:var(--in-primary-3);
+    font-size: 17px;
+    font-weight: bold;
+}
+.info-icon {
+    display: block;
+    margin-top: 5px;
+    text-align: left;
+    width: 100%;
+    color: #555;
+    font-size: 16px;
+}
+
+.gallery-item-block input[type="radio"] {
+    display: none;
+}
+.gallery-slider-block .swiper-button-next:after,.gallery-slider-block .swiper-button-prev:after {
+    font-size: 25px;
+}
+
+.info-icon {
+    display: block;
+    margin-top: 5px;
+    text-align: left;
+    width: 100%;
+    color:var(--in-primary-3);
+    font-size: 20px;
+}
+.info-svg {
+    fill: currentColor; /* This allows the SVG to inherit the text color */
+    width: 25px;
+    height: 25px;
+}
+.variant-name{
+    font-size:20px;
+    color:var(--in-primary-dark-5);
+    font-weight:bold;
+}
+#variants-container{
+    position:relative;
+}
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.variant-block {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 50px;
+    margin-bottom: 50px;
+}
+
+
+/* Swiper container when grid view is active */
+.grid-view {
+    display: none;
+    flex-wrap: wrap;
+}
+
+.grid-view .swiper-slide {
+    width: calc(20% - 10px); /* 5 items per row with some margin */
+    margin: 5px;
+}
+
+.swiper-container.grid-view-active .swiper-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.swiper-container.grid-view-active .swiper-slide {
+    flex: 0 0 calc(20% - 10px); /* Adjust to show 5 items per row */
+    margin: 5px 0;
+}
+
+/* Hide navigation arrows when in grid view */
+.swiper-container.grid-view-active .swiper-button-next,
+.swiper-container.grid-view-active .swiper-button-prev {
+    display: none !important;
+}
+
+/* Ensure grid items have correct spacing */
+.swiper-slide {
+    transition: all 0.3s ease;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+}
+
+
+
+@media (max-width: 1200px) {
+    .grid-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .grid-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
 }
