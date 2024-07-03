@@ -1,5 +1,5 @@
 <section class="related-product-slider pb-120">
-    <div class="container">
+    <div class="content-wrapper">
         <div class="row align-items-center justify-content-between">
             <div class="col-sm-8">
                 <div class="section-title text-center text-sm-start">
