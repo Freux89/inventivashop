@@ -19,7 +19,7 @@
     </div>
 
     <div class="row">
-        <div class="col-8">
+        <div class="col-12 col-lg-8">
             <div class="line-below-title mt-0 mb-5"></div>
 
 
@@ -85,7 +85,7 @@
             </form>
         </div>
         <div class="col-4">
-            <div class="summary-box mt-5">
+            <div class="summary-box mt-5 d-none d-lg-block">
                 <div class="h3 title py-3 px-4">{{localize('Riepilogo')}}</div>
 
                 <div class="box-pricing">

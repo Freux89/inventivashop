@@ -28860,7 +28860,7 @@ button.accordion-button {
     justify-content: flex-start;
     align-items: center;
     width: auto; /* Ensure slides adjust to content */
-    flex: 0 0 20%; /* Each slide takes 20% of the container for 5 slides per view */
+    /* Each slide takes 20% of the container for 5 slides per view */
 }
 
 .gallery-item-block {
@@ -28882,13 +28882,33 @@ button.accordion-button {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 .picture-box {
-    width: 185px;
+    width: 100%;
     height: 185px;
+    max-width: 185px;
+    max-height: 185px;
     display: flex;
     justify-content: center;
     align-items: center;
     border: 3px solid transparent;
     overflow: hidden;
+}
+.picture-box .inner{
+    width: 100%;
+    height: 100%;
+}
+/* Risoluzioni più alte */
+@media (max-width: 1680px) {
+    .picture-box {
+        max-width: 170px;
+        height: 170px;
+    }
+}
+
+@media (max-width: 1440px) {
+    .picture-box {
+        max-width: 150px;
+        height: 150px;
+    }
 }
 
 .gallery-item-block .inner {
@@ -28898,6 +28918,8 @@ button.accordion-button {
 .variant-image {
     width: 100%;
     height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: cover;
     object-position: center;
 }
@@ -29034,33 +29056,39 @@ button.accordion-button {
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(5, 1fr);
     gap: 10px;
     margin-top: 20px;
 }
 
 
-
 @media (max-width: 1200px) {
     .grid-container {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
     }
 }
 
 @media (max-width: 992px) {
     .grid-container {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
 @media (max-width: 768px) {
     .grid-container {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 576px) {
     .grid-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
+
+@media (max-width: 300px) {
+    .grid-container {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+

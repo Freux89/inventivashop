@@ -182,6 +182,28 @@ function initializeSwiper() {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',
             },
+            breakpoints: {
+      300: {
+        slidesPerView: 2,
+        spaceBetween: 10
+      },
+      576: {
+        slidesPerView: 3,
+        spaceBetween: 10
+      },
+      768: {
+        slidesPerView: 4,
+        spaceBetween: 10
+      },
+      992: {
+        slidesPerView: 4,
+        spaceBetween: 10
+      },
+      1200: {
+        slidesPerView: 5,
+        spaceBetween: 10
+      }
+    },
             on: {
                 init: function () {
                     const slides = this.el.querySelectorAll('.swiper-slide .gallery-item-block');
