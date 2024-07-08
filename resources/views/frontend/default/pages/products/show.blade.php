@@ -185,23 +185,23 @@ function initializeSwiper() {
             breakpoints: {
       300: {
         slidesPerView: 2,
-        spaceBetween: 10
+        spaceBetween: 0
       },
       576: {
         slidesPerView: 3,
-        spaceBetween: 10
+        spaceBetween: 0
       },
       768: {
         slidesPerView: 4,
-        spaceBetween: 10
+        spaceBetween: 0
       },
       992: {
         slidesPerView: 4,
-        spaceBetween: 10
+        spaceBetween: 0
       },
       1200: {
         slidesPerView: 5,
-        spaceBetween: 10
+        spaceBetween: 0
       }
     },
             on: {
@@ -267,6 +267,7 @@ document.addEventListener("DOMContentLoaded", function() {
     initializeSwiper();
     initializeGrid();
     setupToggleView();
+    initializeInfoIconEvents();
 });
 
 
@@ -283,6 +284,7 @@ function initializeGrid() {
             }
         });
     });
+    initializeGridInfoIconEvents();
 }
 
 // Funzione per sincronizzare la griglia con lo swiper
@@ -342,11 +344,65 @@ function setupToggleView() {
         });
     });
 }
+function initializeInfoIconEvents() {
+        document.querySelectorAll('.swiper-slide .info-icon').forEach(function(element) {
+            element.addEventListener('click', function(event) {
+                event.stopPropagation(); // Impedisce la propagazione dell'evento
+                var valueId = this.getAttribute('data-value-id');
+                fetch(`/variation-value-info/${valueId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.info_description) {
+                            const modal = $('#info-description-modal');
+                            const content = $('#info-description-content');
+                            content.html(data.info_description);
+                            modal.stop(true, true).slideDown(500);
+                        }
+                    });
+            });
+        });
 
+        $('#close-info-description').on('click', function() {
+            $('#info-description-modal').stop(true, true).slideUp(500);
+        });
+    }
+    function initializeGridInfoIconEvents() {
+    document.querySelectorAll('.grid-item .info-icon').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.stopPropagation(); // Impedisce la propagazione dell'evento
+            var valueId = this.getAttribute('data-value-id');
+            var gridItem = this.closest('.grid-item');
+            var gridContainer = gridItem.closest('.grid-container'); // Ottenere il contenitore della griglia
+            fetch(`/variation-value-info/${valueId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.info_description) {
+                        const modal = $('#grid-info-description');
+                        const content = $('#grid-info-description-content');
+                        content.html(data.info_description);
+                        const $gridItem = $(gridItem);
+                        const $gridContainer = $(gridContainer); // Convertire in oggetto jQuery
+                        modal.insertAfter($gridItem);
+                        modal.css({
+                            top: $gridItem.position().top + $gridItem.outerHeight(),
+                            left: $gridContainer.position().left, // Posizionare a sinistra rispetto al contenitore
+                            width: $gridContainer.outerWidth() // Impostare la larghezza uguale a quella del contenitore
+                        });
+                        modal.stop(true, true).slideDown(500);
+                    }
+                });
+        });
+    });
 
+    $('#close-grid-info-description').on('click', function() {
+        $('#grid-info-description').stop(true, true).slideUp(500);
+    });
+}
 
+   
 
 </script>
+
 
 
 @endsection

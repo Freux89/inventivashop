@@ -21,6 +21,7 @@ use App\Http\Controllers\Backend\Payments\Razorpay\RazorpayController;
 use App\Http\Controllers\Frontend\OrderTrackingController;
 use App\Http\Controllers\Frontend\RefundsController;
 use App\Http\Controllers\Frontend\RewardPointsController;
+use App\Http\Controllers\Backend\Products\VariationValuesController;
 use App\Http\Controllers\Frontend\WalletController;
 use Illuminate\Support\Facades\Route;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -192,3 +193,5 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
     Route::get('/{categorySlug}', [ProductController::class, 'category'])->name('category.show');
 
 });
+
+Route::get('/variation-value-info/{id}', [VariationValuesController::class, 'getInfoDescription'])->name('variation.value.info');

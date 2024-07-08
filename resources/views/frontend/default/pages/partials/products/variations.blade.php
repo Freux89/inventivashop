@@ -68,8 +68,12 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
             <input type="radio" name="variation_value_for_variation_{{ $variation['id'] }}" value="{{ $value['id'] }}" id="val-{{ $value['id'] }}" {{ in_array($value['id'], $variation_value_ids ?? []) || ($key === 0 && empty($variation_value_ids)) ? 'checked' : '' }} {{ in_array($value['id'], $conditionEffects ?? []) ? 'disabled' : '' }}>
 
             </div>
-            <label for="val-{{ $value['id'] }}" class="variant-label">{{ $value['name'] }}</label>
-            <span class="info-icon"><svg xmlns="http://www.w3.org/2000/svg" class="info-svg" viewBox="0 0 32 32" width="32px" height="32px"><path d="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 12 L 17 12 L 17 10 Z M 15 14 L 15 22 L 17 22 L 17 14 Z"/></svg></span>
+            <label class="variant-label">{{ $value['name'] }}</label>
+            <span class="info-icon" data-value-id="{{ $value['id'] }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="info-svg" viewBox="0 0 32 32" width="32px" height="32px">
+                    <path d="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 12 L 17 12 L 17 10 Z M 15 14 L 15 22 L 17 22 L 17 14 Z"/>
+                </svg>
+            </span>
         </div>
     </div>
     @endforeach
@@ -77,6 +81,13 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
     <div class="swiper-button-next"></div>
     <div class="swiper-button-prev"></div>
 </div>
+
+<!-- Div per mostrare l'info_description -->
+<div id="info-description-modal" >
+    <button type="button" id="close-info-description" ><i class="fa-regular fa-circle-xmark"></i></button>
+    <div id="info-description-content"></div>
+</div>
+
 
 <div class="grid-container d-none" data-variation-id="{{ $variation['id'] }}">
     @foreach ($variation['values'] as $key => $value)
@@ -91,11 +102,19 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
                     @endif
                 </div>
             </div>
-            <label for="val-{{ $value['id'] }}" class="variant-label">{{ $value['name'] }}</label>
-            <span class="info-icon"><svg xmlns="http://www.w3.org/2000/svg" class="info-svg" viewBox="0 0 32 32" width="32px" height="32px"><path d="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 12 L 17 12 L 17 10 Z M 15 14 L 15 22 L 17 22 L 17 14 Z"/></svg></span>
+            <label class="variant-label">{{ $value['name'] }}</label>
+            <span class="info-icon" data-value-id="{{ $value['id'] }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="info-svg" viewBox="0 0 32 32" width="32px" height="32px">
+                    <path d="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 12 L 17 12 L 17 10 Z M 15 14 L 15 22 L 17 22 L 17 14 Z"/>
+                </svg>
+            </span>
         </div>
     </div>
     @endforeach
+</div>
+<div id="grid-info-description">
+    <button type="button" id="close-grid-info-description" ><i class="fa-regular fa-circle-xmark"></i></button>
+    <div id="grid-info-description-content"></div>
 </div>
 
 
@@ -112,3 +131,5 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
 
 @endforeach
 @endif
+
+

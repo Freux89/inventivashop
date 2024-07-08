@@ -202,8 +202,8 @@
                 initializeSwiper();
                 initializeGrid();
                 setupToggleView();
-
-
+                initializeInfoIconEvents();
+                initializeGridInfoIconEvents();
 
                  // Ripristina la modalità di visualizzazione
                  Object.keys(viewModes).forEach(variationId => {

@@ -75,6 +75,12 @@
                     </div>
                 </div>
             </div>
+            <h5 class="mb-4">{{ localize('Info') }}</h5>
+
+<div class="mb-4">
+    <label for="name" class="form-label">{{ localize('Info valore variante') }}</label>
+    <textarea name="info_description" class="editor" class="form-control" >{{ $variationValue->collectLocalization('info_description', $lang_key) }}</textarea>
+</div>
                             </div>
                         </div>
                         <!--basic information end-->

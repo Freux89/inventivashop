@@ -13,5 +13,6 @@ class VariationValueLocalization extends Model
         'name',
         'variation_value_id',
         'lang_key',
+        'info_description' 
     ]; 
 }

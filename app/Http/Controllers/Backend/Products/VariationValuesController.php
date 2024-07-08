@@ -100,13 +100,16 @@ class VariationValuesController extends Controller
             'lang_key' => 'required|string',
             'color_code' => 'nullable|string',
             'image' => 'nullable|integer',  // Add this line
+            'info_description' => 'nullable|string' // Aggiungi questo campo
         ]);
 
         $variationValue = VariationValue::findOrFail($data['id']);
 
         if ($data['lang_key'] == env("DEFAULT_LANGUAGE")) {
             $variationValue->name = $data['name'];
-            $variationValue->image = $data['image'];  // Add this line
+            $variationValue->image = $data['image'];  
+            $variationValue->info_description = $data['info_description']; 
+
         }
     
         $variationValue->variation_id = $data['variation_id'];
@@ -117,6 +120,8 @@ class VariationValuesController extends Controller
 
         $variationValueLocalization = VariationValueLocalization::firstOrNew(['lang_key' => $request->lang_key, 'variation_value_id' => $variationValue->id]);
         $variationValueLocalization->name = $request->name;
+        $variationValueLocalization->info_description = $request->info_description; // Aggiungi questo campo
+
 
         $variationValue->save();
         $variationValueLocalization->save();
@@ -159,4 +164,21 @@ class VariationValuesController extends Controller
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function getInfoDescription($id)
+    {
+        $lang_key = app()->getLocale();
+        $variationValueLocalization = VariationValueLocalization::where('variation_value_id', $id)->where('lang_key', $lang_key)->first();
+
+        if ($variationValueLocalization) {
+            return response()->json([
+                'info_description' => $variationValueLocalization->info_description,
+            ]);
+        }
+
+        return response()->json([
+            'info_description' => '',
+        ], 404);
+    }
+
 }
