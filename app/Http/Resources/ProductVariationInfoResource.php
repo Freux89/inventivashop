@@ -20,7 +20,7 @@ class ProductVariationInfoResource extends JsonResource
 
     public function toArray($request) {
         $resourceCollection = collect($this->resource);
-       
+        
         $ids = $resourceCollection->isEmpty() ? [] : $resourceCollection->pluck('id')->toArray();
         
         $product = Product::find($this->productId);
@@ -68,13 +68,17 @@ class ProductVariationInfoResource extends JsonResource
             'maxPrice' => $basePrice, // Assumendo che maxPrice = basePrice se non si usa in altro modo
             'discountedMaxPrice' => $discountedBasePrice,
             'quantity' => $this->quantity, // Aggiungi la quantità
-             // Assumendo che discountedMaxPrice = discountedBasePrice se non si usa in altro modo
         ])->render();
-       
+        // Creazione del riepilogo delle varianti
+        $summaryBoxVariantsHtml = view('frontend.default.pages.partials.products.summary-box-variants-content', [
+            'productVariations' => $filteredProductVariations,
+        ])->render();
+    
         return [
             'ids' => $ids,
             'filteredIds' => $filteredIds,
             'recap_body_html' => $recapBodyHtml,
+            'summary_box_variants_html' => $summaryBoxVariantsHtml, // Aggiungi questo per il riepilogo delle varianti
             'variations_html' => view('frontend.default.pages.partials.products.variations', [
                 'product' => $product,
                 'variation_value_ids' => $selectedVariantValueIds,
@@ -83,5 +87,5 @@ class ProductVariationInfoResource extends JsonResource
             ])->render(),
         ];
     }
-    
 }
+

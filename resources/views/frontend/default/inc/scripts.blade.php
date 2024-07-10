@@ -198,7 +198,7 @@
                 $('.add-to-cart-form input[name=indicativeDeliveryDays]').val(response.data.indicativeDeliveryDays);
                 $('.add-to-cart-btn').prop('disabled', false);
                 $('.add-to-cart-btn .add-to-cart-text').html(TT.localize.addToCart);
-
+                $('#summaryContent').html(response.data.summary_box_variants_html);
                 initializeSwiper();
                 initializeGrid();
                 setupToggleView();

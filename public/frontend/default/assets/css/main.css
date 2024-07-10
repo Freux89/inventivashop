@@ -29126,3 +29126,8 @@ button.accordion-button {
     
 }
 
+.summary-box-variants{
+    background-color:var(--in-primary-dark-6);
+}
+.summary-box-variants .title{
+    border-top:1px solid #707070;}

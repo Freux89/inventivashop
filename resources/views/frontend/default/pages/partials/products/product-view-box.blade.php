@@ -24,7 +24,7 @@
 
 
 
-            <form action="" class="add-to-cart-form">
+            <form action="" class="add-to-cart-form" id="addToCartForm">
                 @php
                 $isVariantProduct = 0;
                 $stock = 0;
@@ -53,7 +53,7 @@
                         <button type="button" class="increase">+</button>
                     </div>
 
-                    <button type="submit" class="btn btn-secondary btn-md add-to-cart-btn" @if (!$isVariantProduct && $stock < 1) disabled @endif>
+                    <!-- <button type="submit" class="btn btn-secondary btn-md add-to-cart-btn" @if (!$isVariantProduct && $stock < 1) disabled @endif>
                         <span class="me-2">
                             <i class="fa-solid fa-bag-shopping"></i>
                         </span>
@@ -63,7 +63,7 @@
 
                     <button type="button" class="btn btn-primary btn-md" onclick="addToWishlist({{ $product->id }})">
                         <i class="fa-solid fa-heart"></i>
-                    </button>
+                    </button> -->
 
                     <div class="flex-grow-1"></div>
                     @if (getSetting('enable_reward_points') == 1)
@@ -86,34 +86,34 @@
         </div>
         <div class="col-4">
             <div class="summary-box mt-5 d-none d-lg-block">
-                <div class="h3 title py-3 px-4">{{localize('Riepilogo')}}</div>
+                <div class="h3 title py-3 px-4">{{localize('Preventivo')}}</div>
 
                 <div class="box-pricing">
                     <!-- pricing -->
                     <div class="pricing all-pricing">
-                    @php
-    $stock = productStock($product);
-    $indicativeDeliveryDays = isset($indicativeDeliveryDays) ? $indicativeDeliveryDays : 0;
-    $netPrice = formatPrice(productNetPrice($product));
-    $unit = $product->unit ? $product->unit->collectLocalization('name') : '';
-    $tax = formatPrice(productNetPrice($product) * 0.22);
-    $basePrice = productBasePrice($product);
-    $discountedBasePrice = discountedProductBasePrice($product);
-    $maxPrice = productMaxPrice($product);
-    $discountedMaxPrice = discountedProductMaxPrice($product);
-@endphp
+                        @php
+                        $stock = productStock($product);
+                        $indicativeDeliveryDays = isset($indicativeDeliveryDays) ? $indicativeDeliveryDays : 0;
+                        $netPrice = formatPrice(productNetPrice($product));
+                        $unit = $product->unit ? $product->unit->collectLocalization('name') : '';
+                        $tax = formatPrice(productNetPrice($product) * 0.22);
+                        $basePrice = productBasePrice($product);
+                        $discountedBasePrice = discountedProductBasePrice($product);
+                        $maxPrice = productMaxPrice($product);
+                        $discountedMaxPrice = discountedProductMaxPrice($product);
+                        @endphp
 
-@include('frontend.default.pages.partials.products.recap-body', [
-    'stock' => $stock,
-    'indicativeDeliveryDays' => $indicativeDeliveryDays,
-    'netPrice' => $netPrice,
-    'unit' => $unit,
-    'tax' => $tax,
-    'basePrice' => $basePrice,
-    'discountedBasePrice' => $discountedBasePrice,
-    'maxPrice' => $maxPrice,
-    'discountedMaxPrice' => $discountedMaxPrice,
-])
+                        @include('frontend.default.pages.partials.products.recap-body', [
+                        'stock' => $stock,
+                        'indicativeDeliveryDays' => $indicativeDeliveryDays,
+                        'netPrice' => $netPrice,
+                        'unit' => $unit,
+                        'tax' => $tax,
+                        'basePrice' => $basePrice,
+                        'discountedBasePrice' => $discountedBasePrice,
+                        'maxPrice' => $maxPrice,
+                        'discountedMaxPrice' => $discountedMaxPrice,
+                        ])
 
                     </div>
 
@@ -123,9 +123,21 @@
                     </div>
                     <!-- selected variation pricing -->
                 </div>
+                <div class="d-flex justify-content-centerpb-4 px-4 pb-6">
+                    <button type="button" onclick="document.getElementById('addToCartForm').requestSubmit();" class="btn btn-primary btn-md add-to-cart-btn w-100">
+                        <span class="me-2">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </span>
+                        <span class="add-to-cart-text">
+                            Aggiungi al Carrello
+                        </span>
+                    </button>
+                </div>
 
             </div>
-
+            <div class="summary-box-variants d-none d-lg-block pb-4">
+                @include('frontend.default.pages.partials.products.summary-box-variants')
+            </div>
         </div>
     </div>
 

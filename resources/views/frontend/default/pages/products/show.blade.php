@@ -418,7 +418,20 @@ function initializeInfoIconEvents() {
     });
 }
 
-   
+document.addEventListener('DOMContentLoaded', function() {
+        var summaryContent = document.getElementById('summaryContent');
+        var toggleIcon = document.getElementById('toggleSummaryIcon');
+
+        summaryContent.addEventListener('show.bs.collapse', function () {
+            toggleIcon.classList.remove('fa-chevron-down');
+            toggleIcon.classList.add('fa-chevron-up');
+        });
+
+        summaryContent.addEventListener('hide.bs.collapse', function () {
+            toggleIcon.classList.remove('fa-chevron-up');
+            toggleIcon.classList.add('fa-chevron-down');
+        });
+    });
 
 </script>
 
