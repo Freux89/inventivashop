@@ -76,6 +76,7 @@ class ConditionGroupController extends Controller
                     $condition = new Condition([
                         'condition_group_id' => $conditionGroup->id,
                         'product_variation_id' => $conditionData['variantValue'], // Assumi che questo sia il product_variation_id corretto
+                        'motivational_message' => $conditionData['motivational_message'] ?? null, // Aggiungi il campo motivational_message
                     ]);
                     $condition->save();
 
@@ -153,6 +154,7 @@ class ConditionGroupController extends Controller
                     $condition = new Condition([
                         'condition_group_id' => $conditionGroup->id,
                         'product_variation_id' => $conditionData['variantValue'],
+                        'motivational_message' => $conditionData['motivational_message'] ?? null, // Aggiungi il campo motivational_message
                     ]);
                     $condition->save();
     

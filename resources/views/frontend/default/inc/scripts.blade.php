@@ -204,7 +204,7 @@
                 setupToggleView();
                 initializeInfoIconEvents();
                 initializeGridInfoIconEvents();
-
+                initTooltip();
                  // Ripristina la modalità di visualizzazione
                  Object.keys(viewModes).forEach(variationId => {
                     if (viewModes[variationId] === 'grid') {
@@ -592,6 +592,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     initFeather();
 
-
+    function initTooltip() {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        }
+    initTooltip();
 
 </script>

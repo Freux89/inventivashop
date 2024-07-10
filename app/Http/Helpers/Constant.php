@@ -705,7 +705,8 @@ if (!function_exists('generateVariationOptions')) {
                     'id'   => $value,
                     'name' => $variationValue->collectLocalization('name'),
                     'code' => $variationValue->color_code,
-                    'image' => $variationValue->image
+                    'image' => $variationValue->image,
+                    'info_description' => $variationValue->info_description
                 );
                 array_push($variationValues, $val);
             }
@@ -726,14 +727,14 @@ if (!function_exists('generateVariationOptions')) {
 }
 
 if(!function_exists('prepareConditionsForVariations')){
-    function prepareConditionsForVariations($product, $productVariationIds){
+    function prepareConditionsForVariations($product, $productVariationIds) {
         $valuesToDisable = [];
+        $motivationalMessages = [];
+        $variantsToDisable = [];
     
         // Carica i gruppi di condizioni con le relative condizioni, azioni, e varianti prodotto influenzate
         $filteredConditions = Condition::whereIn('product_variation_id', $productVariationIds)->with('actions.productVariations')->get();
-
     
-        
         foreach ($filteredConditions as $condition) {
             foreach ($condition->actions as $action) {
                 if ($action->apply_to_all) {
@@ -743,6 +744,9 @@ if(!function_exists('prepareConditionsForVariations')){
                     foreach ($action->productVariations as $affectedVariation) {
                         $affectedValueId = $affectedVariation->variant_value_id;
                         $valuesToDisable[] = $affectedValueId;
+                        if ($condition->motivational_message) {
+                            $motivationalMessages[$affectedValueId] = $condition->motivational_message;
+                        }
                     }
                 }
             }
@@ -751,13 +755,21 @@ if(!function_exists('prepareConditionsForVariations')){
         // Se ci sono varianti da disabilitare completamente, raccogli tutti i valori varianti per quelle varianti
         if (!empty($variantsToDisable)) {
             $variantValuesToDisable = VariationValue::whereIn('variation_id', $variantsToDisable)->pluck('id')->toArray();
-            $valuesToDisable = array_merge($valuesToDisable, $variantValuesToDisable);
+            foreach ($variantValuesToDisable as $valueId) {
+                $valuesToDisable[] = $valueId;
+                if (isset($motivationalMessages[$valueId])) {
+                    $motivationalMessages[$valueId] = $motivationalMessages[$valueId];
+                }
+            }
         }
-        
     
-        // Restituisci l'array dei valori da disabilitare, assicurati che siano unici per evitare duplicati
-        return array_unique($valuesToDisable);
+        // Restituisci gli array dei valori da disabilitare e dei messaggi motivazionali
+        return [
+            'valuesToDisable' => array_unique($valuesToDisable),
+            'motivationalMessages' => $motivationalMessages
+        ];
     }
+    
 }
 
 

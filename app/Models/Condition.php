@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Condition extends Model
 {
-    protected $fillable = ['condition_group_id', 'product_variation_id'];
+    protected $fillable = ['condition_group_id', 'product_variation_id','motivational_message'];
 
     public function actions()
     {

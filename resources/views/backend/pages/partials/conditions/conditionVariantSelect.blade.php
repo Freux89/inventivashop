@@ -1,12 +1,11 @@
 @php
-if(isset($condition)){
-$productVariation = App\Models\ProductVariation::find($condition->product_variation_id);
-$variationKeys = explode(':', rtrim($productVariation->variation_key, '/'));
-$selectedVariantId = $variationKeys[0];
-$values = app('App\Http\Controllers\Backend\Products\ConditionGroupController')->getVariantValuesArray($productId, $selectedVariantId);
-$selectedValueId = $condition->product_variation_id;
+if (isset($condition)) {
+    $productVariation = App\Models\ProductVariation::find($condition->product_variation_id);
+    $variationKeys = explode(':', rtrim($productVariation->variation_key, '/'));
+    $selectedVariantId = $variationKeys[0];
+    $values = app('App\Http\Controllers\Backend\Products\ConditionGroupController')->getVariantValuesArray($productId, $selectedVariantId);
+    $selectedValueId = $condition->product_variation_id;
 }
-
 @endphp
 
 <div class="card condition-div mb-3" data-condition-index="{{ $conditionIndex }}">
@@ -17,7 +16,6 @@ $selectedValueId = $condition->product_variation_id;
                 <i class="fas fa-trash float-end ms-3 delete-condition" style="cursor:pointer;" title="Elimina condizione"></i>
                 <i class="fas @if(!isset($selectedValueId)) fa-chevron-up @else fa-chevron-down @endif float-end"></i>
             </button>
-
         </h5>
     </div>
 
@@ -35,52 +33,55 @@ $selectedValueId = $condition->product_variation_id;
                         </select>
                     </div>
                     @if(isset($condition))
-
-
-                    @include('backend.pages.partials.conditions.conditionVariantValueSelect', [
-                    'conditionIndex' => $conditionIndex,
-                    'values' => $values,
-                    'selectedValueId' => $selectedValueId
-                    ])
-
+                        @include('backend.pages.partials.conditions.conditionVariantValueSelect', [
+                        'conditionIndex' => $conditionIndex,
+                        'values' => $values,
+                        'selectedValueId' => $selectedValueId
+                        ])
                     @endif
                 </div>
+                <div class="row mt-4">
+                <div class="col-12">
+                    <label for="motivational_message">Messaggio motivazionale:</label>
+                    <textarea class="form-control" name="condition[{{ $conditionIndex }}][motivational_message]" rows="3">@if(isset($condition)){{ $condition->motivational_message }}@endif</textarea>
+                </div>
+            </div>
             </div>
             <div class="condition-action p-4 mt-2" @if(!isset($condition)) style="display:none" @endif>
                 @if(isset($condition))
-                @forelse($condition->actions as $actionIndex => $action)
-                @php
-                $applyToAll = $action->apply_to_all;
-                $selectedActionVariantId = $action->variant_id;
-                $values = app('App\Http\Controllers\Backend\Products\ConditionGroupController')->getVariantValuesArray($productId, $selectedActionVariantId);
-                $selectedValuesId = collect([]);
-                
-
-                if (!$applyToAll) {
-                $productVariation = $action->productVariations->first();
-                if ($productVariation) {
-                $variationKeys = explode(':', rtrim($productVariation->variation_key, '/'));
-                
-                $selectedValuesId = $action->productVariations->pluck('id');
-                }
-                }
-                @endphp
-                @include('backend.pages.partials.conditions.actionVariantSelect', [
-                'actionIndex' => $actionIndex,
-                'conditionIndex' => $conditionIndex,
-                'selectedActionVariantId' => $selectedActionVariantId,
-                'selectedVariantId' => $selectedVariantId,
-                'variations' => $variations,
-                'action' => $action,
-                'values' => $values,
-                'selectedValuesId' => $selectedValuesId,
-                'applyToAll' => $applyToAll,
-                ])
-                @empty
-                <!-- Gestisci il caso in cui non ci siano azioni -->
-                @endforelse
+                    @forelse($condition->actions as $actionIndex => $action)
+                        @php
+                        $applyToAll = $action->apply_to_all;
+                        $selectedActionVariantId = $action->variant_id;
+                        $values = app('App\Http\Controllers\Backend\Products\ConditionGroupController')->getVariantValuesArray($productId, $selectedActionVariantId);
+                        $selectedValuesId = collect([]);
+                        
+                        if (!$applyToAll) {
+                            $productVariation = $action->productVariations->first();
+                            if ($productVariation) {
+                                $variationKeys = explode(':', rtrim($productVariation->variation_key, '/'));
+                                
+                                $selectedValuesId = $action->productVariations->pluck('id');
+                            }
+                        }
+                        @endphp
+                        @include('backend.pages.partials.conditions.actionVariantSelect', [
+                        'actionIndex' => $actionIndex,
+                        'conditionIndex' => $conditionIndex,
+                        'selectedActionVariantId' => $selectedActionVariantId,
+                        'selectedVariantId' => $selectedVariantId,
+                        'variations' => $variations,
+                        'action' => $action,
+                        'values' => $values,
+                        'selectedValuesId' => $selectedValuesId,
+                        'applyToAll' => $applyToAll,
+                        ])
+                    @empty
+                    <!-- Gestisci il caso in cui non ci siano azioni -->
+                    @endforelse
                 @endif
             </div>
+          
             <div class="row">
                 <div class="col-12 text-center">
                     <button type="button" class="btn btn-add-shutdown bg-white mt-3" @if(!isset($condition)) style="display:none;" @endif>+ Aggiungi azione</button>

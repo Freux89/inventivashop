@@ -274,6 +274,7 @@ document.addEventListener("DOMContentLoaded", function() {
     initializeGrid();
     setupToggleView();
     initializeInfoIconEvents();
+    initializeGridInfoIconEvents();
 });
 
 
@@ -290,7 +291,7 @@ function initializeGrid() {
             }
         });
     });
-    initializeGridInfoIconEvents();
+    
 }
 
 // Funzione per sincronizzare la griglia con lo swiper
@@ -371,6 +372,12 @@ function initializeInfoIconEvents() {
         $('#close-info-description').on('click', function() {
             $('#info-description-modal').stop(true, true).slideUp(500);
         });
+        $(document).on('click', function(event) {
+        // Se il click è avvenuto al di fuori del div info-description-modal
+        if (!$(event.target).closest('#info-description-modal').length) {
+            $('#info-description-modal').stop(true, true).slideUp(500);
+        }
+    });
     }
     function initializeGridInfoIconEvents() {
     document.querySelectorAll('.grid-item .info-icon').forEach(function(element) {
@@ -402,6 +409,12 @@ function initializeInfoIconEvents() {
 
     $('#close-grid-info-description').on('click', function() {
         $('#grid-info-description').stop(true, true).slideUp(500);
+    });
+    $(document).on('click', function(event) {
+        // Se il click è avvenuto al di fuori del div info-description-modal
+        if (!$(event.target).closest('#grid-info-description').length) {
+            $('#grid-info-description').stop(true, true).slideUp(500);
+        }
     });
 }
 
