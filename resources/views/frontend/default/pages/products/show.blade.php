@@ -255,9 +255,15 @@ function initializeSwiper() {
          // Ripristina la modalità di visualizzazione corretta
          if (viewModes[variationId] === 'grid') {
             const gridContainer = document.querySelector(`.grid-container[data-variation-id="${variationId}"]`);
+            const showButton =  document.querySelector(`.variant-block[data-variation-id="${variationId}"] .toggle-view[data-action="show"]`);
+            const hideButton =  document.querySelector(`.variant-block[data-variation-id="${variationId}"] .toggle-view[data-action="hide"]`);
+
+                
             if (gridContainer) {
                 gridContainer.classList.remove('d-none');
                 swiperContainer.classList.add('d-none');
+                showButton.classList.add('d-none');
+                hideButton.classList.remove('d-none');
             }
         }
     });
@@ -315,7 +321,7 @@ function syncSwiperWithGrid(valueId) {
 }
 
 // Funzione per impostare il pulsante di cambio vista
-function setupToggleView() {
+function  setupToggleView() {
     document.querySelectorAll('.toggle-view').forEach(button => {
         button.addEventListener('click', function() {
             
