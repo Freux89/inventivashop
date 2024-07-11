@@ -1,10 +1,17 @@
-@if (count(generateVariationOptions($product->ordered_variation_combinations)) > 0)
+
+@php
+if(!isset($variations)){
+    $variations = generateVariationOptions($product->ordered_variation_combinations);
+}
+@endphp
+
+@if (count($variations) > 0)
 <div class="loading-overlay d-none"></div>
 
 <div class="h3 start-conf py-3 mb-9">
     Inizia la configurazione
 </div>
-@foreach (generateVariationOptions($product->ordered_variation_combinations) as $variation)
+@foreach ($variations as $variation)
 
 @php
 // Determina se tutti i valori sono disabilitati
@@ -132,7 +139,7 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
 
 @elseif ($variation['display_type'] == 'select')
 <select name="variation_value_for_variation_{{ $variation['id'] }}" class="product-select form-control" {{ $allDisabled ? '' : 'required' }}>
-    <option value="">Seleziona</option>
+   
     @foreach ($variation['values'] as $value)
     @php
         $isDisabled = in_array($value['id'], $conditionEffects ?? []);

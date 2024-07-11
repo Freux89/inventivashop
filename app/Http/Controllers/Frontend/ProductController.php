@@ -19,14 +19,14 @@ class ProductController extends Controller
     # product listing
     public function index(Request $request)
     {
-        
+
         $searchKey = null;
         $per_page = 9;
         $sort_by = $request->sort_by ? $request->sort_by : "new";
         $maxRange = Product::max('max_price');
         $min_value = 0;
         $max_value = formatPrice($maxRange, false, false, false, false);
-        
+
         $category = null;
         $tag = null;
 
@@ -72,7 +72,7 @@ class ProductController extends Controller
         # by tag
         if ($request->tag_id && $request->tag_id != null) {
             $tag = Tag::find($request->tag_id);
-            
+
             $product_tag_product_ids = ProductTag::where('tag_id', $request->tag_id)->pluck('product_id');
             $products = $products->whereIn('id', $product_tag_product_ids);
         }
@@ -120,7 +120,7 @@ class ProductController extends Controller
         if (getSetting('product_page_widgets') != null) {
             $product_page_widgets = json_decode(getSetting('product_page_widgets'));
         }
-    
+
         $breadcrumbs = session()->get('breadcrumb', collect());
 
         // Se il breadcrumb è vuoto, crea un breadcrumb di default basato sulla categoria principale del prodotto
@@ -136,131 +136,190 @@ class ProductController extends Controller
             }
         }
 
-        // Recupera la zona di spedizione con il minor tempo medio di consegna
-        $fastestZone = LogisticZone::orderBy('average_delivery_days', 'asc')->first();
+        $variations = generateVariationOptions($product->ordered_variation_combinations);
+        $productVariations = $product->variations;
 
-        // Controlla se il prodotto ha delle lavorazioni associate e calcola la loro durata totale
-        
-        $workflowsDuration = $product->workflows->first() ? $product->workflows->first()->duration : 0;
+        $productVariationIds = [];
+        $processedVariationIds = [];
 
-        // Se non ci sono zone di spedizione configurate correttamente, imposta un valore di default
-        $fastestDeliveryDays = $fastestZone ? $fastestZone->average_delivery_days : 0;
+        foreach ($productVariations as $variation) {
+            // Estrarre l'id della variante dalla chiave di variazione
+            $variationKeyParts = explode(':', rtrim($variation->variation_key, '/'));
+            $variationId = $variationKeyParts[0];
 
-        // Calcola la consegna indicativa sommando i giorni di lavorazione ai giorni di spedizione più veloci
-        $indicativeDeliveryDays = $workflowsDuration + $fastestDeliveryDays;
+            // Se questa variante non è ancora stata processata, aggiungiamo il suo valore
+            if (!in_array($variationId, $processedVariationIds)) {
+                $productVariationIds[] = $variation->id;
+                $processedVariationIds[] = $variationId;
+            }
+        }
 
-        
+        $conditionEffects = prepareConditionsForVariations($product, $productVariationIds);
 
-        return getView('pages.products.show', ['product' => $product, 'relatedProducts' => $relatedProducts, 'product_page_widgets' => $product_page_widgets, 'breadcrumbs' => $breadcrumbs, 'indicativeDeliveryDays' => $indicativeDeliveryDays]);
+
+        // Filtriamo nuovamente le variazioni del prodotto in base alle condizioni
+        $filteredProductVariations = $product->variations->reject(function ($variation) use ($conditionEffects) {
+            return in_array($variation->variant_value_id, $conditionEffects['valuesToDisable']);
+        });
+
+        // Estrarre solo i primi valori di ogni variante dalle variazioni filtrate
+        $uniqueFilteredVariations = collect();
+        $processedVariationIds = [];
+
+        foreach ($filteredProductVariations as $variation) {
+            $variationKeyParts = explode(':', rtrim($variation->variation_key, '/'));
+            $variationId = $variationKeyParts[0];
+
+            if (!in_array($variationId, $processedVariationIds)) {
+                $uniqueFilteredVariations->push($variation);
+                $processedVariationIds[] = $variationId;
+            }
+        }
+
+        $indicativeDeliveryDays = indicativeDeliveryDays($product, $uniqueFilteredVariations);
+
+        // Calcolo dei prezzi
+$priceWithTax = variationPrice($product, $uniqueFilteredVariations);
+$discountedPriceWithTax = variationDiscountedPrice($product, $uniqueFilteredVariations);
+
+// Assumendo che $product_tax sia la percentuale di tassazione, ad esempio 0.22 per il 22%
+$product_tax =  $product->taxes[0]['tax_value']/100;  // Assicurati di ottenere questo valore correttamente nel tuo contesto
+
+$netPrice = $priceWithTax / (1 + $product_tax);
+$discountedNetPrice = $discountedPriceWithTax / (1 + $product_tax);
+$tax = $priceWithTax - $netPrice;
+$discountedTax = $discountedPriceWithTax - $discountedNetPrice;
+
+$basePrice = $priceWithTax ;
+$discountedBasePrice = $discountedPriceWithTax ;
+
+// Preparazione dei dati da passare alla vista
+$data = [
+    'product' => $product,
+    'relatedProducts' => $relatedProducts,
+    'product_page_widgets' => $product_page_widgets,
+    'breadcrumbs' => $breadcrumbs,
+    'variations' => $variations,
+    'conditionEffects' => $conditionEffects['valuesToDisable'],
+    'motivationalMessages' => $conditionEffects['motivationalMessages'],
+    'indicativeDeliveryDays' => $indicativeDeliveryDays,
+    'netPrice' => formatPrice($netPrice),
+    'tax' => formatPrice($tax),
+    'basePrice' => $basePrice,
+    'discountedBasePrice' => $discountedBasePrice,
+    'maxPrice' => $basePrice,
+    'discountedMaxPrice' => $discountedBasePrice
+];
+
+return getView('pages.products.show', $data);
     }
 
     # product info
     public function showInfo(Request $request)
     {
         $product = Product::find($request->id);
-        
+
         return getView('pages.partials.products.product-view-box', ['product' => $product]);
     }
 
     # product variation info
     public function getVariationInfo(Request $request)
-{
-   
-    $product_id = $request->product_id;
-    $quantity = $request->quantity;
-    $variation_ids = $request->variation_id;
-    
-    $product_price = Product::find($product_id)->price;
-    $total_price = $product_price;
-    $productVariations = [];
+    {
 
-    foreach ($variation_ids as $key => $variationId) {
-        $fieldName = 'variation_value_for_variation_' . $variationId;
-        $variation_key = $variationId . ':' . $request[$fieldName] . '/';
-        $productVariation = ProductVariation::where('variation_key', $variation_key)->where('product_id', $product_id)->first();
+        $product_id = $request->product_id;
+        $quantity = $request->quantity;
+        $variation_ids = $request->variation_id;
 
-        if ($productVariation) {
-            // Includi le informazioni della tabella VariationValue
-            $variationValue = VariationValue::find($productVariation->variant_value_id);
-            $productVariation->variation_value_info = $variationValue;
-            $productVariations[] = $productVariation;
+        $product_price = Product::find($product_id)->price;
+        $total_price = $product_price;
+        $productVariations = [];
+
+        foreach ($variation_ids as $key => $variationId) {
+            $fieldName = 'variation_value_for_variation_' . $variationId;
+            $variation_key = $variationId . ':' . $request[$fieldName] . '/';
+            $productVariation = ProductVariation::where('variation_key', $variation_key)->where('product_id', $product_id)->first();
+
+            if ($productVariation) {
+                // Includi le informazioni della tabella VariationValue
+                $variationValue = VariationValue::find($productVariation->variant_value_id);
+                $productVariation->variation_value_info = $variationValue;
+                $productVariations[] = $productVariation;
+            }
         }
+
+        return new ProductVariationInfoResource($productVariations, $product_id, $quantity);
     }
 
-    return new ProductVariationInfoResource($productVariations, $product_id, $quantity);
-}
+    public function category(Request $request, $categorySlug)
+    {
 
-public function category(Request $request,$categorySlug)
-{
-    
-    $category = Category::where('slug', $categorySlug)->first();
-    
-    
-    if (!$category) {
-        // Gestire il caso in cui la categoria non esiste
-        return redirect()->route('home');
+        $category = Category::where('slug', $categorySlug)->first();
+
+
+        if (!$category) {
+            // Gestire il caso in cui la categoria non esiste
+            return redirect()->route('home');
+        }
+        $maxRange = Product::max('max_price');
+        $max_value = formatPrice($maxRange, false, false, false, false);
+        // Filtrare i prodotti per la categoria specificata
+        // Inizia la query di base per i prodotti
+        $query = Product::isPublished()->whereHas('categories', function ($query) use ($category) {
+            $query->where('category_id', $category->id);
+        });
+
+        // Verifica se è stata inviata una richiesta di ricerca
+        if ($request->has('search') && $request->search != '') {
+            $searchKey = $request->search;
+            // Filtra i prodotti basati sul parametro di ricerca
+            $query = $query->where('name', 'like', '%' . $searchKey . '%');
+        } else {
+            $searchKey = null;
+        }
+
+        // Filtraggio per prezzo
+        if ($request->has('min_price')) {
+            $minPrice = $request->min_price;
+            $query = $query->where('price', '>=', $minPrice);
+        }
+
+        if ($request->has('max_price')) {
+            $maxPrice = $request->max_price;
+            $query = $query->where('price', '<=', $maxPrice);
+        }
+
+        // Esegue la query con la paginazione
+        $products = $query->paginate(paginationNumber(9));
+
+
+        $breadcrumb = collect([]);
+
+        // Costruisci il breadcrumb con le categorie parent
+        $currentCategory = $category;
+        while ($currentCategory) {
+            $breadcrumb->prepend($currentCategory); // Aggiungi la categoria corrente all'inizio del breadcrumb
+            $currentCategory = $currentCategory->parentCategory; // Sposta il riferimento alla categoria parent per il prossimo ciclo
+        }
+        // Rimuovi l'ultimo elemento (la categoria corrente) dal breadcrumb
+
+        // Salva il breadcrumb nella sessione
+        session()->put('breadcrumb', $breadcrumb);
+
+
+
+        return getView('pages.products.index', [
+            'category'    => $category,
+            'products'    => $products,
+            // Imposta le altre variabili a null o ai loro valori di default
+            'tag'         => null,
+            'searchKey'   => $searchKey,
+            'per_page'    => 9,
+            'sort_by'     => 'new',
+            'max_range'   => $maxRange,
+            'min_value'   => $request->input('min_price', 0),
+            'max_value'   => $request->input('max_price', $max_value),
+            'tags'        => Tag::all(),
+            'breadcrumbs' => $breadcrumb,
+        ]);
     }
-    $maxRange = Product::max('max_price');
-    $max_value = formatPrice($maxRange, false, false, false, false);
-    // Filtrare i prodotti per la categoria specificata
-     // Inizia la query di base per i prodotti
-     $query = Product::isPublished()->whereHas('categories', function ($query) use ($category) {
-        $query->where('category_id', $category->id);
-    });
-
-    // Verifica se è stata inviata una richiesta di ricerca
-    if ($request->has('search') && $request->search != '') {
-        $searchKey = $request->search;
-        // Filtra i prodotti basati sul parametro di ricerca
-        $query = $query->where('name', 'like', '%' . $searchKey . '%');
-    } else {
-        $searchKey = null;
-    }
-
-    // Filtraggio per prezzo
-    if ($request->has('min_price')) {
-        $minPrice = $request->min_price;
-        $query = $query->where('price', '>=', $minPrice);
-    }
-
-    if ($request->has('max_price')) {
-        $maxPrice = $request->max_price;
-        $query = $query->where('price', '<=', $maxPrice);
-    }
-
-    // Esegue la query con la paginazione
-    $products = $query->paginate(paginationNumber(9));
-
-
-    $breadcrumb = collect([]);
-
-    // Costruisci il breadcrumb con le categorie parent
-    $currentCategory = $category;
-    while ($currentCategory) {
-        $breadcrumb->prepend($currentCategory); // Aggiungi la categoria corrente all'inizio del breadcrumb
-        $currentCategory = $currentCategory->parentCategory; // Sposta il riferimento alla categoria parent per il prossimo ciclo
-    }
- // Rimuovi l'ultimo elemento (la categoria corrente) dal breadcrumb
- 
-    // Salva il breadcrumb nella sessione
-    session()->put('breadcrumb', $breadcrumb);
-
-    
-
-    return getView('pages.products.index', [
-        'category'    => $category,
-        'products'    => $products,
-        // Imposta le altre variabili a null o ai loro valori di default
-        'tag'         => null,
-        'searchKey'   => $searchKey,
-        'per_page'    => 9,
-        'sort_by'     => 'new',
-        'max_range'   => $maxRange,
-        'min_value'   => $request->input('min_price', 0),
-        'max_value'   => $request->input('max_price', $max_value),
-        'tags'        => Tag::all(),
-        'breadcrumbs' => $breadcrumb,
-    ]);
-}
-
 }

@@ -24,7 +24,7 @@ class ProductVariationInfoResource extends JsonResource
         $ids = $resourceCollection->isEmpty() ? [] : $resourceCollection->pluck('id')->toArray();
         
         $product = Product::find($this->productId);
-    
+        $product_tax = $product->taxes[0]['tax_value']/100;
         $productVariations = ProductVariation::findMany($ids);
         $variantValueIds = $productVariations->pluck('variant_value_id')->toArray();
         $productVariationIds = $productVariations->pluck('id')->toArray();
@@ -44,11 +44,12 @@ class ProductVariationInfoResource extends JsonResource
         $selectedVariantValueIds = array_diff($variantValueIds, $conditionEffects['valuesToDisable']);
     
         // Prezzo con IVA
+        
         $priceWithTax = variationPrice($product, $filteredProductVariations);
         $discountedPriceWithTax = variationDiscountedPrice($product, $filteredProductVariations);
     
         // Calcolare il prezzo netto (senza IVA) e l'IVA
-        $netPrice = $priceWithTax / 1.22;
+        $netPrice = $priceWithTax / (1+$product_tax);
         $tax = $priceWithTax - $netPrice;
     
         // Calcola il prezzo base e scontato

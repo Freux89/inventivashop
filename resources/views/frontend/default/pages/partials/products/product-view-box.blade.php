@@ -28,6 +28,7 @@
                 @php
                 $isVariantProduct = 0;
                 $stock = 0;
+                
                 if ($product->variations()->count() > 1) {
                 $isVariantProduct = 1;
                 } else {
@@ -94,13 +95,9 @@
                         @php
                         $stock = productStock($product);
                         $indicativeDeliveryDays = isset($indicativeDeliveryDays) ? $indicativeDeliveryDays : 0;
-                        $netPrice = formatPrice(productNetPrice($product));
+                        
                         $unit = $product->unit ? $product->unit->collectLocalization('name') : '';
-                        $tax = formatPrice(productNetPrice($product) * 0.22);
-                        $basePrice = productBasePrice($product);
-                        $discountedBasePrice = discountedProductBasePrice($product);
-                        $maxPrice = productMaxPrice($product);
-                        $discountedMaxPrice = discountedProductMaxPrice($product);
+                        
                         @endphp
 
                         @include('frontend.default.pages.partials.products.recap-body', [
