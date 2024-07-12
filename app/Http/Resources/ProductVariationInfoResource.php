@@ -71,6 +71,7 @@ class ProductVariationInfoResource extends JsonResource
             'quantity' => $this->quantity, // Aggiungi la quantità
         ])->render();
         // Creazione del riepilogo delle varianti
+        
         $summaryBoxVariantsHtml = view('frontend.default.pages.partials.products.summary-box-variants-content', [
             'productVariations' => $filteredProductVariations,
         ])->render();

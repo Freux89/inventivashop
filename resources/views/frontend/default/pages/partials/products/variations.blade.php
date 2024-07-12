@@ -3,6 +3,7 @@
 if(!isset($variations)){
     $variations = generateVariationOptions($product->ordered_variation_combinations);
 }
+
 @endphp
 
 @if (count($variations) > 0)
@@ -63,6 +64,7 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
     @php
         $isDisabled = in_array($value['id'], $conditionEffects ?? []);
         $message = $motivationalMessages[$value['id']] ?? '';
+        
     @endphp
     <div class="swiper-slide">
         <div class="gallery-item-block @if (in_array($value['id'], $variation_value_ids ?? []) || ($key === 0 && empty($variation_value_ids))) selected @endif @if ($isDisabled) disabled @endif" data-value-id="{{ $value['id'] }}" @if ($isDisabled && $message) data-bs-toggle="tooltip" title="{{ $message }}" @endif>

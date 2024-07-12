@@ -731,7 +731,7 @@ if(!function_exists('prepareConditionsForVariations')){
         $valuesToDisable = [];
         $motivationalMessages = [];
         $variantsToDisable = [];
-    
+   
         // Carica i gruppi di condizioni con le relative condizioni, azioni, e varianti prodotto influenzate
         $filteredConditions = Condition::whereIn('product_variation_id', $productVariationIds)->with('actions.productVariations')->get();
     

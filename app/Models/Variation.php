@@ -30,7 +30,7 @@ class Variation extends Model
 
     public function variationValues()
     {
-        return $this->hasMany(VariationValue::class);
+        return $this->hasMany(VariationValue::class)->orderBy('position');
     }
 
 

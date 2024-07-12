@@ -9,9 +9,18 @@
 <div class="variant">
 @isset($variations)
     @foreach ($variations as $variation)
-    <strong>{{$variation['name']}}</strong>
-    <div>{{$variation['values'][0]['name']}}</div>
+        @php
+            // Filtra i valori delle varianti
+            $filteredValues = array_filter($variation['values'], function ($value) use ($conditionEffects) {
+                return !in_array($value['id'], $conditionEffects);
+            });
+        @endphp
+
+        @if(!empty($filteredValues))
+            <strong>{{ $variation['name'] }}</strong>
+             <div>{{ $filteredValues['0']['name'] }}</div>
+        @endif
     @endforeach
-    @endisset
+@endisset
 </div>
 @endif
