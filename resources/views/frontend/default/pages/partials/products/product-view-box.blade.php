@@ -86,6 +86,7 @@
             </form>
         </div>
         <div class="col-4">
+            <div class="summary">
             <div class="summary-box mt-5 d-none d-lg-block">
                 <div class="h3 title py-3 px-4">{{localize('Preventivo')}}</div>
 
@@ -135,6 +136,8 @@
             <div class="summary-box-variants d-none d-lg-block pb-4">
                 @include('frontend.default.pages.partials.products.summary-box-variants')
             </div>
+            </div>
+            
         </div>
     </div>
 

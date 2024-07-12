@@ -597,4 +597,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     initTooltip();
 
+    document.addEventListener("DOMContentLoaded", function () {
+            var summary = document.querySelector('.summary');
+            var summaryOffsetTop = summary.offsetTop;
+
+            window.addEventListener('scroll', function () {
+                if (window.pageYOffset >= summaryOffsetTop) {
+                    summary.style.width = summary.offsetWidth + 'px';
+                    summary.classList.add('fixed-summary');
+                } else {
+                    summary.classList.remove('fixed-summary');
+                    summary.style.width = 'auto';
+                }
+            });
+        });
+
 </script>
