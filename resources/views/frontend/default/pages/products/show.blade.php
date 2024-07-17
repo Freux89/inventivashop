@@ -123,6 +123,8 @@ $detailedProduct = $product;
 @section('scripts')
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js"></script>
+
 <script>
   let isAutoSelecting = false;
   const viewModes = {}; // Oggetto per tracciare la modalità di visualizzazione per ogni variante

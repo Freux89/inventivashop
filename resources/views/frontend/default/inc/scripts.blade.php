@@ -598,18 +598,12 @@ document.addEventListener('DOMContentLoaded', function() {
     initTooltip();
 
     document.addEventListener("DOMContentLoaded", function () {
-            var summary = document.querySelector('.summary');
-            var summaryOffsetTop = summary.offsetTop;
-
-            window.addEventListener('scroll', function () {
-                if (window.pageYOffset >= summaryOffsetTop) {
-                    summary.style.width = summary.offsetWidth + 'px';
-                    summary.classList.add('fixed-summary');
-                } else {
-                    summary.classList.remove('fixed-summary');
-                    summary.style.width = 'auto';
-                }
-            });
+            $(".summary").stick_in_parent();
         });
 
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var breadcrumbContent = document.querySelector('.breadcrumb-content');
+            breadcrumbContent.scrollLeft = breadcrumbContent.scrollWidth;
+        });
 </script>

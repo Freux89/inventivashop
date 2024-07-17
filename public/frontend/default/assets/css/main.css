@@ -29131,7 +29131,32 @@ button.accordion-button {
 }
 .summary-box-variants .title{
     border-top:1px solid #707070;}
-     .fixed-summary {
-            position: fixed;
-            top: 0;
-        }
+   
+
+/* Applicare solo agli schermi più piccoli (max-width 768px, ad esempio) */
+/* Applicare solo agli schermi più piccoli (max-width 768px, ad esempio) */
+/* Applicare solo agli schermi più piccoli (max-width 768px, ad esempio) */
+@media (max-width: 768px) {
+    .breadcrumb-content {
+        overflow-x: auto; /* Aggiunge lo scroll orizzontale al div genitore */
+        white-space: nowrap; /* Assicura che il contenuto non vada a capo */
+    }
+
+    .breadcrumb {
+        width: max-content;
+        display: flex;
+        white-space: nowrap; /* Impedisce agli elementi di andare a capo */
+    }
+
+    .breadcrumb-item {
+        flex: 0 0 auto; /* Impedisce agli elementi di ridimensionarsi */
+        white-space: nowrap; /* Impedisce agli elementi di andare a capo */
+    }
+
+    .breadcrumb-item a {
+        white-space: nowrap; /* Impedisce agli elementi di andare a capo */
+    }
+}
+
+
+

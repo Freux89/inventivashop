@@ -118,11 +118,14 @@
         @if (isset($exception))
             @if ($exception->getStatusCode() != 503)
                 @include('frontend.default.inc.footer')
-                @include('frontend.default.inc.bottomToolbar')
+                <!-- @include('frontend.default.inc.bottomToolbar') -->
             @endif
         @else
             @include('frontend.default.inc.footer')
-            @include('frontend.default.inc.bottomToolbar') @endif
+            <!-- @include('frontend.default.inc.bottomToolbar')
+            -->
+        @endif 
+
         <!--footer section end-->
 
     </div>

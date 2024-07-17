@@ -233,7 +233,7 @@ return getView('pages.products.show', $data);
         $product_price = Product::find($product_id)->price;
         $total_price = $product_price;
         $productVariations = [];
-
+        
         foreach ($variation_ids as $key => $variationId) {
             $fieldName = 'variation_value_for_variation_' . $variationId;
             $variation_key = $variationId . ':' . $request[$fieldName] . '/';
