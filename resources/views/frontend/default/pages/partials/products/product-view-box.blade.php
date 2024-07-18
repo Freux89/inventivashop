@@ -1,4 +1,4 @@
-<div class="gstore-product-quick-view bg-white rounded-3 py-6 px-4">
+<div class="gstore-product-quick-view bg-white rounded-3 py-6">
     @include('frontend.default.pages.products.inc.breadcrumb')
     <div class="row g-4">
         <div class="col-xl-6 position-relative">

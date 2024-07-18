@@ -26851,9 +26851,9 @@ body {
     border-color: #4e8893;
 }
 .pt-info-tab-nav li a {
-    color: #191d28;
+    color: var(--in-primary-dark-5);
     font-weight: 700;
-    font-size: 15px;
+    font-size: 20px;
     display: inline-block;
     position: relative;
     padding: 4px 8px;
@@ -26865,13 +26865,13 @@ body {
     bottom: -1px;
     z-index: 1;
     width: 0;
-    height: 1px;
+    height: 3px;
     background-color: #4e8893;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
 }
 .pt-info-tab-nav li a.active {
-    color: #4e8893;
+    color: var(--in-primary-3);
 }
 .pt-info-tab-nav li a.active::before {
     width: 100%;
@@ -29157,6 +29157,10 @@ button.accordion-button {
         white-space: nowrap; /* Impedisce agli elementi di andare a capo */
     }
 }
-
-
+.pt-info-tab-nav{
+    background-color:var(--in-primary-dark-6);
+}
+.pt-info-tab-nav li a{
+    padding: 43px 0;
+}
 
