@@ -179,39 +179,39 @@ class ProductController extends Controller
         $indicativeDeliveryDays = indicativeDeliveryDays($product, $uniqueFilteredVariations);
 
         // Calcolo dei prezzi
-$priceWithTax = variationPrice($product, $uniqueFilteredVariations);
-$discountedPriceWithTax = variationDiscountedPrice($product, $uniqueFilteredVariations);
+        $priceWithTax = variationPrice($product, $uniqueFilteredVariations);
+        $discountedPriceWithTax = variationDiscountedPrice($product, $uniqueFilteredVariations);
 
-// Assumendo che $product_tax sia la percentuale di tassazione, ad esempio 0.22 per il 22%
-$product_tax =  $product->taxes[0]['tax_value']/100;  // Assicurati di ottenere questo valore correttamente nel tuo contesto
+        // Assumendo che $product_tax sia la percentuale di tassazione, ad esempio 0.22 per il 22%
+        $product_tax =  $product->taxes[0]['tax_value'] / 100;  // Assicurati di ottenere questo valore correttamente nel tuo contesto
 
-$netPrice = $priceWithTax / (1 + $product_tax);
-$discountedNetPrice = $discountedPriceWithTax / (1 + $product_tax);
-$tax = $priceWithTax - $netPrice;
-$discountedTax = $discountedPriceWithTax - $discountedNetPrice;
+        $netPrice = $priceWithTax / (1 + $product_tax);
+        $discountedNetPrice = $discountedPriceWithTax / (1 + $product_tax);
+        $tax = $priceWithTax - $netPrice;
+        $discountedTax = $discountedPriceWithTax - $discountedNetPrice;
 
-$basePrice = $priceWithTax ;
-$discountedBasePrice = $discountedPriceWithTax ;
+        $basePrice = $priceWithTax;
+        $discountedBasePrice = $discountedPriceWithTax;
 
-// Preparazione dei dati da passare alla vista
-$data = [
-    'product' => $product,
-    'relatedProducts' => $relatedProducts,
-    'product_page_widgets' => $product_page_widgets,
-    'breadcrumbs' => $breadcrumbs,
-    'variations' => $variations,
-    'conditionEffects' => $conditionEffects['valuesToDisable'],
-    'motivationalMessages' => $conditionEffects['motivationalMessages'],
-    'indicativeDeliveryDays' => $indicativeDeliveryDays,
-    'netPrice' => formatPrice($netPrice),
-    'tax' => formatPrice($tax),
-    'basePrice' => $basePrice,
-    'discountedBasePrice' => $discountedBasePrice,
-    'maxPrice' => $basePrice,
-    'discountedMaxPrice' => $discountedBasePrice
-];
+        // Preparazione dei dati da passare alla vista
+        $data = [
+            'product' => $product,
+            'relatedProducts' => $relatedProducts,
+            'product_page_widgets' => $product_page_widgets,
+            'breadcrumbs' => $breadcrumbs,
+            'variations' => $variations,
+            'conditionEffects' => $conditionEffects['valuesToDisable'],
+            'motivationalMessages' => $conditionEffects['motivationalMessages'],
+            'indicativeDeliveryDays' => $indicativeDeliveryDays,
+            'netPrice' => formatPrice($netPrice),
+            'tax' => formatPrice($tax),
+            'basePrice' => $basePrice,
+            'discountedBasePrice' => $discountedBasePrice,
+            'maxPrice' => $basePrice,
+            'discountedMaxPrice' => $discountedBasePrice
+        ];
 
-return getView('pages.products.show', $data);
+        return getView('pages.products.show', $data);
     }
 
     # product info
@@ -229,11 +229,12 @@ return getView('pages.products.show', $data);
         $product_id = $request->product_id;
         $quantity = $request->quantity;
         $variation_ids = $request->variation_id;
-
+        
+        
         $product_price = Product::find($product_id)->price;
         $total_price = $product_price;
         $productVariations = [];
-        
+
         foreach ($variation_ids as $key => $variationId) {
             $fieldName = 'variation_value_for_variation_' . $variationId;
             $variation_key = $variationId . ':' . $request[$fieldName] . '/';

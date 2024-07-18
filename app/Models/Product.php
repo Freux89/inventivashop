@@ -61,13 +61,16 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariation::class);
     }
+
     public function getOrderedVariationsAttribute()
     {
-        return $this->variations()
-            ->join('variations', DB::raw('SUBSTRING_INDEX(product_variations.variation_key, ":", 1)'), '=', 'variations.id')
-            ->orderBy('variations.position', 'asc')
-            ->select('product_variations.*')  // Assicurati di selezionare i campi desiderati
-            ->get();
+         return $this->variations()
+        ->join('variations', DB::raw('SUBSTRING_INDEX(product_variations.variation_key, ":", 1)'), '=', 'variations.id')
+        ->join('variation_values', DB::raw('SUBSTRING_INDEX(SUBSTRING_INDEX(product_variations.variation_key, "/", 1), ":", -1)'), '=', 'variation_values.id')
+        ->orderBy('variations.position', 'asc')
+        ->orderBy('variation_values.position', 'asc')
+        ->select('product_variations.*', 'variations.position as variation_position', 'variation_values.position as value_position') // Seleziona i campi necessari
+        ->get();
     }
     public function variation_combinations()
     {

@@ -230,7 +230,9 @@
                     });
                 }
 
-                hideLoading();
+                
+                    hideLoading();
+                
             },
             error: function() {
                 hideLoading();
@@ -257,11 +259,16 @@
         return false;
     }
 
-    // cart func
+  
+
     function cartFunc() {
         // on selection of variation
+        
+
         $('#variants-container').on('change', '.product-radio-btn input, .product-select', function() {
+        
             getVariationInfo();
+            
         });
 
         // increase qty

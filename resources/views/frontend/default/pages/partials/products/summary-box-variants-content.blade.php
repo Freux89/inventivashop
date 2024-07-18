@@ -7,20 +7,28 @@
 @endforeach
 @else
 <div class="variant">
-@isset($variations)
-    @foreach ($variations as $variation)
-        @php
-            // Filtra i valori delle varianti
-            $filteredValues = array_filter($variation['values'], function ($value) use ($conditionEffects) {
-                return !in_array($value['id'], $conditionEffects);
-            });
-        @endphp
-
-        @if(!empty($filteredValues))
-            <strong>{{ $variation['name'] }}</strong>
-             <div>{{ $filteredValues['0']['name'] }}</div>
-        @endif
+    @isset($variations)
+    @foreach ($variations as $key => $variation)
+    @php
+    // Filtra i valori delle varianti
+    $filteredValues = array_filter($variation['values'], function ($value) use ($conditionEffects) {
+    return !in_array($value['id'], $conditionEffects);
+    });
+    $filteredValues = array_values($filteredValues);
+    
+    @endphp
+   
+ 
+    @if(!empty($filteredValues))
+    <strong>{{ $variation['name'] }}</strong>
+    @if(isset($filteredValues[0]))
+    <div>{{ $filteredValues[0]['name'] }}</div>
+    @else
+    <div>Nessun valore disponibile</div>
+    @endif
+    @endif
+   
     @endforeach
-@endisset
+    @endisset
 </div>
 @endif
