@@ -134,7 +134,7 @@ M
                        
 
                         <div class="gshop-header-icons gap-0 gap-sm-4 d-inline-flex align-items-center justify-content-end ms-3">
-                        <div class="gshop-header-help position-relative">
+                        <div class="gshop-header-help position-relative d-none d-lg-block">
                             <a href="#" title="{{localize('Vuoi un aiuto')}}">
                             <svg width="20" id="ef38b990-bdea-429d-ad58-78f9ef51a100" data-name="Livello 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48"><defs><clipPath id="a099faaf-e198-4a3c-a1fa-941dd359472e"><rect id="f882fa1f-56a5-4fb6-a9ea-79f1e1fd5cfe" data-name="SVGID" x="-0.02" y="3.51" width="48.05" height="40.97" style="fill:none"/></clipPath></defs><title>help</title><g style="clip-path:url(#a099faaf-e198-4a3c-a1fa-941dd359472e)"><path d="M46,25.28l-.34,0V23.13A4,4,0,0,0,43,19.42C40.28-1.76,8.48-1.79,5.64,19.32A4,4,0,0,0,2.7,23.13v2.28A2,2,0,0,0,.1,26.62a2.16,2.16,0,0,0-.12.71v9a2.05,2.05,0,0,0,2,2.05H2a2.15,2.15,0,0,0,.67-.13v2.28a4,4,0,0,0,7.91,0V23.14A3.93,3.93,0,0,0,8,19.42c2.71-18.08,29.89-18.1,32.69-.1a3.94,3.94,0,0,0-2.93,3.81V40.52a4,4,0,1,0,7.9,0V38.33l.34,0a2.05,2.05,0,0,0,2.05-2h0v-9a2.05,2.05,0,0,0-2.05-2h0" style="fill:#414647"/></g></svg>
                             <div class="d-none d-xl-block">
@@ -213,12 +213,12 @@ M
                                             <h6 class="mb-0">{{ localize('Subtotal') }}:</h6>
                                             <span class="fw-semibold text-secondary sub-total-price">{{ formatPrice(getSubTotal($carts, false)) }}</span>
                                         </div>
-                                        <div class="row align-items-center justify-content-between">
+                                        <div class="row align-items-center justify-content-between ">
                                             <div class="col-6">
-                                                <a href="{{ route('carts.index') }}" class="btn btn-secondary btn-md mt-4 w-100"><span class="me-2"><i class="fa-solid fa-shopping-bag"></i></span>{{ localize('View Cart') }}</a>
+                                                <a href="{{ route('carts.index') }}" class="btn btn-primary btn-md mt-4 w-100 justify-content-center"><span class="me-2"><i class="fa-solid fa-shopping-bag"></i></span>{{ localize('View Cart') }}</a>
                                             </div>
                                             <div class="col-6">
-                                                <a href="{{ route('checkout.proceed') }}" class="btn btn-primary btn-md mt-4 w-100"><span class="me-2"><i class="fa-solid fa-credit-card"></i></span>{{ localize('Checkout') }}</a>
+                                                <a href="{{ route('checkout.proceed') }}" class="btn btn-primary btn-md mt-4 w-100 justify-content-center"><span class="me-2"><i class="fa-solid fa-credit-card"></i></span>{{ localize('Checkout') }}</a>
                                             </div>
 
 

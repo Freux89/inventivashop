@@ -23809,7 +23809,7 @@ body {
 .gshop-header-contact::before,
 
 .gshop-navbar-right a,.gshop-navbar-right button {
-    color:var(--bs-gray-dark);
+    color:var(--in-primary-dark-3);
 }
 .gshop-navbar-right a span {
     margin-right:10px;
@@ -29164,3 +29164,10 @@ button.accordion-button {
     padding: 43px 0;
 }
 
+.summary-box-mobile {
+    bottom: 0;
+    width: 100%;
+    z-index: 1050; /* Ensure it stays above other content */
+    background-color:var(--in-primary-dark-6);
+    box-shadow:0px -3px 13px 0px rgb(148 148 148 / 20%);
+}

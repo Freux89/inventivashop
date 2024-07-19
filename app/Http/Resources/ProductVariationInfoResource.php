@@ -135,6 +135,19 @@ class ProductVariationInfoResource extends JsonResource
             'discountedMaxPrice' => $discountedBasePrice,
             'quantity' => $this->quantity, // Aggiungi la quantità
         ])->render();
+
+        $recapBodyMobileHtml = view('frontend.default.pages.partials.products.recap-body-mobile', [
+            'stock' => $total_stock,
+            'indicativeDeliveryDays' => $indicativeDeliveryDays,
+            'netPrice' => formatPrice($netPrice * $this->quantity),
+            'unit' => $unit,
+            'tax' => formatPrice($tax * $this->quantity),
+            'basePrice' => $basePrice,
+            'discountedBasePrice' => $discountedBasePrice,
+            'maxPrice' => $basePrice, // Assumendo che maxPrice = basePrice se non si usa in altro modo
+            'discountedMaxPrice' => $discountedBasePrice,
+            'quantity' => $this->quantity, // Aggiungi la quantità
+        ])->render();
         // Creazione del riepilogo delle varianti
 
         $summaryBoxVariantsHtml = view('frontend.default.pages.partials.products.summary-box-variants-content', [
@@ -145,6 +158,7 @@ class ProductVariationInfoResource extends JsonResource
             'ids' => $ids,
             'filteredIds' => $filteredIds,
             'recap_body_html' => $recapBodyHtml,
+            'recap_body_mobile_html' => $recapBodyMobileHtml,
             'summary_box_variants_html' => $summaryBoxVariantsHtml, // Aggiungi questo per il riepilogo delle varianti
             'variations_html' => view('frontend.default.pages.partials.products.variations', [
                 'product' => $product,

@@ -19,7 +19,7 @@
     </div>
 
     <div class="row">
-        <div class="col-12 col-lg-8">
+        <div class="col-12 col-lg-8 pe-lg-6">
             <div class="line-below-title mt-0 mb-5"></div>
 
 
@@ -143,6 +143,22 @@
                 <div class="summary-box-variants d-none d-lg-block pb-4">
                     @include('frontend.default.pages.partials.products.summary-box-variants')
                 </div>
+<!-- Box di riepilogo preventivo per mobile -->
+<div class="summary-box-mobile fixed-bottom d-lg-none p-3">
+@include('frontend.default.pages.partials.products.recap-body-mobile', [
+                            'stock' => $stock,
+                            'indicativeDeliveryDays' => $indicativeDeliveryDays,
+                            'netPrice' => $netPrice,
+                            'unit' => $unit,
+                            'tax' => $tax,
+                            'basePrice' => $basePrice,
+                            'discountedBasePrice' => $discountedBasePrice,
+                            'maxPrice' => $maxPrice,
+                            'discountedMaxPrice' => $discountedMaxPrice,
+                            ])
+    
+</div>
+                
             </div>
 
         </div>

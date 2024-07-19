@@ -1,4 +1,4 @@
-<div class="product-info-tab bg-white rounded-2 overflow-hidden pt-6 mt-4">
+<div class="product-info-tab bg-white rounded-2 overflow-hidden pt-6 my-9">
     <ul class="nav nav-tabs border-bottom justify-content-center gap-5 pt-info-tab-nav">
         <li><a href="#description" class="active" data-bs-toggle="tab">{{ localize('Description') }}</a></li>
         <li><a href="#info" data-bs-toggle="tab">{{ localize('Additional Information') }}</a></li>

@@ -193,6 +193,8 @@
                 $('.all-pricing').addClass('d-none');
                 $('.variation-pricing').removeClass('d-none');
                 $('.variation-pricing').html(response.data.recap_body_html);
+                $('.summary-box-mobile').html('');
+                $('.summary-box-mobile').html(response.data.recap_body_mobile_html);
                 $('#variants-container').html(response.data.variations_html);
                 $('.add-to-cart-form input[name=product_variation_id]').val(response.data.filteredIds.join(','));
                 $('.add-to-cart-form input[name=indicativeDeliveryDays]').val(response.data.indicativeDeliveryDays);

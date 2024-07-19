@@ -110,11 +110,12 @@ $detailedProduct = $product;
         </div>
 </section>
 <!--product details end-->
-
+@if (!empty($relatedProducts) && count($relatedProducts) > 0)
 <!--related product slider start -->
 @include('frontend.default.pages.partials.products.related-products', [
 'relatedProducts' => $relatedProducts,
 ])
+@endif
 <!--related products slider end-->
 @include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_after_content'])
 @endsection
