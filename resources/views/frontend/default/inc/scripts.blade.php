@@ -206,6 +206,7 @@
                 setupToggleView();
                 initializeInfoIconEvents();
                 initializeGridInfoIconEvents();
+                initializeToggleDetails();
                 initTooltip();
                  // Ripristina la modalità di visualizzazione
                  Object.keys(viewModes).forEach(variationId => {
@@ -615,4 +616,24 @@ document.addEventListener('DOMContentLoaded', function() {
             var breadcrumbContent = document.querySelector('.breadcrumb-content');
             breadcrumbContent.scrollLeft = breadcrumbContent.scrollWidth;
         });
+
+        function initializeToggleDetails() {
+    $('.toggle-quote-details').off('click').on('click', function() {
+        var details = $('#quote-details');
+        var arrow = $(this);
+        if (details.is(':visible')) {
+            details.slideUp(500, function() {
+                arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+            });
+        } else {
+            details.slideDown(500, function() {
+                arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+            });
+        }
+    });
+}
+document.addEventListener('DOMContentLoaded', function() {
+    initializeToggleDetails();
+        });
+
 </script>

@@ -144,7 +144,7 @@
                     @include('frontend.default.pages.partials.products.summary-box-variants')
                 </div>
 <!-- Box di riepilogo preventivo per mobile -->
-<div class="summary-box-mobile fixed-bottom d-lg-none p-3">
+<div class="summary-box-mobile fixed-bottom d-lg-none p-3 pt-0">
 @include('frontend.default.pages.partials.products.recap-body-mobile', [
                             'stock' => $stock,
                             'indicativeDeliveryDays' => $indicativeDeliveryDays,
