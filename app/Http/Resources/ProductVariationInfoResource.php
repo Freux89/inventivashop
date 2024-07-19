@@ -25,42 +25,10 @@ class ProductVariationInfoResource extends JsonResource
 
         $resourceCollection = collect($this->resource);
 
-        $ids = $resourceCollection->isEmpty() ? [] : $resourceCollection->pluck('id')->toArray(); // sono gli id product variations selezionati
-
-
-        // prendo gli id presenti su ids mentre per le altre varianti prodotto prendo il primo valore presente.
-        $orderedVariations = $product->ordered_variations;
-
-        // Dividi le varianti prodotto per la loro variante ID
-        $groupedVariations = $orderedVariations->groupBy(function ($item) {
-            // Estrai l'ID della variante dalla variation_key
-            return explode(':', $item->variation_key)[0];
-        });
-
-        // Prepara l'array finale delle varianti prodotto
-        $finalVariations = [];
-
-        // Itera su ciascun gruppo di varianti
-        foreach ($groupedVariations as $variationId => $variations) {
-            // Trova la variante prodotto selezionata nel gruppo, se esiste
-            $selectedVariation = $variations->first(function ($variation) use ($ids) {
-                return in_array($variation->id, $ids);
-            });
-
-            // Se c'è una variante selezionata, aggiungila al risultato finale
-            if ($selectedVariation) {
-                $finalVariations[] = $selectedVariation;
-            } else {
-                // Altrimenti, aggiungi il primo valore variante del gruppo
-                $finalVariations[] = $variations->first();
-            }
-        }
-
-        // Converti il risultato in una collezione (se necessario)
-        $finalVariations = collect($finalVariations);
+        
 
         // Ottieni solo gli ID delle varianti prodotto
-        $ids_all = $finalVariations->pluck('id')->toArray();
+        $ids_all = getFinalVariationIds( $product, $resourceCollection);
 
 
 
@@ -105,6 +73,7 @@ class ProductVariationInfoResource extends JsonResource
         $filteredIds = $filteredProductVariations->isEmpty() ? [] : $filteredProductVariations->pluck('id')->toArray();
 
         $indicativeDeliveryDays = indicativeDeliveryDays($product, $filteredProductVariations);
+        
         $selectedVariantValueIds = array_diff($variantValueIds, $conditionEffects['valuesToDisable']);
 
 
@@ -155,9 +124,9 @@ class ProductVariationInfoResource extends JsonResource
         ])->render();
 
         return [
-            'ids' => $ids,
             'filteredIds' => $filteredIds,
             'recap_body_html' => $recapBodyHtml,
+            'indicativeDeliveryDays' => $indicativeDeliveryDays,
             'recap_body_mobile_html' => $recapBodyMobileHtml,
             'summary_box_variants_html' => $summaryBoxVariantsHtml, // Aggiungi questo per il riepilogo delle varianti
             'variations_html' => view('frontend.default.pages.partials.products.variations', [

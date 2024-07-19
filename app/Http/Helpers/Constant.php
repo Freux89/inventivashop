@@ -817,10 +817,54 @@ if(!function_exists('prepareConditionsForVariations')){
     }
     
     
-    
-   
-    
-    
+}
+
+if (!function_exists('getFinalVariationIds')) {
+
+    function getFinalVariationIds($product,$resourceCollection = null)
+    {
+
+        if (is_null($resourceCollection)) {
+            $resourceCollection = collect();
+        }
+
+        // Ottieni gli ID delle variazioni di prodotto selezionate, se esistono, altrimenti un array vuoto
+        $ids = $resourceCollection->isEmpty() ? [] : $resourceCollection->pluck('id')->toArray();
+
+        // Prendi gli ID presenti su ids mentre per le altre varianti prodotto prendi il primo valore presente
+        $orderedVariations = $product->ordered_variations;
+
+        // Dividi le varianti prodotto per la loro variante ID
+        $groupedVariations = $orderedVariations->groupBy(function ($item) {
+            // Estrai l'ID della variante dalla variation_key
+            return explode(':', $item->variation_key)[0];
+        });
+
+        // Prepara l'array finale delle varianti prodotto
+        $finalVariations = [];
+
+        // Itera su ciascun gruppo di varianti
+        foreach ($groupedVariations as $variationId => $variations) {
+            // Trova la variante prodotto selezionata nel gruppo, se esiste
+            $selectedVariation = $variations->first(function ($variation) use ($ids) {
+                return in_array($variation->id, $ids);
+            });
+
+            // Se c'è una variante selezionata, aggiungila al risultato finale
+            if ($selectedVariation) {
+                $finalVariations[] = $selectedVariation;
+            } else {
+                // Altrimenti, aggiungi il primo valore variante del gruppo
+                $finalVariations[] = $variations->first();
+            }
+        }
+
+        // Converti il risultato in una collezione (se necessario)
+        $finalVariations = collect($finalVariations);
+
+        // Ottieni solo gli ID delle varianti prodotto
+        return $finalVariations->pluck('id')->toArray();
+    }
 }
 
 

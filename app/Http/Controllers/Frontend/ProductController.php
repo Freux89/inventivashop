@@ -193,6 +193,8 @@ class ProductController extends Controller
         $basePrice = $priceWithTax;
         $discountedBasePrice = $discountedPriceWithTax;
 
+        $selectedVariantValueIds = $uniqueFilteredVariations->pluck('id')->toArray();
+        
         // Preparazione dei dati da passare alla vista
         $data = [
             'product' => $product,
@@ -200,6 +202,7 @@ class ProductController extends Controller
             'product_page_widgets' => $product_page_widgets,
             'breadcrumbs' => $breadcrumbs,
             'variations' => $variations,
+            'variation_value_ids' => $selectedVariantValueIds,
             'conditionEffects' => $conditionEffects['valuesToDisable'],
             'motivationalMessages' => $conditionEffects['motivationalMessages'],
             'indicativeDeliveryDays' => $indicativeDeliveryDays,

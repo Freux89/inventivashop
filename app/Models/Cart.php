@@ -13,6 +13,7 @@ class Cart extends Model
         'user_id', 
         'guest_user_id',
         'location_id',
+        'indicative_delivery_days'
         // ... qualsiasi altro campo che vuoi rendere fillable
     ];
     
