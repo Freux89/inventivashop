@@ -56,6 +56,13 @@
                                 ]) }}">{{ localize('All Variations') }}</a>
                         </li>
                     @endcan
+                    @can('quantity_discounts')
+                        <li
+                            class="{{ areActiveRoutes(['quantity_discounts.index', 'quantity_discounts.create', 'quantity_discounts.edit'], 'tt-menu-item-active') }}">
+                            <a href="{{ route('quantity_discounts.index') }}"
+                                class="{{ areActiveRoutes(['quantity_discounts.index', 'quantity_discounts.create', 'quantity_discounts.edit']) }}">{{ localize('Sconto quantità') }}</a>
+                        </li>
+                    @endcan
                     @can('conditions')
                         <li
                             class="{{ areActiveRoutes(['admin.conditions.index', 'admin.conditions.create', 'admin.conditions.edit'], 'tt-menu-item-active') }}">
