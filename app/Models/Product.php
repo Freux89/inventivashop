@@ -111,4 +111,9 @@ class Product extends Model
     {
         return $this->hasMany(ConditionGroup::class);
     }
+
+    public function quantityDiscounts()
+    {
+        return $this->belongsToMany(QuantityDiscount::class, 'product_quantity_discounts');
+    }
 }

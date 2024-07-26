@@ -62,7 +62,8 @@ use App\Http\Controllers\Backend\OrderSettingsController;
 use App\Http\Controllers\Backend\Pos\PosController;
 use App\Http\Controllers\Backend\Roles\RolesController;
 use App\Http\Controllers\Backend\Reports\ReportsController;
-
+use App\Http\Controllers\Backend\Products\QuantityDiscountController;
+use App\Http\Controllers\Backend\Products\QuantityDiscountTierController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -185,6 +186,17 @@ Route::group(
             Route::post('/variations-values/update-status', [VariationValuesController::class, 'updateStatus'])->name('admin.variationValues.updateStatus');
             Route::get('/variations-values/delete/{id}', [VariationValuesController::class, 'delete'])->name('admin.variationValues.delete');
             Route::post('/variations-values/update-positions', [VariationValuesController::class, 'updatePositions'])->name('admin.variationValues.positions');
+
+            # Quantity discount
+            Route::resource('/quantity_discounts', QuantityDiscountController::class);
+            Route::get('/quantity_discounts/delete/{id}', [QuantityDiscountController::class, 'delete'])->name('quantity_discounts.delete');
+
+            Route::prefix('quantity_discounts/{quantityDiscount}')->group(function () {
+                Route::get('tiers/create', [QuantityDiscountTierController::class, 'create'])->name('quantity_discounts.tiers.create');
+                Route::post('tiers', [QuantityDiscountTierController::class, 'store'])->name('quantity_discounts.tiers.store');
+                Route::get('tiers/{tier}', [QuantityDiscountTierController::class, 'delete'])->name('quantity_discounts.tiers.delete');
+            });
+
 
             # materials
             Route::get('/materials',
