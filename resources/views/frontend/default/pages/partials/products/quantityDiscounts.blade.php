@@ -1,3 +1,5 @@
+@isset($tiers)
+    @if($tiers->isNotEmpty())
  <!-- Tabella dei livelli di sconto -->
  <div class="discount-tiers mt-5">
      <h5>{{ localize('Seleziona altre quantità') }}</h5>
@@ -21,3 +23,6 @@
          </tbody>
      </table>
  </div>
+ @endif
+ @endisset
+ 
