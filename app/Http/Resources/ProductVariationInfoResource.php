@@ -22,7 +22,7 @@ class ProductVariationInfoResource extends JsonResource
     {
 
         $product = Product::find($this->productId);
-
+        $tiers = $product->quantityDiscount->tiers ?? collect();
         $resourceCollection = collect($this->resource);
 
         
@@ -80,7 +80,7 @@ class ProductVariationInfoResource extends JsonResource
         // Prezzo con IVA
 
         $priceWithTax = variationPrice($product, $filteredProductVariations);
-        $discountedPriceWithTax = variationDiscountedPrice($product, $filteredProductVariations);
+        $discountedPriceWithTax = variationDiscountedPrice($product, $filteredProductVariations,true,$this->quantity);
 
         // Calcolare il prezzo netto (senza IVA) e l'IVA
         $netPrice = $priceWithTax / (1 + $product_tax);
@@ -105,6 +105,13 @@ class ProductVariationInfoResource extends JsonResource
             'quantity' => $this->quantity, // Aggiungi la quantità
         ])->render();
 
+
+        $quantityDiscounts = view('frontend.default.pages.partials.products.quantityDiscounts', [
+            'tiers' => $tiers,
+            'netPriceFloat' => $netPrice
+        ])->render();
+
+
         $recapBodyMobileHtml = view('frontend.default.pages.partials.products.recap-body-mobile', [
             'stock' => $total_stock,
             'indicativeDeliveryDays' => $indicativeDeliveryDays,
@@ -128,6 +135,7 @@ class ProductVariationInfoResource extends JsonResource
             'recap_body_html' => $recapBodyHtml,
             'indicativeDeliveryDays' => $indicativeDeliveryDays,
             'recap_body_mobile_html' => $recapBodyMobileHtml,
+            'quantity_discounts' => $quantityDiscounts,
             'summary_box_variants_html' => $summaryBoxVariantsHtml, // Aggiungi questo per il riepilogo delle varianti
             'variations_html' => view('frontend.default.pages.partials.products.variations', [
                 'product' => $product,

@@ -26,7 +26,7 @@
         <span class="text-dark fw-bold">
         @if($cart->product_variations->first() && $cart->product_variations->first()->product && $cart->product_variations->first()->product->deleted_at == null)
 
-            {{ formatPrice(variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations)) }}
+            {{ formatPrice(variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations,true,$cart->qty )) }}
             @endif
         </span>
     </td>
@@ -42,7 +42,7 @@
         <span class="text-dark fw-bold">
         @if($cart->product_variations->first() && $cart->product_variations->first()->product && $cart->product_variations->first()->product->deleted_at == null)
 
-            {{ formatPrice(variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations) * $cart->qty) }}
+            {{ formatPrice(variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations,true,$cart->qty) * $cart->qty) }}
         </span>
         @endif
     </td>

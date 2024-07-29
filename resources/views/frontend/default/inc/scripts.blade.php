@@ -193,6 +193,7 @@
                 $('.all-pricing').addClass('d-none');
                 $('.variation-pricing').removeClass('d-none');
                 $('.variation-pricing').html(response.data.recap_body_html);
+                $('#quantity_discounts').html(response.data.quantity_discounts);
                 $('.summary-box-mobile').html('');
                 $('.summary-box-mobile').html(response.data.recap_body_mobile_html);
                 $('#variants-container').html(response.data.variations_html);
@@ -207,6 +208,7 @@
                 initializeInfoIconEvents();
                 initializeGridInfoIconEvents();
                 initializeToggleDetails();
+                initializeQuantityDiscounts();
                 initTooltip();
                  // Ripristina la modalità di visualizzazione
                  Object.keys(viewModes).forEach(variationId => {
@@ -262,7 +264,15 @@
         return false;
     }
 
-  
+    function initializeQuantityDiscounts() {
+    document.querySelectorAll('.tier-row').forEach(row => {
+        row.addEventListener('click', function() {
+            const quantity = this.getAttribute('data-quantity');
+            $('.product-qty input[name=quantity]').val(quantity);
+            getVariationInfo();
+        });
+    });
+}
 
     function cartFunc() {
         // on selection of variation
@@ -283,6 +293,8 @@
             }
             getVariationInfo();
         });
+
+       
 
         // decrease qty
         $('.qty-increase-decrease .decrease').on('click', function() {
@@ -634,6 +646,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 document.addEventListener('DOMContentLoaded', function() {
     initializeToggleDetails();
+    initializeQuantityDiscounts();
         });
 
 </script>

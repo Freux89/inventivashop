@@ -893,47 +893,58 @@ if (!function_exists('variationPrice')) {
 
 if (!function_exists('variationDiscountedPrice')) {
     // return discounted price of a variation
-    function variationDiscountedPrice($product, $variations, $addTax = true)
-    {
-        $price = $product->price;
-    
-        // Calcola il prezzo delle varianti
-        foreach ($variations as $variation) {
-            
-            $price = calculateVariationPrice($price, $variation);
-        }
-    
-        $discount_applicable = false;
-    
-        if ($product->discount_start_date == null || $product->discount_end_date == null) {
-            $discount_applicable = false;
-        } elseif (
-            strtotime(date('d-m-Y H:i:s')) >= $product->discount_start_date &&
-            strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date
-        ) {
-            $discount_applicable = true;
-        }
-    
-        if ($discount_applicable) {
-            if ($product->discount_type == 'percent') {
-                $price -= ($price * $product->discount_value) / 100;
-            } elseif ($product->discount_type == 'flat') {
-                $price -= $product->discount_value;
-            }
-        }
-    
-        if ($addTax) {
-            foreach ($product->taxes as $product_tax) {
-                if ($product_tax->tax_type == 'percent') {
-                    $price += ($price * $product_tax->tax_value) / 100;
-                } elseif ($product_tax->tax_type == 'flat') {
-                    $price += $product_tax->tax_value;
-                }
-            }
-        }
-    
-        return $price;
+    function variationDiscountedPrice($product, $variations, $addTax = true, $quantity = 1)
+{
+    $price = $product->price;
+
+    // Calcola il prezzo delle varianti
+    foreach ($variations as $variation) {
+        $price = calculateVariationPrice($price, $variation);
     }
+
+    $discount_applicable = false;
+
+    // Verifica se ci sono sconti per quantità
+    $quantityDiscount = $product->quantityDiscounts()->first();
+    if ($quantityDiscount) {
+        $applicableTier = $quantityDiscount->tiers()->where('min_quantity', '<=', $quantity)->orderBy('min_quantity', 'desc')->first();
+        if ($applicableTier) {
+            $price -= ($price * $applicableTier->discount_percentage) / 100;
+        }
+    }
+
+    // Verifica se ci sono altri sconti
+    if ($product->discount_start_date == null || $product->discount_end_date == null) {
+        $discount_applicable = false;
+    } elseif (
+        strtotime(date('d-m-Y H:i:s')) >= strtotime($product->discount_start_date) &&
+        strtotime(date('d-m-Y H:i:s')) <= strtotime($product->discount_end_date)
+    ) {
+        $discount_applicable = true;
+    }
+
+    if ($discount_applicable) {
+        if ($product->discount_type == 'percent') {
+            $price -= ($price * $product->discount_value) / 100;
+        } elseif ($product->discount_type == 'flat') {
+            $price -= $product->discount_value;
+        }
+    }
+
+    // Aggiungi le tasse, se applicabile
+    if ($addTax) {
+        foreach ($product->taxes as $product_tax) {
+            if ($product_tax->tax_type == 'percent') {
+                $price += ($price * $product_tax->tax_value) / 100;
+            } elseif ($product_tax->tax_type == 'flat') {
+                $price += $product_tax->tax_value;
+            }
+        }
+    }
+
+    return $price;
+}
+
 }
 
 
@@ -1018,7 +1029,7 @@ if (!function_exists('getSubTotal')) {
                 $productVariations = $cart->product_variations;
                 if (!$productVariations->isEmpty()) {
                     $product = $productVariations->first()->product;  // Assuming that all variations belong to the same product
-                    $discountedVariationPriceWithTax = variationDiscountedPrice($product, $productVariations, $addTax);
+                    $discountedVariationPriceWithTax = variationDiscountedPrice($product, $productVariations, $addTax,$cart->qty);
                     $price += (float) $discountedVariationPriceWithTax * $cart->qty;
                 } else {
                     // Handle the case where the product or product variation does not exist

@@ -138,16 +138,18 @@ class CheckoutController extends Controller
             // cerca il coupon tramite getCoupon() e controlla se il coupon ha il valore id_free_shipping a 1, se è a 1 allora il total_sipping_cost deve essere 0
             
             // Verifica se l'assicurazione è stata selezionata e assegna il relativo costo
+            $insured_shipping_cost = 0;
             if ($request->insured_shipping === 'on') {
                 $orderGroup->total_insured_shipping_cost = $logisticZone->insured_shipping_cost;
+                $insured_shipping_cost = $logisticZone->insured_shipping_cost;
             } else {
                 // Se non selezionata, imposta il costo dell'assicurazione a null o a 0, a seconda delle tue esigenze
                 $orderGroup->total_insured_shipping_cost = null; // o 0
             }
 
-            $orderGroup->sub_total_amount                   = getSubTotal($carts, false, '', false,$logisticZone->standard_delivery_charge,$logisticZone->insured_shipping_cost);
-            $orderGroup->total_tax_amount                   = getTotalTax($carts,$logisticZone->standard_delivery_charge,$logisticZone->insured_shipping_cost);
-            
+            $orderGroup->sub_total_amount                   = getSubTotal($carts, false, '', false,$logisticZone->standard_delivery_charge,$insured_shipping_cost);
+            $orderGroup->total_tax_amount                   = getTotalTax($carts,$logisticZone->standard_delivery_charge,$insured_shipping_cost);
+           
 
             // to convert input price to base price
             if (Session::has('currency_code')) {
@@ -210,7 +212,7 @@ class CheckoutController extends Controller
                 
                 $orderItem->qty                  = $cart->qty;
                 $orderItem->location_id     = session('stock_location_id');
-                $orderItem->unit_price           = variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations);
+                $orderItem->unit_price           = variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations,true,$cart->qty);
                 $orderItem->total_tax            = getTotalTax([$cart]);
                 $orderItem->total_price          = $orderItem->unit_price * $orderItem->qty;
 

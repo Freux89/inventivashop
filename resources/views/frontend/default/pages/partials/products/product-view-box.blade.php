@@ -80,7 +80,10 @@
                     </span>
                     @endif -->
                 </div>
-
+                <div id="quantity_discounts">
+                @include('frontend.default.pages.partials.products.quantityDiscounts')
+                </div>
+           
                 <!--product category start-->
                 <!-- @if ($product->categories()->count() > 0)
                 <div class="tt-category-tag mt-4">

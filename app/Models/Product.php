@@ -116,4 +116,8 @@ class Product extends Model
     {
         return $this->belongsToMany(QuantityDiscount::class, 'product_quantity_discounts');
     }
+    public function getQuantityDiscountAttribute()
+    {
+        return $this->quantityDiscounts()->first();
+    }
 }

@@ -101,7 +101,7 @@ class ProductController extends Controller
     public function show($slug)
     {
         $product = Product::where('slug', $slug)->first();
-
+        
         if (auth()->check() && auth()->user()->user_type == "admin") {
             // do nothing
         } else {
@@ -194,6 +194,7 @@ class ProductController extends Controller
         $discountedBasePrice = $discountedPriceWithTax;
 
         $selectedVariantValueIds = $uniqueFilteredVariations->pluck('id')->toArray();
+        $tiers = $product->quantityDiscount->tiers ?? collect();
         
         // Preparazione dei dati da passare alla vista
         $data = [
@@ -207,11 +208,13 @@ class ProductController extends Controller
             'motivationalMessages' => $conditionEffects['motivationalMessages'],
             'indicativeDeliveryDays' => $indicativeDeliveryDays,
             'netPrice' => formatPrice($netPrice),
+            'netPriceFloat' => $netPrice,
             'tax' => formatPrice($tax),
             'basePrice' => $basePrice,
             'discountedBasePrice' => $discountedBasePrice,
             'maxPrice' => $basePrice,
-            'discountedMaxPrice' => $discountedBasePrice
+            'discountedMaxPrice' => $discountedBasePrice,
+            'tiers' => $tiers
         ];
 
         return getView('pages.products.show', $data);

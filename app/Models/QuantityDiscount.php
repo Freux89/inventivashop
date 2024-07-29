@@ -13,7 +13,7 @@ class QuantityDiscount extends Model
 
     public function tiers()
     {
-        return $this->hasMany(QuantityDiscountTier::class);
+        return $this->hasMany(QuantityDiscountTier::class)->orderBy('min_quantity', 'desc');
     }
 
     public function products()
