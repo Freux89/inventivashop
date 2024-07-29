@@ -200,18 +200,18 @@ $agent = new \Jenssegers\Agent\Agent;
             </div>
             @endif
             <!-- Categorie correlate -->
-            @if (isset($category) && $category->childrenCategories->isNotEmpty())
+            @if (isset($category) && $category->relatedCategories->isNotEmpty())
 
             <div class="row subcategories-container">
                 <div class="col-xl-12">
                     <div class="related-categories-title">Guarda queste altre soluzioni</div>
                     <div class="row">
-                        @foreach ($category->childrenCategories as $subCategory)
+                        @foreach ($category->relatedCategories as $related)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 col-xxl-2 mb-4">
                             <div class="card border-0">
-                                <img src="{{ uploadedAsset($subCategory->thumbnail_image) }}" class="card-img-top img-category" alt="{{ $subCategory->name }}">
+                                <img src="{{ uploadedAsset($related->thumbnail_image) }}" class="card-img-top img-category" alt="{{ $related->name }}">
                                 <div class="card-body text-center">
-                                    <a href="{{ route('category.show', ['categorySlug' => $subCategory->slug]) }}" class="name-category">{{ $subCategory->name }}</a>
+                                    <a href="{{ route('category.show', ['categorySlug' => $related->slug]) }}" class="name-category">{{ $related->name }}</a>
                                 </div>
                             </div>
                         </div>

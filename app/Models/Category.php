@@ -50,4 +50,9 @@ class Category extends Model
     {
         return $this->belongsToMany(Brand::class, 'category_brands', 'category_id', 'brand_id');
     } 
+
+    public function relatedCategories()
+    {
+        return $this->belongsToMany(Category::class, 'category_relations', 'category_id', 'related_category_id');
+    }
 }

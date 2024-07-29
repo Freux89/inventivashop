@@ -117,7 +117,8 @@ class CategoriesController extends Controller
             ->get();
 
         $brands = Brand::isActive()->get();
-        return view('backend.pages.products.categories.edit', compact('category', 'categories', 'brands', 'lang_key'));
+        $allCategories = Category::where('id', '!=', $id)->get();
+        return view('backend.pages.products.categories.edit', compact('allCategories','category', 'categories', 'brands', 'lang_key'));
     }
 
     # update category
@@ -169,6 +170,16 @@ class CategoriesController extends Controller
 
         $category->save();
         $categoryLocalization->save();
+
+
+
+        if ($request->has('related_categories')) {
+            $category->relatedCategories()->sync($request->related_categories);
+        } else {
+            // Se non ci sono categorie correlate, deselezionale tutte
+            $category->relatedCategories()->sync([]);
+        }
+
         flash(localize('Category has been updated successfully'))->success();
         return back();
     }
