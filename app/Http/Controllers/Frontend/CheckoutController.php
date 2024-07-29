@@ -27,32 +27,39 @@ class CheckoutController extends Controller
 {
     # checkout
     public function index()
-    {
-       
-        $carts = Cart::where('user_id', auth()->user()->id)->where('location_id', session('stock_location_id'))->get();
+{
+    $userId = auth()->user()->id;
+    $locationId = session('stock_location_id');
+    $carts = Cart::where('user_id', $userId)->where('location_id', $locationId)->get();
 
-        if (count($carts) > 0) {
-            checkCouponValidityForCheckout($carts);
-        }
-
-        $user = auth()->user();
-        $addresses = $user->addresses()->whereNotNull('address_name')->latest()->get();
-
-        // Recupera gli indirizzi di fatturazione dove 'address_name' è null
-        $billing_addresses = $user->addresses()->whereNull('address_name')->latest()->get();
-
-        $countries = Country::isActive()->get();
-
-        $logisticZone = LogisticZone::orderBy('average_delivery_days', 'asc')->first();
-
-        return getView('pages.checkout.checkout', [
-            'carts'     => $carts,
-            'user'      => $user,
-            'addresses' => $addresses,
-            'billing_addresses' => $billing_addresses,
-            'countries' => $countries
-        ]);
+    // Controlla se il carrello è vuoto
+    if ($carts->isEmpty()) {
+        // Reindirizza alla pagina del carrello con un messaggio di errore
+        return redirect()->route('carts.index')->with('error', 'Il carrello è vuoto. Aggiungi dei prodotti prima di procedere al checkout.');
     }
+
+    // Verifica la validità dei coupon per il checkout
+    checkCouponValidityForCheckout($carts);
+
+    $user = auth()->user();
+    $addresses = $user->addresses()->whereNotNull('address_name')->latest()->get();
+
+    // Recupera gli indirizzi di fatturazione dove 'address_name' è null
+    $billing_addresses = $user->addresses()->whereNull('address_name')->latest()->get();
+
+    $countries = Country::isActive()->get();
+
+    $logisticZone = LogisticZone::orderBy('average_delivery_days', 'asc')->first();
+
+    return getView('pages.checkout.checkout', [
+        'carts'     => $carts,
+        'user'      => $user,
+        'addresses' => $addresses,
+        'billing_addresses' => $billing_addresses,
+        'countries' => $countries
+    ]);
+}
+
 
     # checkout logistic
     public function getLogistic(Request $request)

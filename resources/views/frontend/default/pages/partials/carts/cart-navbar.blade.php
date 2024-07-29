@@ -23,7 +23,7 @@
         <div class="products_meta mt-1 d-flex align-items-center">
             @if($firstVariation && $firstVariation->product && $firstVariation->product->deleted_at == null)
 
-            <span class="price text-primary fw-semibold">{{ formatPrice(variationDiscountedPrice($firstVariation->product, $cart->product_variations)) }}</span>
+            <span class="price text-primary fw-semibold">{{ formatPrice(variationDiscountedPrice($firstVariation->product, $cart->product_variations, true ,$cart->qty)) }}</span>
             @else
             <span>Prodotto non disponibile</span>
             @endif
