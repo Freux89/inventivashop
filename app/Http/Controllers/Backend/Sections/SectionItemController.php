@@ -70,8 +70,8 @@ class SectionItemController extends Controller
     {
         
         $item = SectionItem::findOrFail($id);
-        
-        return view('backend.pages.sections.items.edit', compact('item'));
+        $section = $item->section;
+        return view('backend.pages.sections.items.edit', compact('item','section'));
     }
 
     /**
