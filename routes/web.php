@@ -108,6 +108,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
     Route::post('/products/get-variation-info', [ProductController::class, 'getVariationInfo'])->name('products.getVariationInfo');
     Route::post('/products/show-product-info', [ProductController::class, 'showInfo'])->name('products.showInfo');
     
+    Route::get('/{any}/products/{slug}', [ProductController::class, 'showWithBreadcrumb'])->where('any', '.*')->name('products.breadcrumb.show');
+
     
     
 
@@ -192,6 +194,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
     # category
     Route::get('/{categorySlug}', [ProductController::class, 'category'])->name('category.show');
 
+});
+
+Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localizationRedirect', 'localeViewPath']], function () {
+    // Rotta per le categorie con breadcrumb
+    Route::get('/{any}/{categorySlug}', [ProductController::class, 'categoryWithBreadcrumb'])->where('any', '.*')->name('category.breadcrumb.show');
 });
 
 Route::get('/variation-value-info/{id}', [VariationValuesController::class, 'getInfoDescription'])->name('variation.value.info');

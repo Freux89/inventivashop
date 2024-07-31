@@ -1,5 +1,11 @@
-<div class="vertical-product-card rounded-2 position-relative swiper-slide {{ isset($bgClass) ? $bgClass : '' }}">
 
+<div class="vertical-product-card rounded-2 position-relative swiper-slide {{ isset($bgClass) ? $bgClass : '' }}">
+@php
+    // Genera l'URL del prodotto
+    $productUrl = empty($breadcrumbPath)
+        ? route('products.show', ['slug' => $product->slug])
+        : route('products.breadcrumb.show', ['any' => $breadcrumbPath, 'slug' => $product->slug]);
+@endphp
     @php
         $discountPercentage = discountPercentage($product);
     @endphp
@@ -23,7 +29,7 @@
             @endif
 
 
-            <a href="{{ route('products.show', $product->slug) }}" class="rounded-btn"><i
+            <a href="{{ $productUrl  }}" class="rounded-btn"><i
                     class="fa-regular fa-eye"></i></a>
         </div>
     </div>
@@ -36,7 +42,7 @@
         @endif
         
 
-        <a href="{{ route('products.show', $product->slug) }}"
+        <a href="{{ $productUrl  }}"
             class="card-title fw-semibold mb-2 tt-line-clamp tt-clamp-1">{{ $product->collectLocalization('name') }}
         </a>
         <ul class="star-rating fs-sm d-inline-flex justify-content-center text-warning">

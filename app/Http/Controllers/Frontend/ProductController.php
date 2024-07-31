@@ -121,20 +121,18 @@ class ProductController extends Controller
             $product_page_widgets = json_decode(getSetting('product_page_widgets'));
         }
 
-        $breadcrumbs = session()->get('breadcrumb', collect());
+        $currentUrl = url()->current();
+    $canonicalUrl = route('products.show', ['slug' => $slug]);
 
+    // Se l'URL corrente è l'URL canonical, sovrascrivi i breadcrumb
+    if ($currentUrl === $canonicalUrl) {
+        $breadcrumbs = collect();
+    } else {
+        // Altrimenti, usa i breadcrumb dalla sessione
+        $breadcrumbs = session()->get('breadcrumb', collect());
+    }
         // Se il breadcrumb è vuoto, crea un breadcrumb di default basato sulla categoria principale del prodotto
-        if ($breadcrumbs->isEmpty()) {
-            $category = $product->categories()->first(); // Supponiamo che ogni prodotto abbia una categoria principale
-            if ($category) {
-                // Costruisci il breadcrumb con le categorie parent
-                $currentCategory = $category;
-                while ($currentCategory) {
-                    $breadcrumbs->prepend($currentCategory); // Aggiungi la categoria corrente all'inizio del breadcrumb
-                    $currentCategory = $currentCategory->parentCategory; // Sposta il riferimento alla categoria parent per il prossimo ciclo
-                }
-            }
-        }
+     
 
         $variations = generateVariationOptions($product->ordered_variation_combinations);
         $productVariations = $product->variations;
@@ -329,4 +327,90 @@ class ProductController extends Controller
             'breadcrumbs' => $breadcrumb,
         ]);
     }
+
+    public function categoryWithBreadcrumb(Request $request, $any, $categorySlug)
+{
+    // Divide la stringa "any" in singoli slug di categoria
+    $breadcrumbSlugs = explode('/', $any);
+    // Aggiunge l'ultimo slug che è il categorySlug alla lista dei breadcrumbs
+    $breadcrumbSlugs[] = $categorySlug;
+
+    // Ottiene l'oggetto categoria dalla categoria finale nell'URL
+    $category = Category::where('slug', $categorySlug)->first();
+
+    // Se la categoria non esiste, reindirizza alla home
+    if (!$category) {
+        return redirect()->route('home');
+    }
+
+    // Verifica che gli slug dei breadcrumb corrispondano ai genitori della categoria corrente
+    $isValidBreadcrumb = $this->verifyBreadcrumb($category, $breadcrumbSlugs);
+
+    // Se il breadcrumb non è valido, reindirizza all'URL canonical della categoria
+    if (!$isValidBreadcrumb) {
+        return redirect()->route('category.show', ['categorySlug' => $categorySlug]);
+    }
+
+    // Passa il controllo al metodo category
+    return $this->category($request, $categorySlug);
+}
+
+private function verifyBreadcrumb($category, $breadcrumbSlugs)
+{
+    // Inizializza un array per mantenere gli slug corretti
+    $correctSlugs = [];
+    // Inizia dalla categoria corrente e risale ai suoi genitori
+    $currentCategory = $category;
+
+    while ($currentCategory) {
+        $correctSlugs[] = $currentCategory->slug;
+        $currentCategory = $currentCategory->parentCategory; // Assicurati che questo metodo esista nel tuo modello
+    }
+
+    // Inverte l'array per confrontarlo con i breadcrumb forniti
+    $correctSlugs = array_reverse($correctSlugs);
+
+    // Confronta gli slug corretti con quelli forniti
+    return $breadcrumbSlugs == $correctSlugs;
+}
+
+public function showWithBreadcrumb(Request $request, $any, $slug)
+{
+    // Divide la stringa "any" in singoli slug di categoria
+    $breadcrumbSlugs = explode('/', $any);
+
+    // Ottiene l'oggetto prodotto dallo slug
+    $product = Product::where('slug', $slug)->first();
+
+    // Se il prodotto non esiste, reindirizza alla home
+    if (!$product) {
+        return redirect()->route('home');
+    }
+
+    // Verifica che gli slug dei breadcrumb corrispondano ai genitori della categoria del prodotto
+    $isValidBreadcrumb = $this->verifyProductBreadcrumb($product, $breadcrumbSlugs);
+
+    // Se il breadcrumb non è valido, reindirizza all'URL canonical del prodotto
+    if (!$isValidBreadcrumb) {
+        return redirect()->route('products.show', ['slug' => $slug]);
+    }
+
+    // Passa il controllo al metodo show
+    return $this->show($slug);
+}
+
+private function verifyProductBreadcrumb($product, $breadcrumbSlugs)
+{
+    // Ottiene le categorie associate al prodotto
+    $categories = $product->categories; // Assicurati che questo metodo esista nel tuo modello Product
+
+    foreach ($categories as $category) {
+        // Verifica se uno degli alberi delle categorie del prodotto corrisponde ai breadcrumb forniti
+        if ($this->verifyBreadcrumb($category, $breadcrumbSlugs)) {
+            return true;
+        }
+    }
+
+    return false;
+}
 }

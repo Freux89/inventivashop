@@ -6,7 +6,9 @@
 @php
 $agent = new \Jenssegers\Agent\Agent;
 @endphp
-
+@section('meta')
+<link rel="canonical" href="{{ route('category.show', $category->slug) }}">
+@endsection
 
 
 
@@ -35,14 +37,14 @@ $agent = new \Jenssegers\Agent\Agent;
 </ol>
                         </nav>
                     </div>
-                    <h1 class="mb-2">{{ $category ? $category->name : ($tag ? $tag->name : localize('Products')) }} </h1>
+                    <h1 class="mb-2 mt-4 mt-lg-0">{{ $category ? $category->name : ($tag ? $tag->name : localize('Products')) }} </h1>
                     <p>Nel competitivo settore alberghiero, la prima impressione è fondamentale per impressionare i clienti e fidelizzarli. La segnaletica all’interno di un hotel svolge un ruolo cruciale nell’orientare gli ospiti, creare un’esperienza di soggiorno piacevole e garantire un flusso efficiente all’interno della struttura.</p>
                 </div>
 
             </div>
             <div class="col-12 col-md-6 p-0">
                 <div class="hero-image">
-                    <img src="{{uploadedAsset(47)}}" alt="{{$category->name}}">
+                  <img src="{{uploadedAsset($category->thumbnail_image)}}" alt="{{$category->name}}">
                 </div>
             </div>
         </div>
@@ -52,7 +54,10 @@ $agent = new \Jenssegers\Agent\Agent;
 @include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_before_content'])
 
 <!-- Blocco sezioni prima delle categorie -->
-
+@php
+    // Crea il percorso breadcrumb concatenando gli slug delle categorie
+    $breadcrumbPath = $breadcrumbs->pluck('slug')->implode('/');
+@endphp
 <form class="filter-form" action="{{ Request::fullUrl() }}" method="GET">
     <!--shop grid section start-->
     <section class="gshop-gshop-grid ptb-120">
@@ -67,7 +72,7 @@ $agent = new \Jenssegers\Agent\Agent;
                             <div class="card border-0">
                                 <img src="{{ uploadedAsset($subCategory->thumbnail_image) }}" class="card-img-top img-category" alt="{{ $subCategory->name }}">
                                 <div class="card-body text-center">
-                                    <a href="{{ route('category.show', ['categorySlug' => $subCategory->slug]) }}" class="name-category">{{ $subCategory->name }}</a>
+                                <a href="{{ route('category.breadcrumb.show', ['any' => $breadcrumbPath, 'categorySlug' => $subCategory->slug]) }}" class="name-category">{{ $subCategory->name }}</a>
                                 </div>
                             </div>
                         </div>

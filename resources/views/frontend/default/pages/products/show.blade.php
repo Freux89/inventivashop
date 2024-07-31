@@ -50,6 +50,7 @@ $detailedProduct = $product;
 <meta property="og:price:amount" content="{{ formatPrice($detailedProduct->min_price) }}" />
 <meta property="product:price:currency" content="{{ env('DEFAULT_CURRENCY') }}" />
 <meta property="fb:app_id" content="{{ env('FACEBOOK_PIXEL_ID') }}">
+<link rel="canonical" href="{{ route('products.show', $product->slug) }}">
 @endsection
 
 
@@ -64,7 +65,10 @@ $detailedProduct = $product;
 
 <!--product details start-->
 @include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_before_content'])
-
+@php
+    // Crea il percorso breadcrumb concatenando gli slug delle categorie
+    $breadcrumbPath = $breadcrumbs->pluck('slug')->implode('/');
+@endphp
 <section class="product-details-area ptb-4">
     <div class="content-wrapper">
         <div class="row g-4">
@@ -112,9 +116,12 @@ $detailedProduct = $product;
 <!--product details end-->
 @if (!empty($relatedProducts) && count($relatedProducts) > 0)
 <!--related product slider start -->
+{{-- 
 @include('frontend.default.pages.partials.products.related-products', [
-'relatedProducts' => $relatedProducts,
+    'relatedProducts' => $relatedProducts,
 ])
+--}}
+
 @endif
 <!--related products slider end-->
 @include('frontend.default.pages.partials.sections.hook',['hook_name' => 'hook_after_content'])
