@@ -122,8 +122,8 @@
                                                             @can('variation_values')
                                                                 <a class="dropdown-item"
                                                                     href="{{ route('admin.variationValues.index', ['id' => $variation->id]) }}">
-                                                                    <i data-feather="plus"
-                                                                        class="me-2"></i>{{ localize('Add Values') }}
+                                                                    <i data-feather="settings"
+                                                                        class="me-2"></i>{{ localize('Valori') }}
                                                                 </a>
                                                             @endcan
 
