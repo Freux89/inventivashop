@@ -7,17 +7,23 @@
 @section('contents')
 <section class="tt-section pt-4">
     <div class="container">
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="card tt-page-header">
-                    <div class="card-body d-lg-flex align-items-center justify-content-lg-between">
-                        <div class="tt-page-title">
-                            <h2 class="h5 mb-lg-0">{{ localize('Aggiungi Livello di Sconto') }}</h2>
-                        </div>
-                    </div>
+    <div class="row mb-3">
+    <div class="col-12">
+        <div class="card tt-page-header">
+            <div class="card-body d-lg-flex align-items-center justify-content-lg-between">
+                <div class="tt-page-title">
+                    <h2 class="h5 mb-lg-0">{{ localize('Aggiungi Livello di Sconto') }}</h2>
+                </div>
+                <div>
+                    <a href="{{ route('quantity_discounts.edit', $quantityDiscount->id) }}" class="btn btn-link">
+                        <i class="fas fa-arrow-left"></i> Torna allo sconto quantità
+                    </a>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
 
         <div class="row mb-4 g-4">
             <div class="col-xl-12">

@@ -9,28 +9,34 @@
 <section class="tt-section pt-4">
     <div class="container">
         <div class="row mb-3">
-            <div class="col-12">
-                <div class="card tt-page-header">
-                    <div class="card-body">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-auto flex-grow-1">
-                                <div class="tt-page-title">
-                                    <h2 class="h5 mb-0">{{ localize('Update Category') }} <sup class="badge bg-soft-warning px-2">{{ $lang_key }}</sup></h2>
-                                </div>
-                            </div>
-                            <div class="col-4 col-md-2">
-                                <select id="language" class="w-100 form-control text-capitalize country-flag-select" data-toggle="select2" onchange="localizeData(this.value)">
-                                    @foreach (\App\Models\Language::all() as $key => $language)
-                                    <option value="{{ $language->code }}" {{ $lang_key == $language->code ? 'selected' : '' }} data-flag="{{ staticAsset('backend/assets/img/flags/' . $language->flag . '.png') }}">
-                                        {{ $language->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+        <div class="col-12">
+    <div class="card tt-page-header">
+        <div class="card-body">
+            <div class="row g-3 align-items-center">
+                <div class="col-auto flex-grow-1">
+                    <div class="tt-page-title">
+                        <h2 class="h5 mb-0">{{ localize('Update Category') }} <sup class="badge bg-soft-warning px-2">{{ $lang_key }}</sup></h2>
                     </div>
                 </div>
+                <div class="col-auto">
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-link">
+                        <i class="fas fa-arrow-left"></i> Torna alle categorie
+                    </a>
+                </div>
+                <div class="col-4 col-md-2">
+                    <select id="language" class="w-100 form-control text-capitalize country-flag-select" data-toggle="select2" onchange="localizeData(this.value)">
+                        @foreach (\App\Models\Language::all() as $key => $language)
+                        <option value="{{ $language->code }}" {{ $lang_key == $language->code ? 'selected' : '' }} data-flag="{{ staticAsset('backend/assets/img/flags/' . $language->flag . '.png') }}">
+                            {{ $language->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
+        </div>
+    </div>
+</div>
+
         </div>
 
         <div class="row mb-4 g-4">

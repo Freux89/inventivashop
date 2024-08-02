@@ -14,6 +14,11 @@
                         <div class="tt-page-title">
                             <h2 class="h5 mb-lg-0">{{ localize('Aggiungi Sconto per Quantità') }}</h2>
                         </div>
+                        <div>
+                    <a href="{{ route('quantity_discounts.index') }}" class="btn btn-link">
+                        <i class="fas fa-arrow-left"></i> Torna all'elenco
+                    </a>
+                </div>
                     </div>
                 </div>
             </div>
