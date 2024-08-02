@@ -14,6 +14,7 @@ if (isset($condition)) {
             <button class="btn btn-link w-100 text-start" data-bs-toggle="collapse" type="button" data-bs-target="#collapse{{ $conditionIndex }}" aria-expanded="true" aria-controls="collapse{{ $conditionIndex }}">
                 Condizione {{ $conditionIndex + 1 }}
                 <i class="fas fa-trash float-end ms-3 delete-condition" style="cursor:pointer;" title="Elimina condizione"></i>
+                <i class="fas fa-clone float-end ms-3 duplicate-condition" style="cursor:pointer;" title="Duplica condizione"></i>
                 <i class="fas @if(!isset($selectedValueId)) fa-chevron-up @else fa-chevron-down @endif float-end"></i>
             </button>
         </h5>
@@ -90,3 +91,5 @@ if (isset($condition)) {
         </div>
     </div>
 </div>
+
+

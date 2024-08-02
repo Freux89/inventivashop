@@ -349,3 +349,123 @@ if (conditionFieldsContainer) {
     });
 }
 });
+
+
+// Funzione per duplicare una condizione
+// Funzione per rebindare gli eventi alle nuove condizioni duplicate
+function rebindConditionEvents(newConditionDiv) {
+  newConditionDiv.find(".delete-condition").on("click", function () {
+      if (confirm("Sei sicuro di voler eliminare questa condizione e tutte le azioni associate? Questa azione non può essere annullata.")) {
+          let conditionDiv = $(this).closest(".condition-div");
+          let conditionIndex = conditionDiv.attr("data-condition-index");
+          removeCondition(conditionIndex);
+          conditionDiv.remove();
+      }
+  });
+
+  newConditionDiv.find(".duplicate-condition").on("click", function () {
+      duplicateCondition($(this).closest(".condition-div"));
+  });
+}
+
+// Funzione per duplicare una condizione
+// Funzione per generare un indice univoco per le nuove condizioni
+function generateUniqueConditionIndex() {
+  var maxIndex = Math.max.apply(null, $(".condition-div").map(function () {
+      return parseInt($(this).attr("data-condition-index"), 10);
+  }).get());
+  return maxIndex + 1;
+}
+
+// Funzione per rebindare gli eventi alle nuove condizioni duplicate
+function rebindConditionEvents(newConditionDiv) {
+  newConditionDiv.find(".delete-condition").on("click", function () {
+      if (confirm("Sei sicuro di voler eliminare questa condizione e tutte le azioni associate? Questa azione non può essere annullata.")) {
+          let conditionDiv = $(this).closest(".condition-div");
+          let conditionIndex = conditionDiv.attr("data-condition-index");
+          removeCondition(conditionIndex);
+          conditionDiv.remove();
+      }
+  });
+
+  newConditionDiv.find(".duplicate-condition").on("click", function () {
+      duplicateCondition($(this).closest(".condition-div"));
+  });
+}
+
+// Funzione per rebindare gli eventi alle nuove condizioni duplicate
+function rebindConditionEvents(newConditionDiv) {
+  newConditionDiv.find(".delete-condition").on("click", function () {
+      if (confirm("Sei sicuro di voler eliminare questa condizione e tutte le azioni associate? Questa azione non può essere annullata.")) {
+          let conditionDiv = $(this).closest(".condition-div");
+          let conditionIndex = conditionDiv.attr("data-condition-index");
+          removeCondition(conditionIndex);
+          conditionDiv.remove();
+      }
+  });
+
+  newConditionDiv.find(".duplicate-condition").on("click", function () {
+      duplicateCondition($(this).closest(".condition-div"));
+  });
+}
+
+// Funzione per duplicare una condizione
+function duplicateCondition(conditionDiv) {
+  var collapsingElementOriginal = conditionDiv.find('.collapsing');
+  if (collapsingElementOriginal.length === 0) {
+      console.error("Elemento .collapsing non trovato nella condizione originale");
+      return;
+  }
+
+  // Clona l'elemento senza eventi per mantenere la struttura originale
+  var newConditionDiv = conditionDiv.clone(false);
+  var conditionIndex = generateUniqueConditionIndex();
+
+  newConditionDiv.attr("data-condition-index", conditionIndex);
+  newConditionDiv.find("[name^='condition']").each(function () {
+      var name = $(this).attr("name");
+      var newName = name.replace(/\d+/, conditionIndex);
+      $(this).attr("name", newName);
+
+      if ($(this).hasClass("variant-value-select")) {
+          $(this).val("");
+      }
+  });
+
+  // Aggiorna ID e aria-labelledby per il collapsing
+  var collapsingElement = newConditionDiv.find('.collapsing');
+  var collapseId = 'collapse' + conditionIndex;
+  var headingId = 'heading' + conditionIndex;
+
+  collapsingElement.attr('id', collapseId);
+  collapsingElement.attr('aria-labelledby', headingId);
+
+  var headingElement = newConditionDiv.find('.card-header');
+  headingElement.attr('id', headingId);
+
+  var buttonElement = headingElement.find('button');
+  buttonElement.attr('data-bs-target', '#' + collapseId);
+  buttonElement.attr('aria-controls', collapseId);
+
+  // Aggiorna solo il testo del pulsante senza rimuovere le icone
+  buttonElement.contents().filter(function() {
+      return this.nodeType === 3; // Node.TEXT_NODE
+  }).first().replaceWith('Condizione ' + (conditionIndex + 1) + ' ');
+
+  newConditionDiv.find(".collapsing").removeClass("show");
+  newConditionDiv.find(".fa-chevron-up").removeClass("fa-chevron-up").addClass("fa-chevron-down");
+  conditionDiv.after(newConditionDiv);
+
+  rebindConditionEvents(newConditionDiv);
+}
+
+// Bind degli eventi iniziali
+$(document).ready(function () {
+  $("#conditionFields").on("click", ".duplicate-condition", function () {
+      duplicateCondition($(this).closest(".condition-div"));
+  });
+});
+
+
+
+
