@@ -209,7 +209,6 @@ class ConditionGroupController extends Controller
         $variations = $this->getVariationsArray($productId, $excludeVariantId);
 
 
-
         // Usa la vista Blade per generare l'HTML
         $html = view($viewName, [
             'variations' => $variations,
