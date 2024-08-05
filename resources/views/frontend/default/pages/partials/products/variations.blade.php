@@ -97,11 +97,7 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
     <div class="swiper-button-prev"></div>
 </div>
 
-<!-- Div per mostrare l'info_description -->
-<div id="info-description-modal" >
-    <button type="button" id="close-info-description" ><i class="fa-regular fa-circle-xmark"></i></button>
-    <div id="info-description-content"></div>
-</div>
+
 
 
 <div class="grid-container d-none" data-variation-id="{{ $variation['id'] }}">

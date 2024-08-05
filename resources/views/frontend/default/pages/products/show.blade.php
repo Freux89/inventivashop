@@ -362,34 +362,55 @@ function  setupToggleView() {
     });
 }
 function initializeInfoIconEvents() {
-        document.querySelectorAll('.swiper-slide .info-icon').forEach(function(element) {
-            element.addEventListener('click', function(event) {
-                event.stopPropagation(); // Impedisce la propagazione dell'evento
-                var valueId = this.getAttribute('data-value-id');
-                fetch(`/variation-value-info/${valueId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.info_description) {
-                            const modal = $('#info-description-modal');
-                            const content = $('#info-description-content');
-                            content.html(data.info_description);
-                            modal.stop(true, true).slideDown(500);
-                        }
-                    });
-            });
+    document.querySelectorAll('.swiper-slide .info-icon').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.stopPropagation(); // Impedisce la propagazione dell'evento
+            var valueId = this.getAttribute('data-value-id');
+            var swiperContainer = this.closest('.variant-block');
+            
+            fetch(`/variation-value-info/${valueId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.info_description) {
+                        // Rimuovi eventuali vecchi modali per evitare duplicati
+                        document.querySelectorAll('#info-description-modal').forEach(function(modal) {
+                            modal.remove();
+                        });
+                        
+                        // Crea dinamicamente il div delle informazioni
+                        const modal = document.createElement('div');
+                        modal.id = 'info-description-modal';
+                        modal.innerHTML = `
+                            <button type="button" id="close-info-description"><i class="fa-regular fa-circle-xmark"></i></button>
+                            <div id="info-description-content">${data.info_description}</div>
+                        `;
+                        
+                        swiperContainer.appendChild(modal);
+                        $(modal).stop(true, true).slideDown(500);
+                        
+                        // Aggiungi l'evento di chiusura al bottone del modal
+                        modal.querySelector('#close-info-description').addEventListener('click', function() {
+                            $(modal).stop(true, true).slideUp(500, function() {
+                                modal.remove();
+                            });
+                        });
+                        
+                        // Aggiungi l'evento di chiusura al click fuori dal modal
+                        $(document).on('click', function(event) {
+                            if (!$(event.target).closest(modal).length && !$(event.target).is('.info-icon')) {
+                                $(modal).stop(true, true).slideUp(500, function() {
+                                    modal.remove();
+                                });
+                            }
+                        });
+                    }
+                });
         });
-
-        $('#close-info-description').on('click', function() {
-            $('#info-description-modal').stop(true, true).slideUp(500);
-        });
-        $(document).on('click', function(event) {
-        // Se il click è avvenuto al di fuori del div info-description-modal
-        if (!$(event.target).closest('#info-description-modal').length) {
-            $('#info-description-modal').stop(true, true).slideUp(500);
-        }
     });
-    }
-    function initializeGridInfoIconEvents() {
+}
+
+
+function initializeGridInfoIconEvents() {
     document.querySelectorAll('.grid-item .info-icon').forEach(function(element) {
         element.addEventListener('click', function(event) {
             event.stopPropagation(); // Impedisce la propagazione dell'evento
@@ -427,6 +448,7 @@ function initializeInfoIconEvents() {
         }
     });
 }
+
 
 document.addEventListener('DOMContentLoaded', function() {
         var summaryContent = document.getElementById('summaryContent');
