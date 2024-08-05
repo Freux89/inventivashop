@@ -89,7 +89,6 @@ Route::group(['prefix' => '', 'middleware' => ['auth']], function () {
 
 Route::get('/variation-value-info/{id}', [VariationValuesController::class, 'getInfoDescription'])->name('variation.value.info');
 
-
 #localization
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localizationRedirect', 'localeViewPath']], function () {
 
