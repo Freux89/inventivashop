@@ -1,4 +1,19 @@
+$('#conditionFields').on('click', '.collapse-toggle', function (event) {
+  const target = event.target;
+  if (target.closest('.delete-condition, .duplicate-condition')) {
+      return; // Non fare nulla se il click avviene su uno degli elementi specifici
+  }
+  // Altrimenti, attiva/disattiva il collapse
+  const button = $(this);
+  const collapseId = button.data('bs-target');
+  const collapseElement = $(collapseId);
+  collapseElement.collapse('toggle');
+});
 
+// Aggiungi stopPropagation ai pulsanti secondari
+$('#conditionFields').on('click', '.delete-condition, .duplicate-condition', function (event) {
+  event.stopPropagation();
+});
 
 function updateSelectedVariantValues(conditionIndex, selectedVariantValueId) {
   // Verifica se la variante è già stata selezionata in un'altra condizione
@@ -351,67 +366,10 @@ if (conditionFieldsContainer) {
 });
 
 
-// Funzione per duplicare una condizione
-// Funzione per rebindare gli eventi alle nuove condizioni duplicate
-function rebindConditionEvents(newConditionDiv) {
-  newConditionDiv.find(".delete-condition").on("click", function () {
-      if (confirm("Sei sicuro di voler eliminare questa condizione e tutte le azioni associate? Questa azione non può essere annullata.")) {
-          let conditionDiv = $(this).closest(".condition-div");
-          let conditionIndex = conditionDiv.attr("data-condition-index");
-          removeCondition(conditionIndex);
-          conditionDiv.remove();
-      }
-  });
-
-  newConditionDiv.find(".duplicate-condition").on("click", function () {
-      duplicateCondition($(this).closest(".condition-div"));
-  });
-}
-
-// Funzione per duplicare una condizione
-// Funzione per generare un indice univoco per le nuove condizioni
-function generateUniqueConditionIndex() {
-  var maxIndex = Math.max.apply(null, $(".condition-div").map(function () {
-      return parseInt($(this).attr("data-condition-index"), 10);
-  }).get());
-  return maxIndex + 1;
-}
-
-// Funzione per rebindare gli eventi alle nuove condizioni duplicate
-function rebindConditionEvents(newConditionDiv) {
-  newConditionDiv.find(".delete-condition").on("click", function () {
-      if (confirm("Sei sicuro di voler eliminare questa condizione e tutte le azioni associate? Questa azione non può essere annullata.")) {
-          let conditionDiv = $(this).closest(".condition-div");
-          let conditionIndex = conditionDiv.attr("data-condition-index");
-          removeCondition(conditionIndex);
-          conditionDiv.remove();
-      }
-  });
-
-  newConditionDiv.find(".duplicate-condition").on("click", function () {
-      duplicateCondition($(this).closest(".condition-div"));
-  });
-}
-
-// Funzione per rebindare gli eventi alle nuove condizioni duplicate
-function rebindConditionEvents(newConditionDiv) {
-  newConditionDiv.find(".delete-condition").on("click", function () {
-      if (confirm("Sei sicuro di voler eliminare questa condizione e tutte le azioni associate? Questa azione non può essere annullata.")) {
-          let conditionDiv = $(this).closest(".condition-div");
-          let conditionIndex = conditionDiv.attr("data-condition-index");
-          removeCondition(conditionIndex);
-          conditionDiv.remove();
-      }
-  });
-
-  newConditionDiv.find(".duplicate-condition").on("click", function () {
-      duplicateCondition($(this).closest(".condition-div"));
-  });
-}
 
 // Funzione per duplicare una condizione
 function duplicateCondition(conditionDiv) {
-  var collapsingElementOriginal = conditionDiv.find('.collapsing');
+  var collapsingElementOriginal = conditionDiv.find('.collapse');
   if (collapsingElementOriginal.length === 0) {
       console.error("Elemento .collapsing non trovato nella condizione originale");
       return;
@@ -432,8 +390,8 @@ function duplicateCondition(conditionDiv) {
       }
   });
 
-  // Aggiorna ID e aria-labelledby per il collapsing
-  var collapsingElement = newConditionDiv.find('.collapsing');
+  // Aggiorna ID e aria-labelledby per il collapse
+  var collapsingElement = newConditionDiv.find('.collapse');
   var collapseId = 'collapse' + conditionIndex;
   var headingId = 'heading' + conditionIndex;
 
@@ -454,7 +412,7 @@ function duplicateCondition(conditionDiv) {
 
   newConditionDiv.find(".collapsing").removeClass("show");
   newConditionDiv.find(".fa-chevron-up").removeClass("fa-chevron-up").addClass("fa-chevron-down");
-  conditionDiv.after(newConditionDiv);
+  $("#conditionFields").append(newConditionDiv);
 
   rebindConditionEvents(newConditionDiv);
 }

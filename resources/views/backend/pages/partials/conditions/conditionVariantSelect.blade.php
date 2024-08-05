@@ -11,12 +11,12 @@ if (isset($condition)) {
 <div class="card condition-div mb-3" data-condition-index="{{ $conditionIndex }}">
     <div class="card-header" id="heading{{ $conditionIndex }}">
         <h5 class="mb-0">
-            <button class="btn btn-link w-100 text-start" data-bs-toggle="collapse" type="button" data-bs-target="#collapse{{ $conditionIndex }}" aria-expanded="true" aria-controls="collapse{{ $conditionIndex }}">
-                Condizione {{ $conditionIndex + 1 }}
-                <i class="fas fa-trash float-end ms-3 delete-condition" style="cursor:pointer;" title="Elimina condizione"></i>
-                <i class="fas fa-clone float-end ms-3 duplicate-condition" style="cursor:pointer;" title="Duplica condizione"></i>
-                <i class="fas @if(!isset($selectedValueId)) fa-chevron-up @else fa-chevron-down @endif float-end"></i>
-            </button>
+        <button class="btn btn-link w-100 text-start collapse-toggle" type="button" data-bs-target="#collapse{{ $conditionIndex }}" aria-expanded="true" aria-controls="collapse{{ $conditionIndex }}">
+    Condizione {{ $conditionIndex + 1 }}
+    <i class="fas fa-trash float-end ms-3 delete-condition" style="cursor:pointer;" title="Elimina condizione"></i>
+    <i class="fas fa-clone float-end ms-3 duplicate-condition" style="cursor:pointer;" title="Duplica condizione"></i>
+    <i class="fas @if(!isset($selectedValueId)) fa-chevron-up @else fa-chevron-down @endif float-end"></i>
+</button>
         </h5>
     </div>
 
