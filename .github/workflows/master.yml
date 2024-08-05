@@ -22,7 +22,7 @@ jobs:
         source: "."
         target: "www/cristianp81.sg-host.com/public_html/"
 
-    - name: Execute migrations on SiteGround
+    - name: Execute migrations and clear cache on SiteGround
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SITEGROUND_HOST }}
@@ -32,3 +32,7 @@ jobs:
         script: |
           cd www/cristianp81.sg-host.com/public_html/
           php artisan migrate --force
+          php artisan cache:clear
+          php artisan config:clear
+          php artisan route:clear
+          php artisan view:clear
