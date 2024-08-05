@@ -87,6 +87,8 @@ Route::group(['prefix' => '', 'middleware' => ['auth']], function () {
     Route::get('/media-manager/delete-files/{id}', [MediaManagerController::class, 'delete'])->name('uppy.delete');
 });
 
+Route::get('/variation-value-info/{id}', [VariationValuesController::class, 'getInfoDescription'])->name('variation.value.info');
+
 
 #localization
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localizationRedirect', 'localeViewPath']], function () {
@@ -201,4 +203,3 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
     Route::get('/{any}/{categorySlug}', [ProductController::class, 'categoryWithBreadcrumb'])->where('any', '.*')->name('category.breadcrumb.show');
 });
 
-Route::get('/variation-value-info/{id}', [VariationValuesController::class, 'getInfoDescription'])->name('variation.value.info');
