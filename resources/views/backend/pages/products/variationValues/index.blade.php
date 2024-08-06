@@ -155,6 +155,11 @@
                                             placeholder="{{ localize('Type variation value name') }}" required>
                                     </div>
                                     <div class="mb-4">
+                <label for="default_price" class="form-label">{{ localize('Prezzo di default') }}</label>
+                <input class="form-control" type="text" id="default_price" name="default_price" placeholder="10">
+                <div><small class="form-text text-muted">{{ localize('Questo prezzo sarà utilizzato se non viene specificato un prezzo per il valore della variante all\'interno del prodotto.') }}</small></div>
+            </div>
+                                    <div class="mb-4">
                 <label class="form-label">{{ localize('Image') }}</label>
                 <div class="tt-image-drop rounded">
                     <span class="fw-semibold">{{ localize('Choose Image') }}</span>

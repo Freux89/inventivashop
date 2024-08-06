@@ -50,12 +50,14 @@ class VariationValuesController extends Controller
             'variation_id' => 'required|integer',
             'color_code' => 'nullable|string',
             'image' => 'nullable|integer',  
+            'default_price' => 'nullable|numeric',
         ]);
 
         $variationValue = new VariationValue;
         $variationValue->name = $data['name'];
         $variationValue->variation_id = $data['variation_id'];
         $variationValue->image = $data['image'];
+        $variationValue->default_price = $data['default_price'];
         $highestPosition = VariationValue::max('position');
         $variationValue->position = $highestPosition + 1;
         // Commento perchè sembra un codice errato
@@ -99,8 +101,9 @@ class VariationValuesController extends Controller
             'variation_id' => 'required|integer',
             'lang_key' => 'required|string',
             'color_code' => 'nullable|string',
-            'image' => 'nullable|integer',  // Add this line
-            'info_description' => 'nullable|string' // Aggiungi questo campo
+            'image' => 'nullable|integer',  
+            'info_description' => 'nullable|string', 
+            'default_price' => 'nullable|numeric', 
         ]);
 
         $variationValue = VariationValue::findOrFail($data['id']);
@@ -109,6 +112,7 @@ class VariationValuesController extends Controller
             $variationValue->name = $data['name'];
             $variationValue->image = $data['image'];  
             $variationValue->info_description = $data['info_description']; 
+            $variationValue->default_price = $data['default_price']; // Aggiungi default_price al valore variante
 
         }
     

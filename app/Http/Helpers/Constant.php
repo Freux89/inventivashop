@@ -227,8 +227,15 @@ if (!function_exists('calculateVariationPrice')) {
     {
       
         $price_change_type = $productVariation->price_change_type;
-        $price = $productVariation->price;
-
+       
+if($productVariation->price != 0){
+    $price = $productVariation->price;
+}
+else{
+    $default_price = $productVariation->variationValue->default_price;
+    
+    $price = $default_price ? $default_price : 0;
+}
         if ($price_change_type == 'replace') {
             return $price;
         } elseif ($price_change_type == 'amount') {
@@ -874,7 +881,7 @@ if (!function_exists('variationPrice')) {
     function variationPrice($product, $variations)
     {
         $price = $product->price;
-    
+       
         // Calcola il prezzo delle varianti
         foreach ($variations as $variation) {
             

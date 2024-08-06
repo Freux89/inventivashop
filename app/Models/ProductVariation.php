@@ -116,4 +116,9 @@ class ProductVariation extends Model
         // Restituisce null (o un altro valore predefinito) se il formato non è corretto.
         return null;
     }
+
+    public function variationValue()
+    {
+        return $this->belongsTo(VariationValue::class, 'variant_value_id');
+    }
 }
