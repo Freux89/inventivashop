@@ -7903,7 +7903,7 @@ img.mfp-img {
 }
 .swiper-button-next.swiper-button-disabled,
 .swiper-button-prev.swiper-button-disabled {
-    opacity: 0.35;
+    opacity: 0;
     cursor: auto;
     pointer-events: none;
 }
@@ -29012,6 +29012,14 @@ button.accordion-button {
     display: flex;
     justify-content: center;
     align-items: center;
+    opacity: 0; /* Opacità iniziale */
+    transition: opacity 0.5s ease, visibility 0.5s ease; /* Transizione per opacità e visibilità */
+    visibility: hidden; /* Visibilità iniziale nascosta */
+}
+
+.loading-overlay.visible {
+    opacity: 1; /* Opacità quando visibile */
+    visibility: visible; /* Visibilità quando visibile */
 }
 
 .variant-block {

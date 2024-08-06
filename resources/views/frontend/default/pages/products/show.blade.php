@@ -140,14 +140,15 @@ $detailedProduct = $product;
   
 
   function showLoading() {
-        
-        document.querySelector('.loading-overlay').classList.remove('d-none');
-    }
+    $('.loading-overlay').css('visibility', 'visible').addClass('visible');
+}
 
-    function hideLoading() {
-        document.querySelector('.loading-overlay').classList.add('d-none');
-    }
-
+function hideLoading() {
+    $('.loading-overlay').removeClass('visible');
+    // Attendi la fine della transizione prima di impostare `visibility` su `hidden`
+    $('.loading-overlay').css('visibility', 'hidden');
+  
+}
 function initializeSwiper() {
     const swiperViews = [];
     

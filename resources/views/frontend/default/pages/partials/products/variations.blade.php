@@ -7,7 +7,7 @@ if(!isset($variations)){
 @endphp
 
 @if (count($variations) > 0)
-<div class="loading-overlay d-none"></div>
+
 
 <div class="h3 start-conf py-3 mb-9">
     Inizia la configurazione
