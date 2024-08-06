@@ -43,7 +43,7 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
 <div class="variant-name">
             {{ $variation['name'] }}
         </div>
-        @if ($variation['display_type'] == 'image')
+        @if ($variation['display_type'] == 'image' && count($variation['values']) > 5)
         <div class="toggle-buttons" data-variation-id="{{ $variation['id'] }}">
     <button class="btn btn-link toggle-view d-flex align-items-center" type="button" data-action="show" data-variation-id="{{ $variation['id'] }}">
         Mostra tutti 
