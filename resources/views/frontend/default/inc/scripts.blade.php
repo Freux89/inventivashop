@@ -227,13 +227,7 @@
     document.querySelectorAll('.swiper-container').forEach((swiperContainer, index) => {
         if (activeSlideData[index]) { // Controlla se activeSlideData[index] esiste
             swiperContainer.swiper.slideTo(activeSlideData[index].index, 0);
-            if (activeSlideData[index].selectedSlideId) {
-                const slideToSelect = swiperContainer.querySelector(`.swiper-slide .gallery-item-block[data-value-id="${activeSlideData[index].selectedSlideId}"]`);
-                if (slideToSelect) {
-                    slideToSelect.classList.add('selected');
-                    slideToSelect.querySelector('input[type="radio"]').checked = true;
-                }
-            }
+            
         }
     });
 }
