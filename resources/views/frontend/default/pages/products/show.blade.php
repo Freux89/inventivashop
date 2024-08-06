@@ -240,28 +240,7 @@ function initializeSwiper() {
             }
         });
 
-        const selectedSlide = swiper.el.querySelector('.swiper-slide .gallery-item-block.selected');
-        if (!selectedSlide) {
-            selectFirstEnabledSlide(swiper);
-            setTimeout(() => {
-                if (isAutoSelecting) {
-                    showLoading();
-                    getVariationInfo();
-                    isAutoSelecting = false;
-                }
-            }, 0);
-        } else if (selectedSlide && selectedSlide.classList.contains('disabled')) {
-            selectedSlide.classList.remove('selected');
-            selectedSlide.querySelector('input[type="radio"]').checked = false;
-            selectFirstEnabledSlide(swiper);
-            setTimeout(() => {
-                if (isAutoSelecting) {
-                    showLoading();
-                    getVariationInfo();
-                    isAutoSelecting = false;
-                }
-            }, 0);
-        }
+        
          // Ripristina la modalità di visualizzazione corretta
          if (viewModes[variationId] === 'grid') {
             const gridContainer = document.querySelector(`.grid-container[data-variation-id="${variationId}"]`);

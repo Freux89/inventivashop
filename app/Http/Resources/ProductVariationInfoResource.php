@@ -34,6 +34,7 @@ class ProductVariationInfoResource extends JsonResource
 
         $product_tax = $product->taxes[0]['tax_value'] / 100;
         $productVariations = ProductVariation::findMany($ids_all);
+      
         $variantValueIds = $productVariations->pluck('variant_value_id')->toArray();
 
         $total_stock = array_reduce($this->resource, function ($carry, $item) {
@@ -63,7 +64,7 @@ class ProductVariationInfoResource extends JsonResource
 
             return $variation;
         })->filter(); // Rimuovi le varianti prodotto null
-
+        
         // Converti la collezione filtrata in una lista di varianti prodotto
         $filteredProductVariations = $filteredProductVariations->values();
 
@@ -74,7 +75,7 @@ class ProductVariationInfoResource extends JsonResource
 
         $indicativeDeliveryDays = indicativeDeliveryDays($product, $filteredProductVariations);
         
-        $selectedVariantValueIds = array_diff($variantValueIds, $conditionEffects['valuesToDisable']);
+        $selectedVariantValueIds = $filteredProductVariations->pluck('variant_value_id')->toArray();;
 
 
         // Prezzo con IVA

@@ -162,6 +162,7 @@ class ProductController extends Controller
 
         // Estrarre solo i primi valori di ogni variante dalle variazioni filtrate
         $uniqueFilteredVariations = collect();
+        $uniqueFilteredVariationValues = collect();
         $processedVariationIds = [];
 
         foreach ($filteredProductVariations as $variation) {
@@ -170,6 +171,7 @@ class ProductController extends Controller
 
             if (!in_array($variationId, $processedVariationIds)) {
                 $uniqueFilteredVariations->push($variation);
+                $uniqueFilteredVariationValues->push($variation->variant_value_id);
                 $processedVariationIds[] = $variationId;
             }
         }
@@ -191,7 +193,8 @@ class ProductController extends Controller
         $basePrice = $priceWithTax;
         $discountedBasePrice = $discountedPriceWithTax;
 
-        $selectedVariantValueIds = $uniqueFilteredVariations->pluck('id')->toArray();
+        $selectedVariantValueIds = $uniqueFilteredVariationValues->toArray();
+       
         $tiers = $product->quantityDiscount->tiers ?? collect();
         
         // Preparazione dei dati da passare alla vista

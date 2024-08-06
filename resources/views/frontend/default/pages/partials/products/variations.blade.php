@@ -66,6 +66,7 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
         $message = $motivationalMessages[$value['id']] ?? '';
         
     @endphp
+    
     <div class="swiper-slide">
         <div class="gallery-item-block @if (in_array($value['id'], $variation_value_ids ?? []) || ($key === 0 && empty($variation_value_ids))) selected @endif @if ($isDisabled) disabled @endif" data-value-id="{{ $value['id'] }}" @if ($isDisabled && $message) data-bs-toggle="tooltip" title="{{ $message }}" @endif>
             <div class="picture-box" data-test="select-Substrate-{{ $value['name'] }}">
@@ -97,7 +98,11 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
     <div class="swiper-button-prev"></div>
 </div>
 
-
+<!-- Div per mostrare l'info_description -->
+<div id="info-description-modal" >
+    <button type="button" id="close-info-description" ><i class="fa-regular fa-circle-xmark"></i></button>
+    <div id="info-description-content"></div>
+</div>
 
 
 <div class="grid-container d-none" data-variation-id="{{ $variation['id'] }}">
