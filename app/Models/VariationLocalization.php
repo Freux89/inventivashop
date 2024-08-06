@@ -11,6 +11,7 @@ class VariationLocalization extends Model
     
     protected $fillable = [
         'name',
+        'alias',
         'variation_id',
         'lang_key',
     ];

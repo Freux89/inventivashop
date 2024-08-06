@@ -46,29 +46,32 @@ class VariationsController extends Controller
 
     # variation store
     public function store(Request $request)
-    {
-        $data = $request->validate([
-            'name' => 'required|string',
-            'display_type' => 'required|string',  // Add this line
-        ]);
+{
+    $data = $request->validate([
+        'name' => 'required|string',
+        'alias' => 'nullable|string', // Aggiungi la validazione per alias
+        'display_type' => 'required|string',
+    ]);
 
-        $variation = new Variation;
-        $variation->name = $request->name;
-        $variation->display_type = $data['display_type']; 
-        $highestPosition = Variation::max('position');
-        $variation->position = $highestPosition + 1;
+    $variation = new Variation;
+    $variation->name = $request->name;
+    $variation->alias = $request->alias; // Aggiungi alias alla nuova variante
+    $variation->display_type = $data['display_type']; 
+    $highestPosition = Variation::max('position');
+    $variation->position = $highestPosition + 1;
 
+    $variation->save();
 
-        $variation->save();
+    $variationLocalization = VariationLocalization::firstOrNew(['lang_key' => env('DEFAULT_LANGUAGE'), 'variation_id' => $variation->id]);
+    $variationLocalization->name = $variation->name;
+    $variationLocalization->alias = $request->alias; // Aggiungi alias alla localizzazione della variante
 
-        $variationLocalization = VariationLocalization::firstOrNew(['lang_key' => env('DEFAULT_LANGUAGE'), 'variation_id' => $variation->id]);
-        $variationLocalization->name = $variation->name;
+    $variationLocalization->save();
 
-        $variationLocalization->save();
+    flash(localize('Variation has been inserted successfully'))->success();
+    return redirect()->route('admin.variations.index');
+}
 
-        flash(localize('Variation has been inserted successfully'))->success();
-        return redirect()->route('admin.variations.index');
-    }
 
     # edit variation
     public function edit(Request $request, $id)
@@ -85,32 +88,35 @@ class VariationsController extends Controller
 
     # update variation
     public function update(Request $request)
-    {
-        
-        $data = $request->validate([
-            'id' => 'required|integer',
-            'name' => 'required|string',
-            'lang_key' => 'required|string',
-            'display_type' => 'required|string',  
-            'material_feature' => 'sometimes|boolean'
-        ]);
+{
+    $data = $request->validate([
+        'id' => 'required|integer',
+        'name' => 'required|string',
+        'alias' => 'nullable|string', // Aggiungi la validazione per alias
+        'lang_key' => 'required|string',
+        'display_type' => 'required|string',  
+        'material_feature' => 'sometimes|boolean'
+    ]);
 
-        $variation = Variation::findOrFail($request->id);
+    $variation = Variation::findOrFail($request->id);
 
-        if ($request->lang_key == env("DEFAULT_LANGUAGE")) {
-            $variation->name = $request->name;
-        }
-
-        $variationLocalization = VariationLocalization::firstOrNew(['lang_key' => $request->lang_key, 'variation_id' => $variation->id]);
-        $variationLocalization->name = $request->name;
-        $variation->display_type = $data['display_type']; 
-        $variation->material_feature = $request->has('material_feature') ? 1 : 0;
-        $variation->save();
-        $variationLocalization->save();
-
-        flash(localize('Variation has been updated successfully'))->success();
-        return back();
+    if ($request->lang_key == env("DEFAULT_LANGUAGE")) {
+        $variation->name = $request->name;
+        $variation->alias = $request->alias; // Aggiungi alias alla variante principale
     }
+
+    $variationLocalization = VariationLocalization::firstOrNew(['lang_key' => $request->lang_key, 'variation_id' => $variation->id]);
+    $variationLocalization->name = $request->name;
+    $variationLocalization->alias = $request->alias; // Aggiungi alias alla localizzazione della variante
+
+    $variation->display_type = $data['display_type']; 
+    $variation->material_feature = $request->has('material_feature') ? 1 : 0;
+    $variation->save();
+    $variationLocalization->save();
+
+    flash(localize('Variation has been updated successfully'))->success();
+    return back();
+}
 
     # update status 
     public function updateStatus(Request $request)

@@ -148,20 +148,25 @@
                     </div>
 
                     @can('add_variations')
-                        <form action="{{ route('admin.variations.store') }}" class="pb-650" method="POST">
-                            @csrf
-                            <!--variation info start-->
-                            <div class="card mb-4" id="section-2">
-                                <div class="card-body">
-                                    <h5 class="mb-4">{{ localize('Add New Variation') }}</h5>
+                    <form action="{{ route('admin.variations.store') }}" class="pb-650" method="POST">
+    @csrf
+    <!-- variation info start -->
+    <div class="card mb-4" id="section-2">
+        <div class="card-body">
+            <h5 class="mb-4">{{ localize('Add New Variation') }}</h5>
 
-                                    <div class="mb-4">
-                                        <label for="name" class="form-label">{{ localize('Variation Name') }}</label>
-                                        <input class="form-control" type="text" id="name" name="name"
-                                            placeholder="{{ localize('Type variation name') }}" required>
-                                    </div>
+            <div class="mb-4">
+                <label for="name" class="form-label">{{ localize('Variation Name') }}</label>
+                <input class="form-control" type="text" id="name" name="name" placeholder="{{ localize('Type variation name') }}" required>
+            </div>
 
-                                    <div class="mb-4">
+            <div class="mb-4">
+                <label for="alias" class="form-label">{{ localize('Alias') }}</label>
+                <input class="form-control" type="text" id="alias" name="alias" placeholder="{{ localize('Type alias') }}">
+                <div><small class="form-text text-muted">{{ localize('Questo alias sarà visibile solo all\'interno della pagina prodotto e se non viene inserito verrà visualizzato il nome della variante.') }}</small></div>
+            </div>
+
+            <div class="mb-4">
                 <label for="display_type" class="form-label">{{ localize('Display Type') }}</label>
                 <select class="form-control" id="display_type" name="display_type" required>
                     <option value="select">{{ localize('Campo Select') }}</option>
@@ -169,20 +174,21 @@
                     <option value="color">{{ localize('Color') }}</option>
                 </select>
             </div>
-                                </div>
-                            </div>
-                            <!-- variation info end-->
+        </div>
+    </div>
+    <!-- variation info end -->
 
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="mb-4">
-                                        <button class="btn btn-primary" type="submit">
-                                            <i data-feather="save" class="me-1"></i> {{ localize('Save Variation') }}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-4">
+                <button class="btn btn-primary" type="submit">
+                    <i data-feather="save" class="me-1"></i> {{ localize('Save Variation') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
                     @endcan
                 </div>
 

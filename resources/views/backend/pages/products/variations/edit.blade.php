@@ -56,7 +56,11 @@
                                 <label for="name" class="form-label">{{ localize('Variation Name') }}</label>
                                 <input type="text" name="name" value="{{ $variation->collectLocalization('name', $lang_key) }}" id="name" placeholder="{{ localize('Variation name') }}" class="form-control" required>
                             </div>
-
+                            <div class="mb-4">
+        <label for="alias" class="form-label">{{ localize('Alias') }}</label>
+        <input type="text" name="alias" value="{{ $variation->collectLocalization('alias', $lang_key) }}" id="alias" placeholder="{{ localize('Alias') }}" class="form-control">
+        <div><small class="form-text text-muted">{{ localize('Questo alias sarà visibile solo all\'interno della pagina prodotto e se non viene inserito verrà visualizzato il nome della variante.') }}</small></div>
+    </div>
                             <div class="mb-4">
                                 <label for="display_type" class="form-label">{{ localize('Display Type') }}</label>
                                 <select class="form-control" id="display_type" name="display_type" required>
