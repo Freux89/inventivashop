@@ -28891,6 +28891,8 @@ button.accordion-button {
     align-items: center;
     border: 3px solid transparent;
     overflow: hidden;
+    box-shadow: 0 0 0 1px #e0e0e0;
+    margin-top: 1px;
 }
 .picture-box .inner{
     width: 100%;
@@ -28961,8 +28963,14 @@ button.accordion-button {
     text-align: left;
     width: 100%;
     color:var(--in-primary-3);
-    font-size: 17px;
+    font-size: 16px;
     font-weight: bold;
+    padding-right: 50px;
+}
+@media (max-width: 980px) {
+    .variant-label {
+        font-size: 14px;
+    }
 }
 .info-icon {
     display: block;
