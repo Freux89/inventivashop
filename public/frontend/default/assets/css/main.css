@@ -28893,6 +28893,7 @@ button.accordion-button {
     overflow: hidden;
     box-shadow: 0 0 0 1px #e0e0e0;
     margin-top: 1px;
+    margin-left: 1px;
 }
 .picture-box .inner{
     width: 100%;
