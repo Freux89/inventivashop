@@ -89,6 +89,7 @@ class ConditionGroupController extends Controller
                             'condition_id' => $condition->id,
                             'action_type' => 'Spegni',
                             'variant_id' => $actionData['shutdownVariant'],
+                            'motivational_message' => $actionData['motivational_message'],
                             'apply_to_all' => $applyToAll,
                         ]);
                         $action->save();
@@ -160,11 +161,12 @@ class ConditionGroupController extends Controller
     
                     foreach ($conditionData['action'] ?? [] as $actionData) {
                         $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
-                      
+                     
                         $action = new Action([
                             'condition_id' => $condition->id,
                             'action_type' => 'Spegni',
                             'variant_id' => $actionData['shutdownVariant'],
+                            'motivational_message' => $actionData['motivational_message'],
                             'apply_to_all' => $applyToAll,
                         ]);
                         $action->save();

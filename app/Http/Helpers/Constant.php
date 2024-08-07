@@ -782,12 +782,15 @@ if(!function_exists('prepareConditionsForVariations')){
                         foreach ($action->productVariations as $affectedVariation) {
                             $affectedValueId = $affectedVariation->variant_value_id;
                             Log::info('Azione specifica', ['affectedVariation_id' => $affectedVariation->id, 'affectedValueId' => $affectedValueId]);
-    
+                        
                             if (!in_array($affectedValueId, $valuesToDisable)) {
                                 $valuesToDisable[] = $affectedValueId;
                                 $newProductVariationIdsToCheck[] = $affectedVariation->id; // Aggiungi i nuovi ID delle varianti prodotto da controllare
                             }
-                            if ($condition->motivational_message) {
+                        
+                            if (!empty($action->motivational_message)) {
+                                $motivationalMessages[$affectedValueId] = $action->motivational_message;
+                            } elseif (!empty($condition->motivational_message)) {
                                 $motivationalMessages[$affectedValueId] = $condition->motivational_message;
                             }
                         }

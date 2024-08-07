@@ -25,4 +25,10 @@
                     'applyToAll' => $applyToAll
         ])
     @endif
+    <div class="row mt-4">
+                <div class="col-12">
+                    <label for="motivational_message">Messaggio motivazionale:</label>
+                    <textarea class="form-control" name="condition[{{ $conditionIndex }}][action][{{ $actionIndex }}][motivational_message]" rows="3" placeholder="Se non specificato viene inserito quello applicato alla condizione">@if(isset($action)){{$action->motivational_message }}@endif</textarea>
+                </div>
+            </div>
 </div>
