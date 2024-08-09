@@ -135,8 +135,9 @@ class ProductController extends Controller
      
 
         $variations = generateVariationOptions($product->ordered_variation_combinations);
+        
         $productVariations = $product->variations;
-
+       
         $productVariationIds = [];
         $processedVariationIds = [];
 

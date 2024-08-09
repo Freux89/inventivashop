@@ -98,8 +98,8 @@
 @include('backend.inc.product-scripts')
 
 <script type="text/javascript">
-    var variantsUrl = "{{ route('admin.product.variations') }}";
-    var variantValuesUrl = "{{ route('admin.product.variant.values') }}";
+    var variantsUrl = "{{ route('admin.conditions.variations') }}";
+    var variantValuesUrl = "{{ route('admin.conditions.variant.values') }}";
     var selectedVariantValues = [];
     var selectedActionVariants = {};
 </script>

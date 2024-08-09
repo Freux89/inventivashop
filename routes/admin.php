@@ -226,8 +226,8 @@ Route::group(
             Route::get('/conditions/delete/{id}', [ConditionGroupController::class, 'delete'])->name('admin.conditions.delete');
             Route::get('/conditions/delete/{id}', [ConditionGroupController::class, 'delete'])->name('admin.conditions.delete');
 
-            Route::get('/product/variants', [ConditionGroupController::class, 'getProductVariations'])->name('admin.product.variations');
-            Route::get('/product/variant-values', [ConditionGroupController::class, 'getVariantValues'])->name('admin.product.variant.values');
+            Route::get('/condition/variants', [ConditionGroupController::class, 'getVariations'])->name('admin.conditions.variations');
+            Route::get('/condition/variant-values', [ConditionGroupController::class, 'getVariantValues'])->name('admin.conditions.variant.values');
 
             
             # brands

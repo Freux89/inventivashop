@@ -5,12 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 class Action extends Model
 {
-    protected $fillable = ['condition_id', 'product_variation_id','action_type','variant_id','apply_to_all','motivational_message'];
+    use HasFactory;
 
-    public function productVariations()
+    protected $fillable = ['condition_id', 'variation_id', 'action_type', 'variation_value_id', 'apply_to_all', 'motivational_message'];
+
+    public function variationValues()
     {
-        return $this->belongsToMany(ProductVariation::class, 'action_product_variations', 'action_id', 'product_variation_id');
+        return $this->belongsToMany(VariationValue::class, 'action_variation_values', 'action_id', 'variation_value_id');
     }
 }
+

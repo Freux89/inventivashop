@@ -13,11 +13,14 @@ class CreateActionVariationValuesTable extends Migration
      */
     public function up()
     {
-        Schema::create('action_product_variations', function (Blueprint $table) {
+        Schema::create('action_variation_values', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('action_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_variation_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('action_id');
+            $table->unsignedBigInteger('variation_value_id');
             $table->timestamps();
+
+            $table->foreign('action_id')->references('id')->on('actions')->onDelete('cascade');
+            $table->foreign('variation_value_id')->references('id')->on('variation_values')->onDelete('cascade');
         });
     }
 
@@ -28,6 +31,6 @@ class CreateActionVariationValuesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('action_product_variations');
+        Schema::dropIfExists('action_variation_values');
     }
 }

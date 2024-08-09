@@ -59,20 +59,7 @@ class ProductVariation extends Model
         return null;
     }
 
-    protected static function booted()
-    {
-        static::deleted(function ($productVariation) {
-            if ($productVariation->isForceDeleting()) {
-                // Gestisci la cancellazione forzata se necessario
-            } else {
-                // Qui gestisci il soft delete
-                ActionProductVariation::where('product_variation_id', $productVariation->id)
-                    ->delete(); // O softDelete(), a seconda della tua logica
-                Condition::where('product_variation_id', $productVariation->id)
-                    ->delete();
-            }
-        });
-    }
+   
 
     public function getVariantIdAttribute()
     {

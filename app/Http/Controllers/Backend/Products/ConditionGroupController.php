@@ -10,7 +10,7 @@ use App\Models\VariationValue;
 use App\Models\ConditionGroup;
 use App\Models\Condition;
 use App\Models\Action;
-use App\Models\ActionProductVariation;
+use App\Models\ActionVariationValue;
 use Illuminate\Support\Facades\DB;
 
 class ConditionGroupController extends Controller
@@ -52,72 +52,67 @@ class ConditionGroupController extends Controller
 
 
     public function store(Request $request)
-    {
+{
+    $request->validate([
+        'products' => 'required|exists:products,id',
+        // Aggiungi qui altre regole di validazione secondo necessità
+    ]);
 
-        $request->validate([
-            'products' => 'required|exists:products,id',
-            // 'condition.*.variant' => 'required|exists:variations,id',
-            // 'condition.*.variantValue' => 'required|exists:variation_values,id',
-            // Aggiungi qui altre regole di validazione secondo necessità
+    DB::beginTransaction();
+
+    try {
+        $conditionGroup = new ConditionGroup([
+            'product_id' => $request->input('products'),
         ]);
 
-        DB::beginTransaction();
+        $conditionGroup->save();
 
-        try {
+        foreach ($request->input('condition', []) as $conditionData) {
+            if (!empty($conditionData['variantValue'])) { // Controlla che la condizione abbia un valore variante
+                $condition = new Condition([
+                    'condition_group_id' => $conditionGroup->id,
+                    'variation_value_id' => $conditionData['variantValue'], // Usa il campo variation_value_id
+                    'motivational_message' => $conditionData['motivational_message'] ?? null, // Aggiungi il campo motivational_message
+                ]);
+                $condition->save();
 
-            $conditionGroup = new ConditionGroup([
-                'product_id' => $request->input('products'),
-            ]);
+                foreach ($conditionData['action'] ?? [] as $actionData) {
+                    $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
 
-            $conditionGroup->save();
-
-            foreach ($request->input('condition', []) as $conditionData) {
-                if (!empty($conditionData['variantValue'])) { // Controlla che la condizione abbia un valore variante
-                    $condition = new Condition([
-                        'condition_group_id' => $conditionGroup->id,
-                        'product_variation_id' => $conditionData['variantValue'], // Assumi che questo sia il product_variation_id corretto
-                        'motivational_message' => $conditionData['motivational_message'] ?? null, // Aggiungi il campo motivational_message
+                    $action = new Action([
+                        'condition_id' => $condition->id,
+                        'action_type' => 'Spegni',
+                        'variation_id' => $actionData['shutdownVariant'], // Usa il campo variation_id
+                        'motivational_message' => $actionData['motivational_message'],
+                        'apply_to_all' => $applyToAll,
                     ]);
-                    $condition->save();
+                    $action->save();
 
-                    
-
-                    foreach ($conditionData['action'] ?? [] as $actionData) {
-                        $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
-                      
-                        $action = new Action([
-                            'condition_id' => $condition->id,
-                            'action_type' => 'Spegni',
-                            'variant_id' => $actionData['shutdownVariant'],
-                            'motivational_message' => $actionData['motivational_message'],
-                            'apply_to_all' => $applyToAll,
-                        ]);
-                        $action->save();
-                    
-                        if (!$applyToAll) {
-                            foreach ($actionData['shutdownVariantValue'] as $variantValueId) {
-                                $actionProductVariation = new ActionProductVariation([
-                                    'action_id' => $action->id,
-                                    'product_variation_id' => $variantValueId,
-                                ]);
-                                $actionProductVariation->save();
-                            }
+                    if (!$applyToAll) {
+                        foreach ($actionData['shutdownVariantValue'] as $variantValueId) {
+                            $actionVariationValue = new ActionVariationValue([
+                                'action_id' => $action->id,
+                                'variation_value_id' => $variantValueId, // Usa il campo variation_value_id
+                            ]);
+                            $actionVariationValue->save();
                         }
                     }
                 }
             }
-
-            DB::commit();
-            flash(localize('Condizioni aggiunte con successo.'))->success();
-        
-            return redirect()->route('admin.conditions.index');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            flash(localize('Errore durante il salvataggio: ' . $e->getMessage()))->error();
-        
-            return redirect()->route('admin.conditions.index');
         }
+
+        DB::commit();
+        flash(localize('Condizioni aggiunte con successo.'))->success();
+
+        return redirect()->route('admin.conditions.index');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        flash(localize('Errore durante il salvataggio: ' . $e->getMessage()))->error();
+
+        return redirect()->route('admin.conditions.index');
     }
+}
+
 
     public function edit($id)
     {
@@ -130,98 +125,93 @@ class ConditionGroupController extends Controller
 
 
     public function update(Request $request, $conditionGroupId)
-    {
-        $request->validate([
-            'products' => 'required|exists:products,id',
-            // Includi qui le stesse regole di validazione o adattale se necessario per l'update
-        ]);
-    
-        DB::beginTransaction();
-    
-        try {
-            $conditionGroup = ConditionGroup::findOrFail($conditionGroupId);
-            $conditionGroup->product_id = $request->input('products');
-            $conditionGroup->save();
-    
-            // Qui puoi decidere di eliminare tutte le condizioni e azioni esistenti e ricrearle
-            // oppure aggiornarle individualmente. Per semplicità, qui mostro un approccio di eliminazione e ricreazione.
-            
-            // Rimuovi le condizioni (e azioni correlate) esistenti
-            $conditionGroup->conditions()->delete(); // Assicurati che il model Condition definisca correttamente le relazioni per permettere ciò
-    
-            // Ricrea le condizioni e le azioni come nel metodo store
-            foreach ($request->input('condition', []) as $conditionData) {
-                if (!empty($conditionData['variantValue'])) {
-                    $condition = new Condition([
-                        'condition_group_id' => $conditionGroup->id,
-                        'product_variation_id' => $conditionData['variantValue'],
-                        'motivational_message' => $conditionData['motivational_message'] ?? null, // Aggiungi il campo motivational_message
+{
+    $request->validate([
+        'products' => 'required|exists:products,id',
+        // Includi qui le stesse regole di validazione o adattale se necessario per l'update
+    ]);
+
+    DB::beginTransaction();
+
+    try {
+        $conditionGroup = ConditionGroup::findOrFail($conditionGroupId);
+        $conditionGroup->product_id = $request->input('products');
+        $conditionGroup->save();
+
+        // Rimuovi le condizioni (e azioni correlate) esistenti
+        $conditionGroup->conditions()->delete(); // Assicurati che il model Condition definisca correttamente le relazioni per permettere ciò
+
+        // Ricrea le condizioni e le azioni come nel metodo store
+        foreach ($request->input('condition', []) as $conditionData) {
+            if (!empty($conditionData['variantValue'])) {
+                $condition = new Condition([
+                    'condition_group_id' => $conditionGroup->id,
+                    'variation_value_id' => $conditionData['variantValue'],
+                    'motivational_message' => $conditionData['motivational_message'] ?? null, // Aggiungi il campo motivational_message
+                ]);
+                $condition->save();
+
+                foreach ($conditionData['action'] ?? [] as $actionData) {
+                    $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
+
+                    $action = new Action([
+                        'condition_id' => $condition->id,
+                        'action_type' => 'Spegni',
+                        'variation_id' => $actionData['shutdownVariant'],
+                        'motivational_message' => $actionData['motivational_message'],
+                        'apply_to_all' => $applyToAll,
                     ]);
-                    $condition->save();
-    
-                    foreach ($conditionData['action'] ?? [] as $actionData) {
-                        $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
-                     
-                        $action = new Action([
-                            'condition_id' => $condition->id,
-                            'action_type' => 'Spegni',
-                            'variant_id' => $actionData['shutdownVariant'],
-                            'motivational_message' => $actionData['motivational_message'],
-                            'apply_to_all' => $applyToAll,
-                        ]);
-                        $action->save();
-                    
-                        if (!$applyToAll) {
-                            foreach ($actionData['shutdownVariantValue'] as $variantValueId) {
-                                $actionProductVariation = new ActionProductVariation([
-                                    'action_id' => $action->id,
-                                    'product_variation_id' => $variantValueId,
-                                ]);
-                                $actionProductVariation->save();
-                            }
+                    $action->save();
+
+                    if (!$applyToAll) {
+                        foreach ($actionData['shutdownVariantValue'] as $variantValueId) {
+                            $actionVariationValue = new ActionVariationValue([
+                                'action_id' => $action->id,
+                                'variation_value_id' => $variantValueId,
+                            ]);
+                            $actionVariationValue->save();
                         }
                     }
-                    
                 }
             }
-    
-            DB::commit();
-
-            flash(localize('Condizioni aggiornate con successo.'))->success();
-        
-            return redirect()->route('admin.conditions.index');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            flash(localize('Errore durante l\'aggiornamento: ' . $e->getMessage()))->error();
-            return redirect()->route('admin.conditions.index');
         }
+
+        DB::commit();
+
+        flash(localize('Condizioni aggiornate con successo.'))->success();
+
+        return redirect()->route('admin.conditions.index');
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        flash(localize('Errore durante l\'aggiornamento: ' . $e->getMessage()))->error();
+        return redirect()->route('admin.conditions.index');
     }
-
-    public function getProductVariations(Request $request)
-    {
-        $productId = $request->query('productId');
-        $excludeVariantId = $request->query('excludeVariantId'); // Nuovo parametro per escludere una variante
-        $context = $request->input('context', 'condition');
-        $viewName = $context === 'action' ? 'backend.pages.partials.conditions.actionVariantSelect' : 'backend.pages.partials.conditions.conditionVariantSelect';
-        $conditionIndex = $request->query('conditionIndex', 0);
-        $actionIndex = $request->query('actionIndex', 0);
-        
-
-        $variations = $this->getVariationsArray($productId, $excludeVariantId);
+}
 
 
-        // Usa la vista Blade per generare l'HTML
-        $html = view($viewName, [
-            'variations' => $variations,
-            'conditionIndex' => $conditionIndex,
-            'actionIndex' => $actionIndex,
-            'selectedVariantId' => null
-        ])->render();
+    public function getVariations(Request $request)
+{
+    $excludeVariantId = $request->query('excludeVariantId'); // Nuovo parametro per escludere una variante
+    $context = $request->input('context', 'condition');
+    $viewName = $context === 'action' ? 'backend.pages.partials.conditions.actionVariantSelect' : 'backend.pages.partials.conditions.conditionVariantSelect';
+    $conditionIndex = $request->query('conditionIndex', 0);
+    $actionIndex = $request->query('actionIndex', 0);
 
-        // Restituisci l'HTML generato come risposta
-        return response()->json(['html' => $html]);
-    }
+    // Recupera tutte le varianti disponibili, escludendo quella specificata
+    $variations = $this->getAllVariationsArray($excludeVariantId);
+
+    // Usa la vista Blade per generare l'HTML
+    $html = view($viewName, [
+        'variations' => $variations,
+        'conditionIndex' => $conditionIndex,
+        'actionIndex' => $actionIndex,
+        'selectedVariantId' => null
+    ])->render();
+
+    // Restituisci l'HTML generato come risposta
+    return response()->json(['html' => $html]);
+}
 
     public function getVariationsArray($productId, $excludeVariantId = null)
     {
@@ -242,62 +232,70 @@ class ConditionGroupController extends Controller
     }
 
     public function getVariantValues(Request $request)
-    {
-        $productId = $request->input('productId');
-        $variantId = $request->input('variantId');
-        $context = $request->input('context', 'condition');
-        $conditionIndex = $request->input('conditionIndex');
-        $actionIndex = $request->query('actionIndex', 0);
-        $viewName = $context === 'action' ? 'backend.pages.partials.conditions.actionVariantValueSelect' : 'backend.pages.partials.conditions.conditionVariantValueSelect';
-        
+{
+    $variantId = $request->input('variantId');
+    $context = $request->input('context', 'condition');
+    $conditionIndex = $request->input('conditionIndex');
+    $actionIndex = $request->query('actionIndex', 0);
+    $viewName = $context === 'action' ? 'backend.pages.partials.conditions.actionVariantValueSelect' : 'backend.pages.partials.conditions.conditionVariantValueSelect';
 
-        // Recupera tutte le variazioni del prodotto che corrispondono all'ID della variante specificata
-        $variantValues = $this->getVariantValuesArray($productId,$variantId);
+    // Recupera tutti i valori delle varianti che corrispondono all'ID della variante specificata
+    $variantValues = $this->getVariantValuesArray($variantId);
 
+    $html = view($viewName, [
+        'values' => $variantValues,
+        'conditionIndex' => $conditionIndex,
+        'actionIndex' => $actionIndex,
+        'selectedValueId' => null
+    ])->render();
 
-
-        $html = view($viewName, [
-            'values' => $variantValues,
-            'conditionIndex' => $conditionIndex,
-            'actionIndex' => $actionIndex,
-            'selectedValueId' => null
-        ])->render();
-
-        // Restituisci l'HTML generato come risposta
-        return response()->json(['html' => $html]);
-    }
+    // Restituisci l'HTML generato come risposta
+    return response()->json(['html' => $html]);
+}
 
 
 
-    public function getVariantValuesArray($productId, $variantId)
-    {
-        $product = Product::findOrFail($productId);
+public function getVariantValuesArray($variantId)
+{
+    // Recupera tutte le variazioni che corrispondono all'ID della variante specificata
+    $variantValues = VariationValue::where('variation_id', $variantId)->get()->map(function ($variationValue) {
+        return [
+            'variation_value_id' => $variationValue->id,
+            'value_name' => $variationValue->name,
+        ];
+    });
 
-        $variantValues = $product->variations()
-            ->whereRaw("FIND_IN_SET(?, SUBSTRING_INDEX(variation_key, ':', 1))", [$variantId])
-            ->get()
-            ->map(function ($variation) {
-                $keys = explode(':', rtrim($variation->variation_key, '/'));
-                if (count($keys) > 1) {
-                    $valueId = $keys[1];
-                    $valueName = VariationValue::find($valueId)->name ?? 'Value not found';
-                    return [
-                        'product_variation_id' => $variation->id,
-                        'value_name' => $valueName,
-                    ];
-                }
-            })
-            ->filter()
-            ->unique('product_variation_id')
-            ->values();
-
-        return $variantValues;
-    }
+    return $variantValues;
+}
     public function delete($id)
     {
         $ConditionGroup = ConditionGroup::findOrFail($id);
         $ConditionGroup->delete();
         flash(localize('Condizioni Prodotto cancellate con successo'))->success();
         return back();
+    }
+
+
+    public function getAllVariationsArray($excludeVariantId = null)
+    {
+        // Recupera tutte le varianti
+        $variations = Variation::all();
+    
+        // Trasforma le varianti in un array utilizzabile nel Blade
+        $variationsArray = $variations->map(function ($variation) {
+            return [
+                'id' => $variation->id,
+                'variation_name' => $variation->name,
+            ];
+        });
+    
+        // Escludi la variante se necessario
+        if ($excludeVariantId) {
+            $variationsArray = $variationsArray->reject(function ($variation) use ($excludeVariantId) {
+                return $variation['id'] == $excludeVariantId;
+            })->values();
+        }
+    
+        return $variationsArray;
     }
 }

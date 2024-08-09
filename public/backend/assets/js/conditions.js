@@ -131,63 +131,60 @@ $(document).ready(function () {
   $("#addConditionBtn").click(function () {
     var productId = $('input[type="radio"][name="products"]:checked').val();
     if (!productId) {
-      alert("Seleziona un prodotto prima di aggiungere una condizione.");
-      return;
+        alert("Seleziona un prodotto prima di aggiungere una condizione.");
+        return;
     }
     $.ajax({
-      url: variantsUrl,
-      type: "GET",
-      data: {
-        productId: productId,
-        conditionIndex: generateUniqueConditionIndex(),
-      },
-      success: function (response) {
-        $("#conditionFields .collapse").collapse("hide");
-        $("#conditionFields").append(response.html).show();
-        $("#conditionFields .condition-div:last .collapse").collapse("show");
-      },
-      error: function (error) {
-        console.log(error);
-        alert("Si è verificato un errore durante il recupero delle varianti.");
-      },
+        url: variantsUrl,
+        type: "GET",
+        data: {
+            conditionIndex: generateUniqueConditionIndex()
+        },
+        success: function (response) {
+            $("#conditionFields .collapse").collapse("hide");
+            $("#conditionFields").append(response.html).show();
+            $("#conditionFields .condition-div:last .collapse").collapse("show");
+        },
+        error: function (error) {
+            console.log(error);
+            alert("Si è verificato un errore durante il recupero delle varianti.");
+        },
     });
-  });
+});
 
-  $("#conditionFields").on("change", ".variant-select", function () {
-    var selectedVariantId = $(this).val();
+$("#conditionFields").on("change", ".variant-select", function () {
+  var selectedVariantId = $(this).val();
 
-    var productId = $('input[type="radio"][name="products"]:checked').val();
-    var currentConditionDiv = $(this).closest(".condition-div");
-    if (!selectedVariantId) {
+  var currentConditionDiv = $(this).closest(".condition-div");
+  if (!selectedVariantId) {
       currentConditionDiv.find(".variant-value-select, .value-label").remove();
       return;
-    }
-    currentConditionDiv.find(".condition-action").empty();
-    var parentSelect = $(this).parent();
-    var conditionIndex = currentConditionDiv.data("condition-index");
+  }
+  currentConditionDiv.find(".condition-action").empty();
+  var parentSelect = $(this).parent();
+  var conditionIndex = currentConditionDiv.data("condition-index");
 
-    $.ajax({
+  $.ajax({
       url: variantValuesUrl,
       type: "GET",
       data: {
-        productId: productId,
-        variantId: selectedVariantId,
-        conditionIndex: conditionIndex,
+          variantId: selectedVariantId,
+          conditionIndex: conditionIndex,
       },
       success: function (response) {
-        var conditionDiv = parentSelect.closest(".condition-div");
-        conditionDiv.find(".variant-value-select, .value-label").remove();
-        conditionDiv.find(".btn-add-shutdown").hide();
-        parentSelect.after(response.html);
+          var conditionDiv = parentSelect.closest(".condition-div");
+          conditionDiv.find(".variant-value-select, .value-label").remove();
+          conditionDiv.find(".btn-add-shutdown").hide();
+          parentSelect.after(response.html);
       },
       error: function (error) {
-        console.log(error);
-        alert(
-          "Si è verificato un errore durante il recupero dei valori delle varianti."
-        );
+          console.log(error);
+          alert(
+              "Si è verificato un errore durante il recupero dei valori delle varianti."
+          );
       },
-    });
   });
+});
 
   $("#conditionFields").on("change", ".variant-value-select", function () {
     var currentConditionDefinition = $(this).closest(".condition-div");

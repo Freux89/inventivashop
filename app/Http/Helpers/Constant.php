@@ -739,25 +739,36 @@ if(!function_exists('prepareConditionsForVariations')){
     function prepareConditionsForVariations($product, $initialProductVariationIds) {
         $valuesToDisable = [];
         $motivationalMessages = [];
-        $checkedProductVariationIds = [];
+        $checkedVariationValueIds = [];
     
-        // Inizia con gli ID delle varianti prodotto ricevuti
-        $productVariationIdsToCheck = $initialProductVariationIds;
+        // Ottieni gli ID dei valori delle varianti dall'ID delle varianti prodotto iniziali
+        $initialVariationValueIds = collect($initialProductVariationIds)->map(function ($productVariationId) use ($product) {
+            $variationKey = $product->ordered_variations->firstWhere('id', $productVariationId)->variation_key;
+            return explode(':', explode('/', $variationKey)[0])[1];
+        })->toArray();
+    
+        // Inizia con gli ID dei valori variante ricevuti
+        $variationValueIdsToCheck = $initialVariationValueIds;
     
         do {
-            Log::info('Inizio iterazione', ['productVariationIdsToCheck' => $productVariationIdsToCheck]);
+            Log::info('Inizio iterazione', ['variationValueIdsToCheck' => $variationValueIdsToCheck]);
     
-            // Carica i gruppi di condizioni con le relative condizioni, azioni e varianti prodotto influenzate
-            $filteredConditions = Condition::whereIn('product_variation_id', $productVariationIdsToCheck)
-                ->with('actions.productVariations')
-                ->get();
+            // Usa le relazioni per ottenere le condizioni filtrate
+            $filteredConditions = $product->conditionGroups()
+                ->with(['conditions' => function($query) use ($variationValueIdsToCheck) {
+                    $query->whereIn('variation_value_id', $variationValueIdsToCheck)
+                          ->with('actions.variationValues');
+                }])
+                ->get()
+                ->flatMap(function($group) {
+                    return $group->conditions;
+                });
     
-            // Ripristina l'elenco degli ID delle varianti prodotto da controllare nella prossima iterazione
-            $newProductVariationIdsToCheck = [];
+            // Ripristina l'elenco degli ID dei valori variante da controllare nella prossima iterazione
+            $newVariationValueIdsToCheck = [];
     
             foreach ($filteredConditions as $condition) {
-                $variationKey = $product->ordered_variations->firstWhere('id', $condition->product_variation_id)->variation_key;
-                $variationValueId = explode(':', explode('/', $variationKey)[0])[1];
+                $variationValueId = $condition->variation_value_id;
     
                 // Salta questa condizione se la variante corrispondente è stata disattivata
                 if (in_array($variationValueId, $valuesToDisable)) {
@@ -769,9 +780,9 @@ if(!function_exists('prepareConditionsForVariations')){
     
                 foreach ($condition->actions as $action) {
                     if ($action->apply_to_all) {
-                        // Se l'azione si applica a tutti i valori, aggiungi l'ID della variante all'array $variantsToDisable
-                        $variantValuesToDisable = VariationValue::where('variation_id', $action->variant_id)->pluck('id')->toArray();
-                        Log::info('Azione apply_to_all', ['variant_id' => $action->variant_id, 'variantValuesToDisable' => $variantValuesToDisable]);
+                        // Se l'azione si applica a tutti i valori, aggiungi l'ID della variante all'array $valuesToDisable
+                        $variantValuesToDisable = VariationValue::where('variation_id', $action->variation_id)->pluck('id')->toArray();
+                        Log::info('Azione apply_to_all', ['variation_id' => $action->variation_id, 'variantValuesToDisable' => $variantValuesToDisable]);
     
                         foreach ($variantValuesToDisable as $valueId) {
                             if (!in_array($valueId, $valuesToDisable)) {
@@ -779,15 +790,15 @@ if(!function_exists('prepareConditionsForVariations')){
                             }
                         }
                     } else {
-                        foreach ($action->productVariations as $affectedVariation) {
-                            $affectedValueId = $affectedVariation->variant_value_id;
-                            Log::info('Azione specifica', ['affectedVariation_id' => $affectedVariation->id, 'affectedValueId' => $affectedValueId]);
-                        
+                        foreach ($action->variationValues as $affectedVariationValue) {
+                            $affectedValueId = $affectedVariationValue->id;
+                            Log::info('Azione specifica', ['affectedVariationValue_id' => $affectedVariationValue->id, 'affectedValueId' => $affectedValueId]);
+    
                             if (!in_array($affectedValueId, $valuesToDisable)) {
                                 $valuesToDisable[] = $affectedValueId;
-                                $newProductVariationIdsToCheck[] = $affectedVariation->id; // Aggiungi i nuovi ID delle varianti prodotto da controllare
+                                $newVariationValueIdsToCheck[] = $affectedVariationValue->id; // Aggiungi i nuovi ID dei valori variante da controllare
                             }
-                        
+    
                             if (!empty($action->motivational_message)) {
                                 $motivationalMessages[$affectedValueId] = $action->motivational_message;
                             } elseif (!empty($condition->motivational_message)) {
@@ -798,27 +809,25 @@ if(!function_exists('prepareConditionsForVariations')){
                 }
             }
     
-            // Filtra le varianti prodotto disattivate per evitare di applicare le loro condizioni
-            $newProductVariationIdsToCheck = array_filter($newProductVariationIdsToCheck, function($id) use ($valuesToDisable, $product) {
-                $variationKey = $product->ordered_variations->firstWhere('id', $id)->variation_key;
-                $variationValueId = explode(':', explode('/', $variationKey)[0])[1];
-                return !in_array($variationValueId, $valuesToDisable);
+            // Filtra i valori variante disattivati per evitare di applicare le loro condizioni
+            $newVariationValueIdsToCheck = array_filter($newVariationValueIdsToCheck, function($id) use ($valuesToDisable) {
+                return !in_array($id, $valuesToDisable);
             });
     
-            Log::info('newProductVariationIdsToCheck dopo filtro', ['newProductVariationIdsToCheck' => $newProductVariationIdsToCheck]);
+            Log::info('newVariationValueIdsToCheck dopo filtro', ['newVariationValueIdsToCheck' => $newVariationValueIdsToCheck]);
     
-            // Rimuovi gli ID delle varianti prodotto già controllati per evitare cicli infiniti
-            $newProductVariationIdsToCheck = array_diff($newProductVariationIdsToCheck, $checkedProductVariationIds);
-            Log::info('newProductVariationIdsToCheck dopo differenza', ['newProductVariationIdsToCheck' => $newProductVariationIdsToCheck]);
+            // Rimuovi gli ID dei valori variante già controllati per evitare cicli infiniti
+            $newVariationValueIdsToCheck = array_diff($newVariationValueIdsToCheck, $checkedVariationValueIds);
+            Log::info('newVariationValueIdsToCheck dopo differenza', ['newVariationValueIdsToCheck' => $newVariationValueIdsToCheck]);
     
-            $checkedProductVariationIds = array_merge($checkedProductVariationIds, $newProductVariationIdsToCheck);
+            $checkedVariationValueIds = array_merge($checkedVariationValueIds, $newVariationValueIdsToCheck);
     
-            // Imposta i nuovi ID delle varianti prodotto da controllare nella prossima iterazione
-            $productVariationIdsToCheck = $newProductVariationIdsToCheck;
+            // Imposta i nuovi ID dei valori variante da controllare nella prossima iterazione
+            $variationValueIdsToCheck = $newVariationValueIdsToCheck;
     
-        } while (!empty($productVariationIdsToCheck));
+        } while (!empty($variationValueIdsToCheck));
     
-        Log::info('Fine iterazione', ['valuesToDisable' => $valuesToDisable, 'checkedProductVariationIds' => $checkedProductVariationIds]);
+        Log::info('Fine iterazione', ['valuesToDisable' => $valuesToDisable, 'checkedVariationValueIds' => $checkedVariationValueIds]);
     
         // Restituisci gli array dei valori da disabilitare e dei messaggi motivazionali
         return [

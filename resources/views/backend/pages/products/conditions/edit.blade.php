@@ -55,18 +55,18 @@
 
 
                             <div id="conditionFields">
-                                @php
-                                $variations = app('App\Http\Controllers\Backend\Products\ConditionGroupController')->getVariationsArray($conditionGroup->product_id);
-                                @endphp
-                                @foreach($conditionGroup->conditions as $conditionIndex => $condition)
-                                @include('backend.pages.partials.conditions.conditionVariantSelect', [
-                                'condition' => $condition,
-                                'conditionIndex' => $conditionIndex,
-                                'variations' => $variations, // Assicurati che questa variabile contenga tutte le varianti disponibili
-                                'productId' => $conditionGroup->product_id
-                                ])
-                                @endforeach
-                            </div>
+    @php
+    $variations = app('App\Http\Controllers\Backend\Products\ConditionGroupController')->getAllVariationsArray();
+    @endphp
+    @foreach($conditionGroup->conditions as $conditionIndex => $condition)
+    @include('backend.pages.partials.conditions.conditionVariantSelect', [
+    'condition' => $condition,
+    'conditionIndex' => $conditionIndex,
+    'variations' => $variations, // Questa variabile ora contiene tutte le varianti disponibili
+    'productId' => $conditionGroup->product_id
+    ])
+    @endforeach
+</div>
                             <div id="addConditionContainer" class="text-center col-12" style="margin-top: 20px;">
                                 <button id="addConditionBtn" type="button" class="btn btn-secondary mt-3">+ Aggiungi condizione</button>
                             </div>
@@ -99,8 +99,8 @@
 @section('scripts')
 @include('backend.inc.product-scripts')
 <script type="text/javascript">
-    var variantsUrl = "{{ route('admin.product.variations') }}";
-    var variantValuesUrl = "{{ route('admin.product.variant.values') }}";
+    var variantsUrl = "{{ route('admin.conditions.variations') }}";
+    var variantValuesUrl = "{{ route('admin.conditions.variant.values') }}";
     var conditions = @json($conditionGroup->conditions);
 
     var selectedVariantValues = [];
