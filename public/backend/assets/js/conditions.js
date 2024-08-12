@@ -271,7 +271,8 @@ $("#conditionFields").on("change", ".variant-select", function () {
           actionIndex: actionIndex,
         },
         success: function (response) {
-          currentShutdownActionDiv.append(response.html);
+          var col6Element = currentShutdownActionDiv.find('.col-6');
+          col6Element.after(response.html);
         },
         error: function (error) {
           console.log(error);
