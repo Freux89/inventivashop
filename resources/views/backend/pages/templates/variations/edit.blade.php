@@ -10,10 +10,18 @@
         <div class="row mb-3">
             <div class="col-12">
                 <div class="card tt-page-header">
+                
                     <div class="card-body d-lg-flex align-items-center justify-content-lg-between">
+                    <div class="col-auto flex-grow-1">
                         <div class="tt-page-title">
                             <h2 class="h5 mb-lg-0">{{ localize('Modifica Template Varianti') }}</h2>
                         </div>
+</div>
+<div class="col-auto">
+                        <a href="{{ route('admin.templates.variations.index') }}" class="btn btn-link">
+                            <i class="fas fa-arrow-left"></i> Torna all'elenco
+                        </a>
+                    </div>
                     </div>
                 </div>
             </div>

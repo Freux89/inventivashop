@@ -19,12 +19,13 @@
 
     // add another variation
     function addAnotherVariation() {
+        let formId = $('#product-form').length ? 'product-form' : 'template-variation-form';
         $.ajax({
             type: "POST",
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            data: $('#product-form').serialize(),
+            data: $('#' + formId).serialize(),
             url: '{{ route('product.newVariation') }}',
             success: function(data) {
                 if (data.count > 0) {

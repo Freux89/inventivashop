@@ -88,6 +88,7 @@ class ProductsController extends Controller
     public function getNewVariation(Request $request)
     {
         $variations = Variation::query();
+        
         if ($request->has('chosen_variations')) {
             $variations = $variations->whereNotIn('id', $request->chosen_variations)->get();
         } else {

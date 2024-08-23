@@ -96,8 +96,10 @@ class TemplateVariationsController extends Controller
     foreach ($existingVariations as $variation) {
         $variation->delete();
     }
+    $variations = Variation::all();
 
-    return redirect()->route('admin.templates.variations.index')->with('success', 'Template varianti aggiornato con successo.');
+    // Passa il template e le sue varianti alla vista
+    return view('backend.pages.templates.variations.edit', compact('template', 'variations'));
 }
 
     
