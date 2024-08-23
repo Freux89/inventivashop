@@ -31,17 +31,18 @@ class TemplateVariationsController extends Controller
         $template->name = $request->name;
         $template->template_type = 'variation';
         $template->save();
-    
+
         // Salvataggio delle Varianti Associate
-        foreach ($request->variations as $variation) {
-            $template_variation = new ProductVariation;
-            $template_variation->template_id = $template->id;
-            $template_variation->variation_key = $variation['variation_key'];
-            $template_variation->price = priceToUsd($variation['price']);
-            $template_variation->price_change_type = $variation['price_change_type'];
-            $template_variation->save();
-    
-            
+        if ($request->has('variations') && is_array($request->variations) && count($request->variations) > 0) {
+
+            foreach ($request->variations as $variation) {
+                $template_variation = new ProductVariation;
+                $template_variation->template_id = $template->id;
+                $template_variation->variation_key = $variation['variation_key'];
+                $template_variation->price = priceToUsd($variation['price']);
+                $template_variation->price_change_type = $variation['price_change_type'];
+                $template_variation->save();
+            }
         }
     
         return redirect()->route('admin.templates.variations.index')->with('success', 'Template varianti creato con successo.');
