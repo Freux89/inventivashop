@@ -9,9 +9,21 @@ use App\Models\ProductVariation;
 
 class TemplateVariationsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $templates = Template::where('template_type', 'variation')->paginate(10);
+        // Recupera il valore di ricerca dalla richiesta
+        $search = $request->input('search');
+    
+        // Crea una query di base per i templates con template_type 'variation'
+        $query = Template::where('template_type', 'variation');
+    
+        // Se il campo di ricerca non è vuoto, aggiungi un filtro per il nome
+        if (!empty($search)) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+    
+        // Esegui la query e paginazione
+        $templates = $query->paginate(10);
 
         return view('backend.pages.templates.variations.index', compact('templates'));
     }
