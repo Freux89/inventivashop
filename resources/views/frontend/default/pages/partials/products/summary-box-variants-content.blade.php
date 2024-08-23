@@ -1,4 +1,5 @@
 @if(isset($productVariations) && $productVariations->isNotEmpty())
+
 @foreach($productVariations as $variation)
 <div class="variant">
     <strong>{{ $variation->variation_name }}</strong>

@@ -1,16 +1,21 @@
 @forelse ($carts as $cart)
+@php
+$firstVariation = $cart->product_variations->first();
+@endphp
+
+
 <li class="d-flex align-items-center pb-3 @if (!$loop->first) pt-3 @endif">
     <div class="thumb-wrapper">
-        @if ($firstVariation = $cart->product_variations->first())
-        <a href="{{ route('products.show', $firstVariation->product->slug) }}">
-            <img src="{{ uploadedAsset($firstVariation->product->thumbnail_image) }}" alt="products" class="img-fluid rounded-circle">
+       
+        <a href="{{ route('products.show', $cart->product->slug) }}">
+            <img src="{{ uploadedAsset($cart->product->thumbnail_image) }}" alt="products" class="img-fluid rounded-circle">
         </a>
-        @endif
+       
     </div>
     <div class="items-content ms-3">
-        @if ($firstVariation)
-        <a href="{{ route('products.show', $firstVariation->product->slug) }}">
-            <h6 class="mb-0">{{ $firstVariation->product->collectLocalization('name') }}</h6>
+       
+        <a href="{{ route('products.show', $cart->product->slug) }}">
+            <h6 class="mb-0">{{ $cart->product->collectLocalization('name') }}</h6>
         </a>
 
         @foreach ($cart->product_variations as $product_variation)
@@ -18,12 +23,12 @@
         <!-- Qui puoi mostrare i dettagli delle varianti. Ad esempio, potresti avere un metodo nella tua ProductVariation model che restituisce i dettagli delle varianti. -->
         @endforeach
 
-        @endif
+      
 
         <div class="products_meta mt-1 d-flex align-items-center">
-            @if($firstVariation && $firstVariation->product && $firstVariation->product->deleted_at == null)
+            @if($firstVariation && $cart->product && $cart->product->deleted_at == null)
 
-            <span class="price text-primary fw-semibold">{{ formatPrice(variationDiscountedPrice($firstVariation->product, $cart->product_variations, true ,$cart->qty)) }}</span>
+            <span class="price text-primary fw-semibold">{{ formatPrice(variationDiscountedPrice($cart->product, $cart->product_variations, true ,$cart->qty)) }}</span>
             @else
             <span>Prodotto non disponibile</span>
             @endif

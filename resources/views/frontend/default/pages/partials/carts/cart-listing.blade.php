@@ -1,16 +1,17 @@
 @forelse ($carts as $cart)
 <tr>
     <td class="h-100px">
-    @if($cart->product_variations->first() && $cart->product_variations->first()->product && $cart->product_variations->first()->product->deleted_at == null)
+    @if($cart->product_variations->first() && $cart->product && $cart->product->deleted_at == null)
 
-        <img src="{{ uploadedAsset($cart->product_variations->first()->product->thumbnail_image) }}" alt="{{ $cart->product_variations->first()->product->collectLocalization('name') }}" class="img-fluid" width="100">
+        <img src="{{ uploadedAsset($cart->product->thumbnail_image) }}" alt="{{ $cart->product->collectLocalization('name') }}" class="img-fluid" width="100">
     @endif
     </td>
     <td class="text-start product-title">
-    @if($cart->product_variations->first() && $cart->product_variations->first()->product && $cart->product_variations->first()->product->deleted_at == null)
+    @if($cart->product_variations->first() && $cart->product)
 
-        <h6 class="mb-0">{{ $cart->product_variations->first()->product->collectLocalization('name') }}</h6>
+        <h6 class="mb-0">{{ $cart->product->collectLocalization('name') }}</h6>
         <ul style="margin: 0; padding-left: 0; list-style-type: none;">
+      
             @foreach ($cart->product_variations as $product_variation)
             <li style="margin: 0; padding: 0; font-size: 0.85em;">
                 {{ $product_variation->variation_name }}: {{ $product_variation->variation_value_name }}
@@ -24,9 +25,9 @@
     <td>
         <span class="text-dark fw-bold me-2 d-lg-none">{{ localize('Unit Price') }}:</span>
         <span class="text-dark fw-bold">
-        @if($cart->product_variations->first() && $cart->product_variations->first()->product && $cart->product_variations->first()->product->deleted_at == null)
+        @if($cart->product_variations->first() && $cart->product )
 
-            {{ formatPrice(variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations,true,$cart->qty )) }}
+            {{ formatPrice(variationDiscountedPrice($cart->product, $cart->product_variations,true,$cart->qty )) }}
             @endif
         </span>
     </td>
@@ -40,9 +41,9 @@
     <td>
         <span class="text-dark fw-bold me-2 d-lg-none">{{ localize('Total Price') }}:</span>
         <span class="text-dark fw-bold">
-        @if($cart->product_variations->first() && $cart->product_variations->first()->product && $cart->product_variations->first()->product->deleted_at == null)
+        @if($cart->product_variations->first() && $cart->product && $cart->product->deleted_at == null)
 
-            {{ formatPrice(variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations,true,$cart->qty) * $cart->qty) }}
+            {{ formatPrice(variationDiscountedPrice($cart->product, $cart->product_variations,true,$cart->qty) * $cart->qty) }}
         </span>
         @endif
     </td>

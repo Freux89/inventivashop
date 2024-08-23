@@ -1,4 +1,5 @@
-@if (count($combinations[0]) > 0)
+
+@if (count($combinations) > 0)
 <div class="border bg-light-subtle rounded p-2">
     <table class="table tt-footable tt-footable-border-0">
         <thead>

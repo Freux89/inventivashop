@@ -34,4 +34,9 @@ class OrderItem extends Model
     {
         return $this->hasOne(Refund::class);
     }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

@@ -59,13 +59,15 @@
 
     // variation combinations
     function generateVariationCombinations() {
+        let formId = $('#product-form').length ? 'product-form' : 'template-variation-form';
+
         $.ajax({
             type: "POST",
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             url: '{{ route('product.generateVariationCombinations') }}',
-            data: $('#product-form').serialize(),
+            data: $('#' + formId).serialize(),
             success: function(data) {
                 $('#variation_combination').html(data);
 

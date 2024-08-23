@@ -107,7 +107,7 @@ $orderItems = $order->orderItems;
                     </tr>
                     @foreach ($orderItems as $key => $item)
                     @php
-                    $product = $item->product_variations->first()->product;
+                    $product = $item->product;
                     $informations = json_decode($item->informations, true); // Decodifica JSON in array
 
                     @endphp

@@ -58,9 +58,33 @@ class Product extends Model
     }
 
     public function variations()
+{
+    return $this->hasMany(ProductVariation::class);
+}
+    public function productOnlyVariations()
     {
         return $this->hasMany(ProductVariation::class);
     }
+
+    public function combinedVariations()
+    {
+        // Recupera le varianti prodotto
+        $productVariations = $this->variations;
+    
+        // Recupera le varianti template, ma escludi quelle che sono già presenti nelle varianti prodotto
+        $templateVariations = ProductVariation::whereNotNull('template_id')
+            ->whereIn('template_id', $this->templates->pluck('id'))
+            ->get()
+            ->filter(function ($templateVariation) use ($productVariations) {
+                return !$productVariations->contains('variation_key', $templateVariation->variation_key);
+            });
+    
+        // Unisci le varianti prodotto e template
+        return $productVariations->merge($templateVariations);
+    }
+    
+
+
 
     public function getOrderedVariationsAttribute()
     {
@@ -72,6 +96,48 @@ class Product extends Model
         ->select('product_variations.*', 'variations.position as variation_position', 'variation_values.position as value_position') // Seleziona i campi necessari
         ->get();
     }
+
+    public function getCombinedOrderedVariationsAttribute()
+{
+    // Recupera le varianti prodotto e template
+    $combinedVariations = $this->combinedVariations();
+
+    // Filtra le varianti con variation_key nullo
+    $filteredVariations = $combinedVariations->filter(function ($variation) {
+        return $variation->variation_key !== null;
+    });
+
+    // Ottieni le informazioni sulle posizioni delle varianti
+    $orderedVariations = $filteredVariations->map(function ($variation) {
+        $variation->variation_position = DB::table('variations')
+            ->where('id', explode(':', $variation->variation_key)[0])
+            ->value('position');
+
+        $variation->value_position = DB::table('variation_values')
+            ->where('id', explode(':', rtrim($variation->variation_key, '/'))[1])
+            ->value('position');
+
+        return $variation;
+    });
+
+    // Ordina le varianti in base alla posizione
+    return $orderedVariations->sortBy([
+        fn($a, $b) => $a->variation_position <=> $b->variation_position,
+        fn($a, $b) => $a->value_position <=> $b->value_position
+    ])->values();
+}
+
+    
+// Metodo per ottenere una variante specifica in base al variation_key
+public function getVariationByKey($variation_key)
+{
+    // Recupera le varianti prodotto e template combinate
+    $combinedVariations = $this->combinedVariations();
+
+    // Filtra per variation_key e restituisci la variante corrispondente
+    return $combinedVariations->firstWhere('variation_key', $variation_key);
+}
+
     public function variation_combinations()
     {
         return $this->hasMany(ProductVariationCombination::class);
@@ -120,4 +186,14 @@ class Product extends Model
     {
         return $this->quantityDiscounts()->first();
     }
+
+    public function templates()
+{
+    return $this->belongsToMany(Template::class, 'product_template_assignments');
+}
+public function templateVariations()
+{
+    return $this->belongsToMany(Template::class, 'product_template_assignments')
+                ->where('template_type', 'variation');
+}
 }

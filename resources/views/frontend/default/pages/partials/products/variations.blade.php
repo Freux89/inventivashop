@@ -1,7 +1,8 @@
 
 @php
+
 if(!isset($variations)){
-    $variations = generateVariationOptions($product->ordered_variation_combinations);
+    $variations = generateVariationOptions($product->combinedOrderedVariations);
 }
 
 @endphp
@@ -12,6 +13,7 @@ if(!isset($variations)){
 <div class="h3 start-conf py-3 mb-9">
     Inizia la configurazione
 </div>
+
 @foreach ($variations as $variation)
 
 @php
@@ -36,7 +38,7 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
 
 @if (!$allDisabled)
 <input type="hidden" name="variation_id[]" value="{{ $variation['id'] }}" class="variation-for-cart">
-<input type="hidden" name="product_id" value="{{ $product->id }}">
+
 
 <div class="variant-block" data-variation-id="{{ $variation['id'] }}">
 <div class="d-flex align-items-center justify-content-between my-5">

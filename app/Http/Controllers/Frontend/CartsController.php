@@ -47,7 +47,7 @@ class CartsController extends Controller
             $query->whereIn('product_variation_id', $productVariationIds);
         }])->having('product_variations_count', '=', count($productVariationIds))->first();
         
-        $productId = $productVariations->first()->product_id;
+        $productId = $request->product_id;
 
         if ($cart) {
             $cart->qty += (int) $request->quantity;
@@ -91,13 +91,13 @@ class CartsController extends Controller
 
         if ($request->action == "increase") {
             $canIncrease = true;
-            foreach ($cart->product_variations as $product_variation) {
-                $productVariationStock = $product_variation->product_variation_stock;
-                if ($productVariationStock->stock_qty <= $cart->qty) {
-                    $canIncrease = false;
-                    break;  // Break out of the loop if any variation doesn't have enough stock
-                }
-            }
+            // foreach ($cart->product_variations as $product_variation) {
+            //     $productVariationStock = $product_variation->product_variation_stock;
+            //     if ($productVariationStock->stock_qty <= $cart->qty) {
+            //         $canIncrease = false;
+            //         break;  // Break out of the loop if any variation doesn't have enough stock
+            //     }
+            // }
 
             if ($canIncrease) {
                 $cart->qty += 1;

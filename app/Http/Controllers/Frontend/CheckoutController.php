@@ -185,7 +185,7 @@ class CheckoutController extends Controller
             $order = new Order;
             $order->order_group_id  = $orderGroup->id;
             
-            $order->shop_id         = $carts[0]->product_variations->first()->product->shop_id;
+            $order->shop_id         = $carts[0]->product->shop_id;
             $order->user_id         = $userId;
             $order->location_id     = session('stock_location_id');
             if (getCoupon() != '') {
@@ -216,17 +216,17 @@ class CheckoutController extends Controller
             foreach ($carts as $cart) {
                 $orderItem                       = new OrderItem;
                 $orderItem->order_id             = $order->id;
-                
+                $orderItem->product_id             = $cart->product->id;
                 $orderItem->qty                  = $cart->qty;
                 $orderItem->location_id     = session('stock_location_id');
-                $orderItem->unit_price           = variationDiscountedPrice($cart->product_variations->first()->product, $cart->product_variations,true,$cart->qty);
+                $orderItem->unit_price           = variationDiscountedPrice($cart->product, $cart->product_variations,true,$cart->qty);
                 $orderItem->total_tax            = getTotalTax([$cart]);
                 $orderItem->total_price          = $orderItem->unit_price * $orderItem->qty;
 
 
                 // Crea un array per le informazioni
                 $informations = [
-                        'product_name' => $cart->product_variations->first()->product->name, // Nome del prodotto
+                        'product_name' => $cart->product->name, // Nome del prodotto
                         'variations' => []
                     ];
 
@@ -258,7 +258,7 @@ class CheckoutController extends Controller
                 
                 $orderItem->product_variations()->attach($productVariationIds);
 
-                $product = $cart->product_variations->first()->product;
+                $product = $cart->product;
                 $product->total_sale_count += $orderItem->qty;
 
                 # reward points

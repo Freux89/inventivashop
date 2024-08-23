@@ -134,12 +134,13 @@ class ProductController extends Controller
         // Se il breadcrumb è vuoto, crea un breadcrumb di default basato sulla categoria principale del prodotto
      
 
-        $variations = generateVariationOptions($product->ordered_variation_combinations);
+        $variations = generateVariationOptions($product->combinedOrderedVariations);
         
-        $productVariations = $product->variations;
+        $productVariations = $product->combinedOrderedVariations;
        
         $productVariationIds = [];
         $processedVariationIds = [];
+        $variationsSel = [];
 
         foreach ($productVariations as $variation) {
             // Estrarre l'id della variante dalla chiave di variazione
@@ -150,29 +151,31 @@ class ProductController extends Controller
             if (!in_array($variationId, $processedVariationIds)) {
                 $productVariationIds[] = $variation->id;
                 $processedVariationIds[] = $variationId;
+                $variationsSel[] = $variation;
+
             }
         }
 
-        $conditionEffects = prepareConditionsForVariations($product, $productVariationIds);
+        $conditionEffects = prepareConditionsForVariations($product, $variationsSel);
 
 
         // Filtriamo nuovamente le variazioni del prodotto in base alle condizioni
-        $filteredProductVariations = $product->variations->reject(function ($variation) use ($conditionEffects) {
-            return in_array($variation->variant_value_id, $conditionEffects['valuesToDisable']);
+        $filteredProductVariations = $productVariations->reject(function ($variation) use ($conditionEffects) {
+            return in_array($variation->variation_value_id, $conditionEffects['valuesToDisable']);
         });
 
         // Estrarre solo i primi valori di ogni variante dalle variazioni filtrate
         $uniqueFilteredVariations = collect();
         $uniqueFilteredVariationValues = collect();
         $processedVariationIds = [];
-
+        
         foreach ($filteredProductVariations as $variation) {
             $variationKeyParts = explode(':', rtrim($variation->variation_key, '/'));
             $variationId = $variationKeyParts[0];
 
             if (!in_array($variationId, $processedVariationIds)) {
                 $uniqueFilteredVariations->push($variation);
-                $uniqueFilteredVariationValues->push($variation->variant_value_id);
+                $uniqueFilteredVariationValues->push($variation->variation_value_id);
                 $processedVariationIds[] = $variationId;
             }
         }
@@ -199,12 +202,14 @@ class ProductController extends Controller
         $tiers = $product->quantityDiscount->tiers ?? collect();
         
         // Preparazione dei dati da passare alla vista
+       
         $data = [
             'product' => $product,
             'relatedProducts' => $relatedProducts,
             'product_page_widgets' => $product_page_widgets,
             'breadcrumbs' => $breadcrumbs,
             'variations' => $variations,
+            'product_variationIds' => $productVariationIds,
             'variation_value_ids' => $selectedVariantValueIds,
             'conditionEffects' => $conditionEffects['valuesToDisable'],
             'motivationalMessages' => $conditionEffects['motivationalMessages'],
@@ -232,32 +237,34 @@ class ProductController extends Controller
 
     # product variation info
     public function getVariationInfo(Request $request)
-    {
+{
+    
+    $product_id = $request->product_id;
+    $quantity = $request->quantity;
+    $variation_ids = $request->variation_id;
 
-        $product_id = $request->product_id;
-        $quantity = $request->quantity;
-        $variation_ids = $request->variation_id;
-        
-        
-        $product_price = Product::find($product_id)->price;
-        $total_price = $product_price;
-        $productVariations = [];
+    $product = Product::find($product_id);
+    $productVariations = [];
+    if (!empty($variation_ids)) {
+    foreach ($variation_ids as $variationId) {
+        $fieldName = 'variation_value_for_variation_' . $variationId;
+        $variation_key = $variationId . ':' . $request[$fieldName] . '/';
 
-        foreach ($variation_ids as $key => $variationId) {
-            $fieldName = 'variation_value_for_variation_' . $variationId;
-            $variation_key = $variationId . ':' . $request[$fieldName] . '/';
-            $productVariation = ProductVariation::where('variation_key', $variation_key)->where('product_id', $product_id)->first();
+        // Usa il metodo del modello Product per ottenere la variante
+        $productVariation = $product->getVariationByKey($variation_key);
 
-            if ($productVariation) {
-                // Includi le informazioni della tabella VariationValue
-                $variationValue = VariationValue::find($productVariation->variant_value_id);
-                $productVariation->variation_value_info = $variationValue;
-                $productVariations[] = $productVariation;
-            }
+        if ($productVariation) {
+            // Includi le informazioni della tabella VariationValue
+            $variationValue = VariationValue::find(explode(':', rtrim($variation_key, '/'))[1]);
+            $productVariation->variation_value_info = $variationValue;
+
+            $productVariations[] = $productVariation;
         }
-
-        return new ProductVariationInfoResource($productVariations, $product_id, $quantity);
     }
+}
+
+    return new ProductVariationInfoResource($productVariations, $product_id, $quantity);
+}
 
     public function category(Request $request, $categorySlug)
     {

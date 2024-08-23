@@ -17,7 +17,11 @@ class ProductVariation extends Model
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
-
+    
+    public function template()
+    {
+        return $this->belongsTo(Template::class, 'template_id');
+    }
     public function combinations()
     {
         return $this->hasMany(ProductVariationCombination::class);
@@ -61,7 +65,7 @@ class ProductVariation extends Model
 
    
 
-    public function getVariantIdAttribute()
+    public function getVariationIdAttribute()
     {
         // Verifica se variation_key è null o non contiene ':'.
         if ($this->variation_key === null || !strpos($this->variation_key, ':')) {
@@ -85,7 +89,7 @@ class ProductVariation extends Model
      *
      * @return int
      */
-    public function getVariantValueIdAttribute()
+    public function getVariationValueIdAttribute()
     {
         // Prima verifica se variation_key è null.
         if ($this->variation_key === null) {
@@ -104,8 +108,17 @@ class ProductVariation extends Model
         return null;
     }
 
+    public function variation()
+    {
+        return $this->belongsTo(Variation::class, 'variation_id', 'id')
+            ->where('id', $this->variation_id);
+    }
+
     public function variationValue()
     {
-        return $this->belongsTo(VariationValue::class, 'variant_value_id');
+        return $this->belongsTo(VariationValue::class, 'variation_value_id', 'id')
+            ->where('id', $this->variation_value_id);
     }
+
+    
 }

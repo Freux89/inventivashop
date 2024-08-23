@@ -53,7 +53,17 @@
                                     'admin.variations.edit',
                                     'admin.variationValues.index',
                                     'admin.variationValues.edit',
-                                ]) }}">{{ localize('All Variations') }}</a>
+                                ]) }}">{{ localize('Varianti') }}</a>
+                        </li>
+                    @endcan
+                    @can('template_variations')
+                        <li
+                            class="{{ areActiveRoutes(
+                                ['admin.templates.variations.*'],
+                                'tt-menu-item-active',
+                            ) }}">
+                            <a href="{{ route('admin.templates.variations.index') }}"
+                                class="{{ areActiveRoutes(['admin.templates.variations.*']) }}">{{ localize('Template varianti') }}</a>
                         </li>
                     @endcan
                     @can('quantity_discounts')

@@ -64,6 +64,7 @@ use App\Http\Controllers\Backend\Roles\RolesController;
 use App\Http\Controllers\Backend\Reports\ReportsController;
 use App\Http\Controllers\Backend\Products\QuantityDiscountController;
 use App\Http\Controllers\Backend\Products\QuantityDiscountTierController;
+use App\Http\Controllers\Backend\Templates\TemplateVariationsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -224,12 +225,15 @@ Route::group(
             Route::get('/conditions/edit/{id}', [ConditionGroupController::class, 'edit'])->name('admin.conditions.edit');
             Route::post('/conditions/update/{id}', [ConditionGroupController::class, 'update'])->name('admin.conditions.update');
             Route::get('/conditions/delete/{id}', [ConditionGroupController::class, 'delete'])->name('admin.conditions.delete');
-            Route::get('/conditions/delete/{id}', [ConditionGroupController::class, 'delete'])->name('admin.conditions.delete');
 
             Route::get('/condition/variants', [ConditionGroupController::class, 'getVariations'])->name('admin.conditions.variations');
             Route::get('/condition/variant-values', [ConditionGroupController::class, 'getVariantValues'])->name('admin.conditions.variant.values');
 
-            
+
+
+           
+
+
             # brands
             Route::get('/brands', [BrandsController::class, 'index'])->name('admin.brands.index');
             Route::post('/brand', [BrandsController::class, 'store'])->name('admin.brands.store');
@@ -255,7 +259,13 @@ Route::group(
             Route::get('/taxes/delete/{id}', [TaxesController::class, 'delete'])->name('admin.taxes.delete');
         });
 
-
+ // Rotte per la gestione dei Template Varianti
+ Route::get('/templates/variations', [TemplateVariationsController::class, 'index'])->name('admin.templates.variations.index');
+ Route::get('/templates/variations/create', [TemplateVariationsController::class, 'create'])->name('admin.templates.variations.create');
+ Route::post('/templates/variations', [TemplateVariationsController::class, 'store'])->name('admin.templates.variations.store');
+ Route::get('/templates/variations/{template}/edit', [TemplateVariationsController::class, 'edit'])->name('admin.templates.variations.edit');
+ Route::post('/templates/variations/{template}', [TemplateVariationsController::class, 'update'])->name('admin.templates.variations.update');
+ Route::get('/templates/variations/delete/{id}', [TemplateVariationsController::class, 'delete'])->name('admin.templates.variations.delete');
         
 
         #pos 

@@ -39,7 +39,7 @@ if (!function_exists('getViewRender')) {
     # get view of theme with render
     function getViewRender($path, $data = [])
     {
-        
+
         return view('frontend.' . getTheme() . '.' . $path, $data)->render();
     }
 }
@@ -225,17 +225,16 @@ if (!function_exists('localize')) {
 if (!function_exists('calculateVariationPrice')) {
     function calculateVariationPrice($product_price, $productVariation)
     {
-      
         $price_change_type = $productVariation->price_change_type;
-       
-if($productVariation->price != 0){
-    $price = $productVariation->price;
-}
-else{
-    $default_price = $productVariation->variationValue->default_price;
-    
-    $price = $default_price ? $default_price : 0;
-}
+
+        if ($productVariation->price != 0) {
+            $price = $productVariation->price;
+        } else {
+
+            $default_price = $productVariation->variationValue->default_price;
+
+            $price = $default_price ? $default_price : 0;
+        }
         if ($price_change_type == 'replace') {
             return $price;
         } elseif ($price_change_type == 'amount') {
@@ -243,7 +242,7 @@ else{
         } elseif ($price_change_type == 'percentage') {
             return $product_price + ($product_price * ($price / 100));
         }
-        
+
         return $product_price;
     }
 }
@@ -386,20 +385,19 @@ if (!function_exists('renderStarRating')) {
 if (!function_exists('renderStarRatingFront')) {
     # render ratings frontend
     function renderStarRatingFront($rating, $maxRating = 5)
-{
-    $fullStar = '<li><i class="fas fa-star"></i></li>';
-    $emptyStar = '<li><i class="far fa-star"></i></li>'; // assuming you're using FontAwesome's regular star for empty ones
+    {
+        $fullStar = '<li><i class="fas fa-star"></i></li>';
+        $emptyStar = '<li><i class="far fa-star"></i></li>'; // assuming you're using FontAwesome's regular star for empty ones
 
-    $rating = $rating <= $maxRating ? $rating : $maxRating;
-    $fullStarCount = (int)$rating;
-    $emptyStarCount = $maxRating - $fullStarCount;
+        $rating = $rating <= $maxRating ? $rating : $maxRating;
+        $fullStarCount = (int)$rating;
+        $emptyStarCount = $maxRating - $fullStarCount;
 
-    $html = str_repeat($fullStar, $fullStarCount);
-    $html .= str_repeat($emptyStar, $emptyStarCount);
+        $html = str_repeat($fullStar, $fullStarCount);
+        $html .= str_repeat($emptyStar, $emptyStarCount);
 
-    echo $html; // or return $html; if you prefer to use return instead of echo
-}
-
+        echo $html; // or return $html; if you prefer to use return instead of echo
+    }
 }
 
 if (!function_exists('formatPrice')) {
@@ -532,7 +530,7 @@ if (!function_exists('productNetPrice')) {
     function productNetPrice($product, $formatted = false)
     {
         $price = $product->price;
-       
+
         return $formatted ? formatPrice($price) : $price;
     }
 }
@@ -668,122 +666,124 @@ if (!function_exists('generateVariationOptions')) {
             return $options;
         }
 
-    // Passo 1: Raccolta di tutti gli ID univoci dei valori di variante necessari
-    $value_ids = [];
-    foreach ($options as $option) {
-        $value_ids[] = $option->variation_value_id;
-    }
-    $value_ids = array_unique($value_ids);  // Rimuove duplicati
-
-    // Passo 2: Recupero di tutti i valori di variante associati a questi ID in una sola volta
-    $all_variation_values = VariationValue::whereIn('id', $value_ids)
-                                          ->orderBy('position', 'asc')
-                                          ->get()
-                                          ->keyBy('id');
-
-    $variation_ids = array();
-   
-    foreach ($options as $option) {
-        $value_ids = array();
-        if (isset($variation_ids[$option->variation_id])) {
-            $value_ids = $variation_ids[$option->variation_id];
+        // Passo 1: Raccolta di tutti gli ID univoci dei valori di variante necessari
+        $value_ids = [];
+        foreach ($options as $option) {
+            
+            $value_ids[] = $option->variation_value_id;
         }
-        if (!in_array($option->variation_value_id, $value_ids)) {
-            array_push($value_ids, $option->variation_value_id);
-        }
-        $variation_ids[$option->variation_id] = $value_ids;
-    }
+        $value_ids = array_unique($value_ids);  // Rimuove duplicati
 
-    $options = array();
-    
-    foreach ($variation_ids as $id => $values) {
-        
-        $variationValues = array();
-        usort($values, function ($a, $b) use ($all_variation_values) {
-            if (!isset($all_variation_values[$a]) || !isset($all_variation_values[$b])) {
-                return 0; // o gestisci in un altro modo
+        // Passo 2: Recupero di tutti i valori di variante associati a questi ID in una sola volta
+        $all_variation_values = VariationValue::whereIn('id', $value_ids)
+            ->orderBy('position', 'asc')
+            ->get()
+            ->keyBy('id');
+
+        $variation_ids = array();
+
+        foreach ($options as $option) {
+            $value_ids = array();
+            if (isset($variation_ids[$option->variation_id])) {
+                $value_ids = $variation_ids[$option->variation_id];
             }
-            return $all_variation_values[$a]->position <=> $all_variation_values[$b]->position;
-        });
-        
-        foreach ($values as $value) {
-            if(isset($all_variation_values[$value])) {
-                $variationValue = $all_variation_values[$value];
-                $val = array(
-                    'id'   => $value,
-                    'name' => $variationValue->collectLocalization('name'),
-                    'code' => $variationValue->color_code,
-                    'image' => $variationValue->image,
-                    'info_description' => $variationValue->info_description
-                );
-                array_push($variationValues, $val);
+            if (!in_array($option->variation_value_id, $value_ids)) {
+                array_push($value_ids, $option->variation_value_id);
             }
+            $variation_ids[$option->variation_id] = $value_ids;
         }
-        
-        $variation = Variation::find($id);
-        $data['id'] = $id;
-        $data['name'] = $variation->collectLocalization('name');
-        $data['alias'] = $variation->collectLocalization('alias');
-        $data['display_type'] = $variation->display_type;
-        $data['values'] = $variationValues;
-    
-        array_push($options, $data);
+
+        $options = array();
+
+        foreach ($variation_ids as $id => $values) {
+
+            $variationValues = array();
+            usort($values, function ($a, $b) use ($all_variation_values) {
+                if (!isset($all_variation_values[$a]) || !isset($all_variation_values[$b])) {
+                    return 0; // o gestisci in un altro modo
+                }
+                return $all_variation_values[$a]->position <=> $all_variation_values[$b]->position;
+            });
+
+            foreach ($values as $value) {
+                if (isset($all_variation_values[$value])) {
+                    $variationValue = $all_variation_values[$value];
+                    $val = array(
+                        'id'   => $value,
+                        'name' => $variationValue->collectLocalization('name'),
+                        'code' => $variationValue->color_code,
+                        'image' => $variationValue->image,
+                        'info_description' => $variationValue->info_description
+                    );
+                    array_push($variationValues, $val);
+                }
+            }
+           
+            $variation = Variation::find($id);
+            
+            $data['id'] = $id;
+            $data['name'] = $variation->collectLocalization('name');
+            $data['alias'] = $variation->collectLocalization('alias');
+            $data['display_type'] = $variation->display_type;
+            $data['values'] = $variationValues;
+
+            array_push($options, $data);
+        }
+
+        return $options;
     }
-    
-    return $options;
 }
 
-}
-
-if(!function_exists('prepareConditionsForVariations')){
-    function prepareConditionsForVariations($product, $initialProductVariationIds) {
+if (!function_exists('prepareConditionsForVariations')) {
+    function prepareConditionsForVariations($product, $initialVariations)
+    {
         $valuesToDisable = [];
         $motivationalMessages = [];
         $checkedVariationValueIds = [];
-    
-        // Ottieni gli ID dei valori delle varianti dall'ID delle varianti prodotto iniziali
-        $initialVariationValueIds = collect($initialProductVariationIds)->map(function ($productVariationId) use ($product) {
-            $variationKey = $product->ordered_variations->firstWhere('id', $productVariationId)->variation_key;
-            return explode(':', explode('/', $variationKey)[0])[1];
-        })->toArray();
-    
+
+       
+       // Ottieni gli ID dei valori delle varianti dalla collezione di varianti iniziali (sia prodotto che template)
+    $initialVariationValueIds = collect($initialVariations)->map(function ($variation) {
+        return explode(':', explode('/', $variation->variation_key)[0])[1];
+    })->toArray();
+
         // Inizia con gli ID dei valori variante ricevuti
         $variationValueIdsToCheck = $initialVariationValueIds;
-    
+
         do {
             Log::info('Inizio iterazione', ['variationValueIdsToCheck' => $variationValueIdsToCheck]);
-    
-            // Usa le relazioni per ottenere le condizioni filtrate
-            $filteredConditions = $product->conditionGroups()
-                ->with(['conditions' => function($query) use ($variationValueIdsToCheck) {
-                    $query->whereIn('variation_value_id', $variationValueIdsToCheck)
-                          ->with('actions.variationValues');
-                }])
-                ->get()
-                ->flatMap(function($group) {
-                    return $group->conditions;
-                });
-    
-            // Ripristina l'elenco degli ID dei valori variante da controllare nella prossima iterazione
-            $newVariationValueIdsToCheck = [];
-    
+
+        // Usa le relazioni per ottenere le condizioni filtrate
+        $filteredConditions = $product->conditionGroups()
+            ->with(['conditions' => function ($query) use ($variationValueIdsToCheck) {
+                $query->whereIn('variation_value_id', $variationValueIdsToCheck)
+                    ->with('actions.variationValues');
+            }])
+            ->get()
+            ->flatMap(function ($group) {
+                return $group->conditions;
+            });
+
+        // Ripristina l'elenco degli ID dei valori variante da controllare nella prossima iterazione
+        $newVariationValueIdsToCheck = [];
+
             foreach ($filteredConditions as $condition) {
                 $variationValueId = $condition->variation_value_id;
-    
+
                 // Salta questa condizione se la variante corrispondente è stata disattivata
                 if (in_array($variationValueId, $valuesToDisable)) {
                     Log::info('Condizione saltata perché la variante è disattivata', ['condition_id' => $condition->id, 'variationValueId' => $variationValueId]);
                     continue;
                 }
-    
+
                 Log::info('Processando condizione', ['condition_id' => $condition->id]);
-    
+
                 foreach ($condition->actions as $action) {
                     if ($action->apply_to_all) {
                         // Se l'azione si applica a tutti i valori, aggiungi l'ID della variante all'array $valuesToDisable
                         $variantValuesToDisable = VariationValue::where('variation_id', $action->variation_id)->pluck('id')->toArray();
                         Log::info('Azione apply_to_all', ['variation_id' => $action->variation_id, 'variantValuesToDisable' => $variantValuesToDisable]);
-    
+
                         foreach ($variantValuesToDisable as $valueId) {
                             if (!in_array($valueId, $valuesToDisable)) {
                                 $valuesToDisable[] = $valueId;
@@ -793,12 +793,12 @@ if(!function_exists('prepareConditionsForVariations')){
                         foreach ($action->variationValues as $affectedVariationValue) {
                             $affectedValueId = $affectedVariationValue->id;
                             Log::info('Azione specifica', ['affectedVariationValue_id' => $affectedVariationValue->id, 'affectedValueId' => $affectedValueId]);
-    
+
                             if (!in_array($affectedValueId, $valuesToDisable)) {
                                 $valuesToDisable[] = $affectedValueId;
                                 $newVariationValueIdsToCheck[] = $affectedVariationValue->id; // Aggiungi i nuovi ID dei valori variante da controllare
                             }
-    
+
                             if (!empty($action->motivational_message)) {
                                 $motivationalMessages[$affectedValueId] = $action->motivational_message;
                             } elseif (!empty($condition->motivational_message)) {
@@ -808,83 +808,76 @@ if(!function_exists('prepareConditionsForVariations')){
                     }
                 }
             }
-    
+
             // Filtra i valori variante disattivati per evitare di applicare le loro condizioni
-            $newVariationValueIdsToCheck = array_filter($newVariationValueIdsToCheck, function($id) use ($valuesToDisable) {
+            $newVariationValueIdsToCheck = array_filter($newVariationValueIdsToCheck, function ($id) use ($valuesToDisable) {
                 return !in_array($id, $valuesToDisable);
             });
-    
+
             Log::info('newVariationValueIdsToCheck dopo filtro', ['newVariationValueIdsToCheck' => $newVariationValueIdsToCheck]);
-    
+
             // Rimuovi gli ID dei valori variante già controllati per evitare cicli infiniti
             $newVariationValueIdsToCheck = array_diff($newVariationValueIdsToCheck, $checkedVariationValueIds);
             Log::info('newVariationValueIdsToCheck dopo differenza', ['newVariationValueIdsToCheck' => $newVariationValueIdsToCheck]);
-    
+
             $checkedVariationValueIds = array_merge($checkedVariationValueIds, $newVariationValueIdsToCheck);
-    
+
             // Imposta i nuovi ID dei valori variante da controllare nella prossima iterazione
             $variationValueIdsToCheck = $newVariationValueIdsToCheck;
-    
         } while (!empty($variationValueIdsToCheck));
-    
+
         Log::info('Fine iterazione', ['valuesToDisable' => $valuesToDisable, 'checkedVariationValueIds' => $checkedVariationValueIds]);
-    
+
         // Restituisci gli array dei valori da disabilitare e dei messaggi motivazionali
         return [
             'valuesToDisable' => array_unique($valuesToDisable),
             'motivationalMessages' => $motivationalMessages
         ];
     }
-    
-    
 }
 
-if (!function_exists('getFinalVariationIds')) {
+if (!function_exists('getFinalVariations')) {
 
-    function getFinalVariationIds($product,$resourceCollection = null)
-    {
+    function getFinalVariations($product, $resourceCollection = null)
+{
+    if (is_null($resourceCollection)) {
+        $resourceCollection = collect();
+    }
 
-        if (is_null($resourceCollection)) {
-            $resourceCollection = collect();
-        }
+    // Ottieni gli ID delle varianti selezionate
+    $selectedVariationIds = $resourceCollection->pluck('id')->toArray();
 
-        // Ottieni gli ID delle variazioni di prodotto selezionate, se esistono, altrimenti un array vuoto
-        $ids = $resourceCollection->isEmpty() ? [] : $resourceCollection->pluck('id')->toArray();
+    // Usa combinedOrderedVariations per ottenere sia varianti prodotto che template
+    $orderedVariations = $product->combinedOrderedVariations;
 
-        // Prendi gli ID presenti su ids mentre per le altre varianti prodotto prendi il primo valore presente
-        $orderedVariations = $product->ordered_variations;
+    // Raggruppa tutte le varianti per la loro variante ID
+    $groupedVariations = $orderedVariations->groupBy(function ($item) {
+        return explode(':', $item->variation_key)[0];
+    });
 
-        // Dividi le varianti prodotto per la loro variante ID
-        $groupedVariations = $orderedVariations->groupBy(function ($item) {
-            // Estrai l'ID della variante dalla variation_key
-            return explode(':', $item->variation_key)[0];
+    // Prepara l'array finale delle varianti selezionate
+    $finalVariations = [];
+
+    // Itera su ciascun gruppo di varianti
+    foreach ($groupedVariations as $variationId => $variations) {
+        // Trova la variante selezionata
+        $selectedVariation = $variations->first(function ($variation) use ($selectedVariationIds) {
+            return in_array($variation->id, $selectedVariationIds);
         });
 
-        // Prepara l'array finale delle varianti prodotto
-        $finalVariations = [];
-
-        // Itera su ciascun gruppo di varianti
-        foreach ($groupedVariations as $variationId => $variations) {
-            // Trova la variante prodotto selezionata nel gruppo, se esiste
-            $selectedVariation = $variations->first(function ($variation) use ($ids) {
-                return in_array($variation->id, $ids);
-            });
-
-            // Se c'è una variante selezionata, aggiungila al risultato finale
-            if ($selectedVariation) {
-                $finalVariations[] = $selectedVariation;
-            } else {
-                // Altrimenti, aggiungi il primo valore variante del gruppo
-                $finalVariations[] = $variations->first();
-            }
+        // Se c'è una variante selezionata, aggiungila al risultato finale
+        if ($selectedVariation) {
+            $finalVariations[] = $selectedVariation;
+        } else {
+            // Altrimenti, aggiungi il primo valore variante del gruppo
+            $finalVariations[] = $variations->first();
         }
-
-        // Converti il risultato in una collezione (se necessario)
-        $finalVariations = collect($finalVariations);
-
-        // Ottieni solo gli ID delle varianti prodotto
-        return $finalVariations->pluck('id')->toArray();
     }
+
+    // Restituisci direttamente le varianti finali
+    return collect($finalVariations);
+}
+
 }
 
 
@@ -893,10 +886,10 @@ if (!function_exists('variationPrice')) {
     function variationPrice($product, $variations)
     {
         $price = $product->price;
-       
+        
         // Calcola il prezzo delle varianti
         foreach ($variations as $variation) {
-            
+
             $price = calculateVariationPrice($price, $variation);
         }
 
@@ -914,57 +907,56 @@ if (!function_exists('variationPrice')) {
 if (!function_exists('variationDiscountedPrice')) {
     // return discounted price of a variation
     function variationDiscountedPrice($product, $variations, $addTax = true, $quantity = 1)
-{
-    $price = $product->price;
+    {
+        $price = $product->price;
 
-    // Calcola il prezzo delle varianti
-    foreach ($variations as $variation) {
-        $price = calculateVariationPrice($price, $variation);
-    }
-
-    $discount_applicable = false;
-
-    // Verifica se ci sono sconti per quantità
-    $quantityDiscount = $product->quantityDiscounts()->first();
-    if ($quantityDiscount) {
-        $applicableTier = $quantityDiscount->tiers()->where('min_quantity', '<=', $quantity)->orderBy('min_quantity', 'desc')->first();
-        if ($applicableTier) {
-            $price -= ($price * $applicableTier->discount_percentage) / 100;
+        // Calcola il prezzo delle varianti
+        foreach ($variations as $variation) {
+            $price = calculateVariationPrice($price, $variation);
         }
-    }
 
-    // Verifica se ci sono altri sconti
-    if ($product->discount_start_date == null || $product->discount_end_date == null) {
         $discount_applicable = false;
-    } elseif (
-        strtotime(date('d-m-Y H:i:s')) >= strtotime($product->discount_start_date) &&
-        strtotime(date('d-m-Y H:i:s')) <= strtotime($product->discount_end_date)
-    ) {
-        $discount_applicable = true;
-    }
 
-    if ($discount_applicable) {
-        if ($product->discount_type == 'percent') {
-            $price -= ($price * $product->discount_value) / 100;
-        } elseif ($product->discount_type == 'flat') {
-            $price -= $product->discount_value;
-        }
-    }
-
-    // Aggiungi le tasse, se applicabile
-    if ($addTax) {
-        foreach ($product->taxes as $product_tax) {
-            if ($product_tax->tax_type == 'percent') {
-                $price += ($price * $product_tax->tax_value) / 100;
-            } elseif ($product_tax->tax_type == 'flat') {
-                $price += $product_tax->tax_value;
+        // Verifica se ci sono sconti per quantità
+        $quantityDiscount = $product->quantityDiscounts()->first();
+        if ($quantityDiscount) {
+            $applicableTier = $quantityDiscount->tiers()->where('min_quantity', '<=', $quantity)->orderBy('min_quantity', 'desc')->first();
+            if ($applicableTier) {
+                $price -= ($price * $applicableTier->discount_percentage) / 100;
             }
         }
+
+        // Verifica se ci sono altri sconti
+        if ($product->discount_start_date == null || $product->discount_end_date == null) {
+            $discount_applicable = false;
+        } elseif (
+            strtotime(date('d-m-Y H:i:s')) >= strtotime($product->discount_start_date) &&
+            strtotime(date('d-m-Y H:i:s')) <= strtotime($product->discount_end_date)
+        ) {
+            $discount_applicable = true;
+        }
+
+        if ($discount_applicable) {
+            if ($product->discount_type == 'percent') {
+                $price -= ($price * $product->discount_value) / 100;
+            } elseif ($product->discount_type == 'flat') {
+                $price -= $product->discount_value;
+            }
+        }
+
+        // Aggiungi le tasse, se applicabile
+        if ($addTax) {
+            foreach ($product->taxes as $product_tax) {
+                if ($product_tax->tax_type == 'percent') {
+                    $price += ($price * $product_tax->tax_value) / 100;
+                } elseif ($product_tax->tax_type == 'flat') {
+                    $price += $product_tax->tax_value;
+                }
+            }
+        }
+
+        return $price;
     }
-
-    return $price;
-}
-
 }
 
 
@@ -980,24 +972,24 @@ if (!function_exists('indicativeDeliveryDays')) {
 
         // Calcola la durata totale delle lavorazioni delle varianti selezionate
         $variantsWorkDuration = 0;
-    
+
         foreach ($variations as $variationInfo) {
             // Estrai l'ID del valore della variante da 'variation_key'
             list($variationTypeId, $variationValueId) = explode(':', rtrim($variationInfo['variation_key'], '/'));
-        
+
             // Cerca l'oggetto VariationValue usando l'ID estratto
             $variationValue = VariationValue::find($variationValueId);
             if ($variationValue) {
                 $workDuration = $variationValue->workflows()->first()->duration ?? 0;
                 $variantsWorkDuration += $workDuration;
             }
+        }
+
+        // La consegna indicativa è la somma dei giorni di lavorazione del prodotto, delle varianti e dei giorni di spedizione
+        $indicativeDeliveryDays = $productWorkDuration + $variantsWorkDuration + $fastestShipping;
+
+        return $indicativeDeliveryDays;
     }
-
-    // La consegna indicativa è la somma dei giorni di lavorazione del prodotto, delle varianti e dei giorni di spedizione
-    $indicativeDeliveryDays = $productWorkDuration + $variantsWorkDuration + $fastestShipping;
-
-    return $indicativeDeliveryDays;
-}
 }
 
 if (!function_exists('variationTaxAmount')) {
@@ -1048,8 +1040,8 @@ if (!function_exists('getSubTotal')) {
             foreach ($carts as $cart) {
                 $productVariations = $cart->product_variations;
                 if (!$productVariations->isEmpty()) {
-                    $product = $productVariations->first()->product;  // Assuming that all variations belong to the same product
-                    $discountedVariationPriceWithTax = variationDiscountedPrice($product, $productVariations, $addTax,$cart->qty);
+                    $product = $cart->product;  // Assuming that all variations belong to the same product
+                    $discountedVariationPriceWithTax = variationDiscountedPrice($product, $productVariations, $addTax, $cart->qty);
                     $price += (float) $discountedVariationPriceWithTax * $cart->qty;
                 } else {
                     // Handle the case where the product or product variation does not exist
@@ -1061,15 +1053,12 @@ if (!function_exists('getSubTotal')) {
             if ($couponDiscount) {
                 $amount = getCouponDiscount($price, $couponCode);
             }
-            
         }
 
         $price = $price - $amount + $shippingCost + $insuranceCost;
 
         return $price;
-
     }
-
 }
 
 if (!function_exists('setCoupon')) {
@@ -1146,7 +1135,6 @@ if (!function_exists('getCouponDetailsByCode')) {
         }
         return null;
     }
-    
 }
 
 if (!function_exists('validateCouponForProductsAndCategories')) {
@@ -1270,72 +1258,71 @@ if (!function_exists('checkCouponValidityForCheckout')) {
 
 if (!function_exists('getTotalTax')) {
     // get Total Tax from
-   
 
-function getTotalTax($carts, $shippingCost = 0, $insuranceCost = 0)
-{
-    $IVA = getSetting('global_vat_rate') * 0.01;
-    $total = getSubTotal($carts, false, '', false, $shippingCost, $insuranceCost); // Ottieni il totale escludendo tasse e sconti.
 
-    
-    return $total * $IVA;
-}
+    function getTotalTax($carts, $shippingCost = 0, $insuranceCost = 0)
+    {
+        $IVA = getSetting('global_vat_rate') * 0.01;
+        $total = getSubTotal($carts, false, '', false, $shippingCost, $insuranceCost); // Ottieni il totale escludendo tasse e sconti.
 
+
+        return $total * $IVA;
+    }
 }
 
 if (!function_exists('calculateOverallDeliveryTime')) {
-function calculateOverallDeliveryTime($carts,$logistic_zone)
-{
-    $longestDeliveryTime = 0;
-    
-    // Recupera il tempo medio di spedizione più veloce
-    $fastestShipping = LogisticZone::min('average_delivery_days') ?? 0;
-    
-    // Cerca il valore più alto di indicative_delivery_days tra i prodotti presenti nel carrello
-    foreach ($carts as $cart) {
-        // Sottrai il fastestShipping se è stato aggiunto a indicative_delivery_days in precedenza
-        $deliveryDays = max($cart->indicative_delivery_days - $fastestShipping, 0);
-        if ($deliveryDays > $longestDeliveryTime) {
-            $longestDeliveryTime = $deliveryDays;
+    function calculateOverallDeliveryTime($carts, $logistic_zone)
+    {
+        $longestDeliveryTime = 0;
+
+        // Recupera il tempo medio di spedizione più veloce
+        $fastestShipping = LogisticZone::min('average_delivery_days') ?? 0;
+
+        // Cerca il valore più alto di indicative_delivery_days tra i prodotti presenti nel carrello
+        foreach ($carts as $cart) {
+            // Sottrai il fastestShipping se è stato aggiunto a indicative_delivery_days in precedenza
+            $deliveryDays = max($cart->indicative_delivery_days - $fastestShipping, 0);
+            if ($deliveryDays > $longestDeliveryTime) {
+                $longestDeliveryTime = $deliveryDays;
+            }
         }
+
+        // Recupera i tempi di spedizione della spedizione selezionata
+        $selectedShippingTime = LogisticZone::where('id', $logistic_zone->id)->value('average_delivery_days') ?? 0;
+
+        // Aggiungi i tempi di spedizione selezionati al tempo di consegna più lungo
+        $overallDeliveryTime = $longestDeliveryTime + $selectedShippingTime;
+
+        return $overallDeliveryTime;
     }
-    
-    // Recupera i tempi di spedizione della spedizione selezionata
-    $selectedShippingTime = LogisticZone::where('id', $logistic_zone->id)->value('average_delivery_days') ?? 0;
-    
-    // Aggiungi i tempi di spedizione selezionati al tempo di consegna più lungo
-    $overallDeliveryTime = $longestDeliveryTime + $selectedShippingTime;
-    
-    return $overallDeliveryTime;
-}
 }
 
 if (!function_exists('calculateEstimatedDeliveryDate')) {
-    function calculateEstimatedDeliveryDate($created_at, $indicative_delivery_days) {
+    function calculateEstimatedDeliveryDate($created_at, $indicative_delivery_days)
+    {
 
         if ($indicative_delivery_days == 0) {
             return 'Data non calcolata';
         }
 
         $date = Carbon::createFromFormat('Y-m-d H:i:s', $created_at);
-    
+
         // Aggiungi un giorno se l'ordine è stato creato dopo le 12:00
         if ($date->hour >= 12) {
             $date->addDay();
         }
-    
+
         $daysAdded = 0;
         while ($daysAdded < $indicative_delivery_days) {
             $date->addDay();
-    
+
             // Se il giorno successivo non è né sabato (6) né domenica (0), incrementa il conteggio
             if (!in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY])) {
                 $daysAdded++;
             }
         }
-    
-        return $date->format('d M, Y');
 
+        return $date->format('d M, Y');
     }
 }
 
@@ -1420,13 +1407,14 @@ if (!function_exists('orderCancelledStatus')) {
     }
 }
 if (!function_exists('isColorLight')) {
-function isLight($color) {
-    
-    $hex = ltrim($color, '#');
-    $r = hexdec(substr($hex, 0, 2));
-    $g = hexdec(substr($hex, 2, 2));
-    $b = hexdec(substr($hex, 4, 2));
-    $brightness = ($r * 299 + $g * 587 + $b * 114) / 1000;
-    return $brightness > 155;
-}
+    function isLight($color)
+    {
+
+        $hex = ltrim($color, '#');
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        $brightness = ($r * 299 + $g * 587 + $b * 114) / 1000;
+        return $brightness > 155;
+    }
 }

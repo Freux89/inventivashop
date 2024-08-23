@@ -28,29 +28,29 @@ class ProductVariationInfoResource extends JsonResource
         
 
         // Ottieni solo gli ID delle varianti prodotto
-        $ids_all = getFinalVariationIds( $product, $resourceCollection);
+        $variations_all = getFinalVariations( $product, $resourceCollection);
 
 
 
         $product_tax = $product->taxes[0]['tax_value'] / 100;
-        $productVariations = ProductVariation::findMany($ids_all);
+        
       
-        $variantValueIds = $productVariations->pluck('variant_value_id')->toArray();
+        
 
         $total_stock = array_reduce($this->resource, function ($carry, $item) {
             return $carry + ($item['product_variation_stock'] ? (int) $item['product_variation_stock']->stock_qty : 0);
         }, 0);
 
-        $conditionEffects = prepareConditionsForVariations($product, $ids_all);
+        $conditionEffects = prepareConditionsForVariations($product, $variations_all );
 
 
 
         // Supponiamo che $allProductVariations contenga tutte le varianti prodotto disponibili
-        $allProductVariations = $product->ordered_variations;
+        $allProductVariations = $product->combinedOrderedVariations;
 
         // Filtra le varianti prodotto selezionate in base alle condizioni e sostituisci quelle disattivate con la prima variante attiva disponibile
-        $filteredProductVariations = $productVariations->map(function ($variation) use ($conditionEffects, $allProductVariations) {
-            if (in_array($variation->variant_value_id, $conditionEffects['valuesToDisable'])) {
+        $filteredProductVariations = $variations_all->map(function ($variation) use ($conditionEffects, $allProductVariations) {
+            if (in_array($variation->variation_value_id, $conditionEffects['valuesToDisable'])) {
                 // Trova la prima variante prodotto attiva della stessa variante
                 $variantId = explode(':', $variation->variation_key)[0];
                 $activeVariation = $allProductVariations->filter(function ($v) use ($variantId, $conditionEffects) {
@@ -64,7 +64,7 @@ class ProductVariationInfoResource extends JsonResource
 
             return $variation;
         })->filter(); // Rimuovi le varianti prodotto null
-        
+     
         // Converti la collezione filtrata in una lista di varianti prodotto
         $filteredProductVariations = $filteredProductVariations->values();
 
@@ -75,7 +75,7 @@ class ProductVariationInfoResource extends JsonResource
 
         $indicativeDeliveryDays = indicativeDeliveryDays($product, $filteredProductVariations);
         
-        $selectedVariantValueIds = $filteredProductVariations->pluck('variant_value_id')->toArray();;
+        $selectedVariantValueIds = $filteredProductVariations->pluck('variation_value_id')->toArray();;
 
 
         // Prezzo con IVA

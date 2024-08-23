@@ -17,6 +17,7 @@ use App\Models\ProductVariation;
 use App\Models\ProductVariationStock;
 use App\Models\ProductVariationCombination;
 use App\Models\Tag;
+use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -322,18 +323,18 @@ class ProductsController extends Controller
         $variations = Variation::isActive()->get();
         $taxes = Tax::isActive()->get();
         $tags = Tag::all();
+$templates = Template::where('template_type', 'variation')->get();
 
-
-        return view('backend.pages.products.products.edit', compact('product', 'categories', 'brands', 'units', 'variations', 'taxes', 'lang_key', 'tags'));
+        return view('backend.pages.products.products.edit', compact('product', 'categories', 'brands', 'units', 'variations', 'taxes', 'lang_key', 'tags','templates'));
     }
 
     # update product
     public function update(Request $request)
     {
-        if ($request->has('is_variant') && !$request->has('variations')) {
-            flash(localize('Invalid product variations, please check again'))->error();
-            return redirect()->back();
-        }
+        // if ($request->has('is_variant') && !$request->has('variations')) {
+        //     flash(localize('Invalid product variations, please check again'))->error();
+        //     return redirect()->back();
+        // }
 
         $product                    = Product::where('id', $request->id)->first();
         $oldProduct                 = clone $product;
@@ -404,7 +405,14 @@ class ProductsController extends Controller
 
             # category
             $product->categories()->sync($request->category_ids);
-
+ // Sincronizzazione del template variante
+ if ($request->has('template_variations') && !empty($request->template_variations)) {
+    // Seleziona il template e sincronizza l'associazione
+    $product->templates()->sync([$request->template_variations]);
+} else {
+    // Se non è stato selezionato nessun template, disassocia i template varianti
+    $product->templates()->detach();
+}
             # taxes
             $tax_data = array();
             $tax_ids = array();
@@ -430,6 +438,7 @@ class ProductsController extends Controller
             if ($request->has('is_variant') && $request->has('variations')) {
 
                 $new_requested_variations = collect($request->variations);
+                dd($new_requested_variations);
                 $new_requested_variations_key = $new_requested_variations->pluck('variation_key')->toArray();
                 $old_variations_keys = $product->variations->pluck('variation_key')->toArray();
                 $old_matched_variations = $new_requested_variations->whereIn('variation_key', $old_variations_keys);

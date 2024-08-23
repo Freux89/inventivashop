@@ -283,7 +283,8 @@
         // increase qty
         $('.qty-increase-decrease .increase').on('click', function() {
             var prevValue = $('.product-qty input[name=quantity]').val();
-            var maxValue = $('.product-qty input[name=quantity]').attr('max');
+            //var maxValue = $('.product-qty input[name=quantity]').attr('max');
+            var maxValue = 9999;
             if (maxValue == undefined || parseInt(prevValue) < parseInt(maxValue)) {
                 $('.qty-increase-decrease input[name=quantity]').val(parseInt(prevValue) + 1)
             }
