@@ -438,7 +438,7 @@ $templates = Template::where('template_type', 'variation')->get();
             if ($request->has('is_variant') && $request->has('variations')) {
 
                 $new_requested_variations = collect($request->variations);
-                dd($new_requested_variations);
+                
                 $new_requested_variations_key = $new_requested_variations->pluck('variation_key')->toArray();
                 $old_variations_keys = $product->variations->pluck('variation_key')->toArray();
                 $old_matched_variations = $new_requested_variations->whereIn('variation_key', $old_variations_keys);
