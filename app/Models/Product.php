@@ -172,10 +172,29 @@ public function getVariationByKey($variation_key)
     {
         return $this->belongsToMany(Workflow::class, 'product_workflows');
     }
-
-    public function conditionGroups()
+    public function directConditionGroups()
     {
         return $this->hasMany(ConditionGroup::class);
+    }
+    public function conditionGroups()
+    {
+        // Controlla se esistono condizioni collegate direttamente al prodotto
+        $productConditionGroups = $this->hasMany(ConditionGroup::class);
+
+        if ($productConditionGroups->exists()) {
+            // Se esistono condizioni collegate al prodotto, restituiscile
+            return $productConditionGroups;
+        } else {
+            // Altrimenti, recupera le condizioni collegate tramite i template varianti
+            return ConditionGroup::whereIn('id', function ($query) {
+                $query->select('condition_group_id')
+                ->from('templates')
+                ->join('product_template_assignments', 'templates.id', '=', 'product_template_assignments.template_id')
+                ->where('product_template_assignments.product_id', $this->id)
+                    ->where('templates.template_type', 'variation')
+                    ->whereNotNull('condition_group_id');
+            });
+        }
     }
 
     public function quantityDiscounts()

@@ -12,10 +12,16 @@
             <div class="col-12">
                 <div class="card tt-page-header">
                     <div class="card-body d-lg-flex align-items-center justify-content-lg-between">
-                        <div class="tt-page-title">
-                            <h2 class="h5 mb-lg-0">{{ localize('Aggiungi Condizioni') }}</h2>
+                        <div class="col-auto">
+                            <div class="tt-page-title">
+                                <h2 class="h5 mb-lg-0">{{ localize('Aggiungi Condizioni') }}</h2>
+                            </div>
                         </div>
-
+                        <div class="col-auto">
+                            <a href="{{ route('admin.conditions.index') }}" class="btn btn-link">
+                                <i class="fas fa-arrow-left"></i> Torna all'elenco
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -31,28 +37,57 @@
 
                     <!--basic information end-->
 
-                    <div class="card mb-4 ">
-                        <div class="card-body ">
-                            <h5 class="mb-4">{{ localize('Seleziona un prodotto') }}</h5>
-                            <div class="mb-3">
-                                <input type="text" id="searchProducts" placeholder="Cerca prodottii..." class="form-control">
-                            </div>
-                            <div class="card-fixed-height" id="products">
-                                @foreach($products as $product)
-                                <div class="mb-3 ">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="products" id="product_{{ $product->id }}" value="{{ $product->id }}">
-                                        <label class="form-check-label" for="product_{{ $product->id }}">
-                                            {{ $product->name }}
-                                        </label>
-                                    </div>
+                    <div class="card mb-4">
+    <div class="card-body">
+        <h5 class="mb-4">{{ localize('Nome Condizione Gruppo') }}</h5>
+        <div class="mb-3">
+            <input type="text" name="name" placeholder="{{ localize('Inserisci il nome della condizione gruppo...') }}" class="form-control" required>
+        </div>
+    </div>
+</div>
 
-                                </div>
-                                @endforeach
-                            </div>
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="mb-4">{{ localize('Vuoi associare questa condizione gruppo a un prodotto o salvarla come template?') }}</h5>
 
-                        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="group_type" id="associateProduct" value="product" checked>
+                <label class="form-check-label" for="associateProduct">
+                    {{ localize('Associare a un prodotto') }}
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="group_type" id="createTemplate" value="template">
+                <label class="form-check-label" for="createTemplate">
+                    {{ localize('Rendi questa condizione un template') }}
+                </label>
+            </div>
+        </div>
+
+        <div id="productSelection">
+            <h5 class="mb-4">{{ localize('Seleziona un prodotto') }}</h5>
+            <div class="mb-3">
+                <input type="text" id="searchProducts" placeholder="{{ localize('Cerca prodotti...') }}" class="form-control">
+            </div>
+            <div class="card-fixed-height" id="products">
+                @foreach($products as $product)
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="products" id="product_{{ $product->id }}" value="{{ $product->id }}">
+                        <label class="form-check-label" for="product_{{ $product->id }}">
+                            {{ $product->name }}
+                        </label>
                     </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
                     <div class="card mb-4">
                         <div class="card-body">
@@ -102,6 +137,26 @@
     var variantValuesUrl = "{{ route('admin.conditions.variant.values') }}";
     var selectedVariantValues = [];
     var selectedActionVariants = {};
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const associateProduct = document.getElementById('associateProduct');
+        const createTemplate = document.getElementById('createTemplate');
+        const productSelection = document.getElementById('productSelection');
+
+        associateProduct.addEventListener('change', function() {
+            if (this.checked) {
+                productSelection.style.display = 'block';
+            }
+        });
+
+        createTemplate.addEventListener('change', function() {
+            if (this.checked) {
+                productSelection.style.display = 'none';
+            }
+        });
+    });
 </script>
 <script src="{{ staticAsset('backend/assets/js/conditions.js') }}"></script>
 

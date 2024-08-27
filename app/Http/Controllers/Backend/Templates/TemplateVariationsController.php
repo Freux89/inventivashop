@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Template;
 use App\Models\Variation;
 use App\Models\ProductVariation;
+use App\Models\ConditionGroup;
 
 class TemplateVariationsController extends Controller
 {
@@ -31,8 +32,12 @@ class TemplateVariationsController extends Controller
     // Mostra il form per creare un nuovo template variante
     public function create()
     {
+        
         $variations = Variation::all();
-        return view('backend.pages.templates.variations.create', compact('variations'));
+        
+        $conditionGroups = ConditionGroup::whereNull('product_id')->get();
+        
+        return view('backend.pages.templates.variations.create', compact('variations','conditionGroups'));
     }
 
     // Salva un nuovo template variante
@@ -42,6 +47,7 @@ class TemplateVariationsController extends Controller
         $template = new Template;
         $template->name = $request->name;
         $template->template_type = 'variation';
+        $template->condition_group_id = $request->input('condition_group_id');
         $template->save();
 
         // Salvataggio delle Varianti Associate
@@ -64,11 +70,13 @@ class TemplateVariationsController extends Controller
 
     public function edit(Template $template)
     {
+        
         // Ottieni tutte le varianti disponibili
         $variations = Variation::all();
-
+        $conditionGroups = ConditionGroup::whereNull('product_id')->get();
+        
         // Passa il template e le sue varianti alla vista
-        return view('backend.pages.templates.variations.edit', compact('template', 'variations'));
+        return view('backend.pages.templates.variations.edit', compact('template', 'variations','conditionGroups'));
     }
 
     // Aggiorna il template variante esistente
@@ -77,11 +85,12 @@ class TemplateVariationsController extends Controller
     // Aggiornamento del nome del template e del tipo
     $template->name = $request->name;
     $template->template_type = 'variation';
+    $template->condition_group_id = $request->input('condition_group_id');
     $template->save();
 
     // Recupera gli ID delle varianti esistenti per confronto
     $existingVariations = $template->variations->keyBy('variation_key');
-
+    if ($request->has('variations') && is_array($request->variations) && count($request->variations) > 0) {
     // Itera sulle varianti inviate dal form
     foreach ($request->variations as $variation) {
         if (isset($existingVariations[$variation['variation_key']])) {
@@ -103,15 +112,15 @@ class TemplateVariationsController extends Controller
             $template_variation->save();
         }
     }
-
+    }
     // Rimuovi le varianti che non sono più presenti nel form
     foreach ($existingVariations as $variation) {
         $variation->delete();
     }
     $variations = Variation::all();
-
+    $conditionGroups = ConditionGroup::whereNull('product_id')->get();
     // Passa il template e le sue varianti alla vista
-    return view('backend.pages.templates.variations.edit', compact('template', 'variations'));
+    return view('backend.pages.templates.variations.edit', compact('template', 'variations','conditionGroups'));
 }
 
     

@@ -72,7 +72,8 @@ class ProductsController extends Controller
         $variations = Variation::isActive()->get();
         $taxes = Tax::isActive()->get();
         $tags = Tag::all();
-        return view('backend.pages.products.products.create', compact('categories', 'brands', 'units', 'variations', 'taxes', 'tags'));
+        $templates = Template::where('template_type', 'variation')->get();
+        return view('backend.pages.products.products.create', compact('categories', 'brands', 'units', 'variations', 'taxes', 'tags','templates'));
     }
 
     # get variation values to add new product
@@ -240,7 +241,16 @@ class ProductsController extends Controller
 
         # category
         $product->categories()->sync($request->category_ids);
-
+// Sincronizzazione del template variante
+if ($request->has('template_variations') && !empty($request->template_variations)) {
+    
+    // Seleziona il template e sincronizza l'associazione
+    $product->templates()->sync([$request->template_variations]);
+} else {
+    // Se non è stato selezionato nessun template, disassocia i template varianti
+    
+    $product->templates()->detach();
+}
         # taxes
         $tax_data = array();
         $tax_ids = array();
@@ -406,12 +416,15 @@ $templates = Template::where('template_type', 'variation')->get();
 
             # category
             $product->categories()->sync($request->category_ids);
+            
  // Sincronizzazione del template variante
  if ($request->has('template_variations') && !empty($request->template_variations)) {
+    
     // Seleziona il template e sincronizza l'associazione
     $product->templates()->sync([$request->template_variations]);
 } else {
     // Se non è stato selezionato nessun template, disassocia i template varianti
+    
     $product->templates()->detach();
 }
             # taxes

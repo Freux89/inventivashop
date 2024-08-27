@@ -129,11 +129,7 @@ $(document).ready(function () {
   });
 
   $("#addConditionBtn").click(function () {
-    var productId = $('input[type="radio"][name="products"]:checked').val();
-    if (!productId) {
-        alert("Seleziona un prodotto prima di aggiungere una condizione.");
-        return;
-    }
+   
     $.ajax({
         url: variantsUrl,
         type: "GET",

@@ -56,4 +56,9 @@ class Template extends Model
             ['variation_value_id', 'asc']
         ]);
     }
+
+    public function conditionGroup()
+{
+    return $this->belongsTo(ConditionGroup::class, 'condition_group_id');
+}
 }

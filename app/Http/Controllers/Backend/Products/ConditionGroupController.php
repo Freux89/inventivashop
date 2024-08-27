@@ -10,40 +10,36 @@ use App\Models\VariationValue;
 use App\Models\ConditionGroup;
 use App\Models\Condition;
 use App\Models\Action;
+use App\Models\Template;
 use App\Models\ActionVariationValue;
 use Illuminate\Support\Facades\DB;
 
 class ConditionGroupController extends Controller
 {
     public function index(Request $request)
-    {
-        // Inizia la query di base per tutti i prodotti che hanno almeno una condizione
-        $query = Product::whereHas('conditionGroups');
+{
+    // Inizia la query di base per tutti i gruppi di condizioni
+    $query = ConditionGroup::query();
 
-        // Controlla se è stato fornito un termine di ricerca
-        if ($request->has('search') && !empty($request->search)) {
-            $searchKey = $request->search;
+    // Controlla se è stato fornito un termine di ricerca
+    if ($request->has('search') && !empty($request->search)) {
+        $searchKey = $request->search;
 
-            // Aggiungi la logica di ricerca alla query
-            $query->where(function ($q) use ($searchKey) {
-                $q->where('name', 'LIKE', "%{$searchKey}%") // Cerca per nome del prodotto
-                    ->orWhereHas('conditionGroups', function ($q) use ($searchKey) {
-                        $q->where('description', 'LIKE', "%{$searchKey}%"); // Cerca nella descrizione delle condizioni
-                    });
-            });
-        }
-
-        // Esegui la query
-        $products = $query->with('conditionGroups')->orderBy('created_at', 'desc')->paginate(10);
-
-        // Ritorna la vista con i risultati della ricerca
-        return view('backend.pages.products.conditions.index', compact('products'));
+        // Aggiungi la logica di ricerca alla query
+        $query->where('name', 'LIKE', "%{$searchKey}%"); // Cerca per nome del gruppo di condizioni
     }
+
+    // Esegui la query
+    $conditionGroups = $query->orderBy('created_at', 'desc')->paginate(20);
+
+    // Ritorna la vista con i risultati della ricerca
+    return view('backend.pages.products.conditions.index', compact('conditionGroups'));
+}
 
     public function create()
     {
         // Recupera solo i prodotti che non hanno condizioni associate
-        $products = Product::doesntHave('conditionGroups')->get();
+        $products = Product::doesntHave('directConditionGroups')->get();
 
 
         // Restituisce la vista per creare una nuova condizione, correggendo il percorso della vista
@@ -52,142 +48,198 @@ class ConditionGroupController extends Controller
 
 
     public function store(Request $request)
-{
-    $request->validate([
-        'products' => 'required|exists:products,id',
-        // Aggiungi qui altre regole di validazione secondo necessità
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-        $conditionGroup = new ConditionGroup([
-            'product_id' => $request->input('products'),
+    {
+        // Valida la richiesta
+        $request->validate([
+            'group_type' => 'required|in:product,template',
+            'name' => 'required|string|max:255', // Valida il campo 'name'
         ]);
-
-        $conditionGroup->save();
-
-        foreach ($request->input('condition', []) as $conditionData) {
-            if (!empty($conditionData['variantValue'])) { // Controlla che la condizione abbia un valore variante
-                $condition = new Condition([
-                    'condition_group_id' => $conditionGroup->id,
-                    'variation_value_id' => $conditionData['variantValue'], // Usa il campo variation_value_id
-                    'motivational_message' => $conditionData['motivational_message'] ?? null, // Aggiungi il campo motivational_message
+    
+        DB::beginTransaction();
+    
+        try {
+            // Inizializza il product_id come null
+            $product_id = null;
+    
+            // Se il tipo di gruppo è "product", verifica che il prodotto sia selezionato
+            if ($request->input('group_type') === 'product') {
+                $request->validate([
+                    'products' => 'required|exists:products,id',
                 ]);
-                $condition->save();
-
-                foreach ($conditionData['action'] ?? [] as $actionData) {
-                    $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
-
-                    $action = new Action([
-                        'condition_id' => $condition->id,
-                        'action_type' => 'Spegni',
-                        'variation_id' => $actionData['shutdownVariant'], // Usa il campo variation_id
-                        'motivational_message' => $actionData['motivational_message'],
-                        'apply_to_all' => $applyToAll,
+                $product_id = $request->input('products');
+            }
+    
+            // Crea un nuovo ConditionGroup
+            $conditionGroup = new ConditionGroup([
+                'product_id' => $product_id,
+                'name' => $request->input('name'), // Nome della condizione gruppo
+            ]);
+    
+            $conditionGroup->save();
+    
+            // Se è stato scelto il tipo template, assegna il condition_group_id al template selezionato
+            if ($request->input('group_type') === 'template') {
+                // Assumendo che il template sia selezionato tramite un dropdown o qualcosa di simile
+                $template_id = $request->input('template_id');
+                if ($template_id) {
+                    $template = Template::find($template_id);
+                    $template->condition_group_id = $conditionGroup->id;
+                    $template->save();
+                }
+            }
+    
+            // Salva le condizioni collegate al gruppo di condizioni
+            foreach ($request->input('condition', []) as $conditionData) {
+                if (!empty($conditionData['variantValue'])) { // Controlla che la condizione abbia un valore variante
+                    $condition = new Condition([
+                        'condition_group_id' => $conditionGroup->id,
+                        'variation_value_id' => $conditionData['variantValue'], // Usa il campo variation_value_id
+                        'motivational_message' => $conditionData['motivational_message'] ?? null, // Aggiungi il campo motivational_message
                     ]);
-                    $action->save();
-
-                    if (!$applyToAll) {
-                        foreach ($actionData['shutdownVariantValue'] as $variantValueId) {
-                            $actionVariationValue = new ActionVariationValue([
-                                'action_id' => $action->id,
-                                'variation_value_id' => $variantValueId, // Usa il campo variation_value_id
-                            ]);
-                            $actionVariationValue->save();
+                    $condition->save();
+    
+                    foreach ($conditionData['action'] ?? [] as $actionData) {
+                        $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
+    
+                        $action = new Action([
+                            'condition_id' => $condition->id,
+                            'action_type' => 'Spegni',
+                            'variation_id' => $actionData['shutdownVariant'], // Usa il campo variation_id
+                            'motivational_message' => $actionData['motivational_message'],
+                            'apply_to_all' => $applyToAll,
+                        ]);
+                        $action->save();
+    
+                        if (!$applyToAll) {
+                            foreach ($actionData['shutdownVariantValue'] as $variantValueId) {
+                                $actionVariationValue = new ActionVariationValue([
+                                    'action_id' => $action->id,
+                                    'variation_value_id' => $variantValueId, // Usa il campo variation_value_id
+                                ]);
+                                $actionVariationValue->save();
+                            }
                         }
                     }
                 }
             }
+    
+            DB::commit();
+            flash(localize('Condizioni aggiunte con successo.'))->success();
+    
+            return redirect()->route('admin.conditions.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            flash(localize('Errore durante il salvataggio: ' . $e->getMessage()))->error();
+    
+            return redirect()->route('admin.conditions.index');
         }
-
-        DB::commit();
-        flash(localize('Condizioni aggiunte con successo.'))->success();
-
-        return redirect()->route('admin.conditions.index');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        flash(localize('Errore durante il salvataggio: ' . $e->getMessage()))->error();
-
-        return redirect()->route('admin.conditions.index');
     }
-}
+    
+
 
 
     public function edit($id)
     {
         
         $conditionGroup = ConditionGroup::findOrFail($id);
+        $products = Product::whereDoesntHave('conditionGroups')
+                ->orWhere('id', $conditionGroup->product_id) // Include il prodotto attualmente collegato alla condizione gruppo
+                ->get();
         
-        
-        return view('backend.pages.products.conditions.edit', compact('conditionGroup'));
+        return view('backend.pages.products.conditions.edit', compact('conditionGroup','products'));
     }
 
 
     public function update(Request $request, $conditionGroupId)
-{
-    $request->validate([
-        'products' => 'required|exists:products,id',
-        // Includi qui le stesse regole di validazione o adattale se necessario per l'update
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-        $conditionGroup = ConditionGroup::findOrFail($conditionGroupId);
-        $conditionGroup->product_id = $request->input('products');
-        $conditionGroup->save();
-
-        // Rimuovi le condizioni (e azioni correlate) esistenti
-        $conditionGroup->conditions()->delete(); // Assicurati che il model Condition definisca correttamente le relazioni per permettere ciò
-
-        // Ricrea le condizioni e le azioni come nel metodo store
-        foreach ($request->input('condition', []) as $conditionData) {
-            if (!empty($conditionData['variantValue'])) {
-                $condition = new Condition([
-                    'condition_group_id' => $conditionGroup->id,
-                    'variation_value_id' => $conditionData['variantValue'],
-                    'motivational_message' => $conditionData['motivational_message'] ?? null, // Aggiungi il campo motivational_message
+    {
+        // Valida la richiesta
+        $request->validate([
+            'group_type' => 'required|in:product,template',
+            'name' => 'required|string|max:255',
+            // Aggiungi qui altre regole di validazione o adattale se necessario per l'update
+        ]);
+    
+        DB::beginTransaction();
+    
+        try {
+            $conditionGroup = ConditionGroup::findOrFail($conditionGroupId);
+    
+            // Inizializza il product_id come null
+            $product_id = null;
+    
+            // Se il tipo di gruppo è "product", verifica che il prodotto sia selezionato
+            if ($request->input('group_type') === 'product') {
+                $request->validate([
+                    'products' => 'required|exists:products,id',
                 ]);
-                $condition->save();
+    
+                $product_id = $request->input('products');
 
-                foreach ($conditionData['action'] ?? [] as $actionData) {
-                    $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
-
-                    $action = new Action([
-                        'condition_id' => $condition->id,
-                        'action_type' => 'Spegni',
-                        'variation_id' => $actionData['shutdownVariant'],
-                        'motivational_message' => $actionData['motivational_message'],
-                        'apply_to_all' => $applyToAll,
+                // Controlla se la condizione è attualmente associata a un template
+             // Dissocia la condizione da tutti i template che la utilizzano
+             $associatedTemplates = Template::where('condition_group_id', $conditionGroupId)->get();
+             foreach ($associatedTemplates as $template) {
+                 $template->condition_group_id = null;
+                 $template->save();
+             }
+            }
+    
+            // Aggiorna il ConditionGroup, impostando il product_id o lasciandolo null
+            $conditionGroup->product_id = $product_id;
+            $conditionGroup->name = $request->input('name'); // Aggiorna il nome della condizione gruppo
+            $conditionGroup->save();
+    
+            // Rimuovi le condizioni (e azioni correlate) esistenti
+            $conditionGroup->conditions()->delete(); // Assicurati che il model Condition definisca correttamente le relazioni per permettere ciò
+    
+            // Ricrea le condizioni e le azioni come nel metodo store
+            foreach ($request->input('condition', []) as $conditionData) {
+                if (!empty($conditionData['variantValue'])) {
+                    $condition = new Condition([
+                        'condition_group_id' => $conditionGroup->id,
+                        'variation_value_id' => $conditionData['variantValue'],
+                        'motivational_message' => $conditionData['motivational_message'] ?? null,
                     ]);
-                    $action->save();
-
-                    if (!$applyToAll) {
-                        foreach ($actionData['shutdownVariantValue'] as $variantValueId) {
-                            $actionVariationValue = new ActionVariationValue([
-                                'action_id' => $action->id,
-                                'variation_value_id' => $variantValueId,
-                            ]);
-                            $actionVariationValue->save();
+                    $condition->save();
+    
+                    foreach ($conditionData['action'] ?? [] as $actionData) {
+                        $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
+    
+                        $action = new Action([
+                            'condition_id' => $condition->id,
+                            'action_type' => 'Spegni',
+                            'variation_id' => $actionData['shutdownVariant'],
+                            'motivational_message' => $actionData['motivational_message'],
+                            'apply_to_all' => $applyToAll,
+                        ]);
+                        $action->save();
+    
+                        if (!$applyToAll) {
+                            foreach ($actionData['shutdownVariantValue'] as $variantValueId) {
+                                $actionVariationValue = new ActionVariationValue([
+                                    'action_id' => $action->id,
+                                    'variation_value_id' => $variantValueId,
+                                ]);
+                                $actionVariationValue->save();
+                            }
                         }
                     }
                 }
             }
+    
+            DB::commit();
+    
+            flash(localize('Condizioni aggiornate con successo.'))->success();
+    
+            return redirect()->route('admin.conditions.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+    
+            flash(localize('Errore durante l\'aggiornamento: ' . $e->getMessage()))->error();
+            return redirect()->route('admin.conditions.index');
         }
-
-        DB::commit();
-
-        flash(localize('Condizioni aggiornate con successo.'))->success();
-
-        return redirect()->route('admin.conditions.index');
-    } catch (\Exception $e) {
-        DB::rollBack();
-
-        flash(localize('Errore durante l\'aggiornamento: ' . $e->getMessage()))->error();
-        return redirect()->route('admin.conditions.index');
     }
-}
+    
 
 
     public function getVariations(Request $request)

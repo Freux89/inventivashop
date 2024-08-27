@@ -374,22 +374,62 @@
                                 </div>
                             </div>
                             <!--for variation row end-->
+                            <div class="productCondition">
+    <h5 class="mb-4 mt-4">{{ localize('Condizione associata al prodotto') }}</h5>
+    <p class="text-muted">
+        {{ localize('Le condizioni associate direttamente al prodotto hanno la precedenza su quelle legate ai template varianti.') }}
+    </p>
+
+    @if($product->directConditionGroups->isNotEmpty())
+        <div class="mt-2">
+            @foreach ($product->directConditionGroups as $conditionGroup)
+            <a href="{{ route('admin.conditions.edit', $conditionGroup->id) }}" target="_blank" class="btn btn-sm btn-link">
+                {{ localize('Modifica Condizione') }}: {{ $conditionGroup->name }} <i class="fas fa-external-link-alt"></i>
+            </a>
+            @endforeach
+        </div>
+    @else
+        <p>{{ localize('Nessuna condizione associata.') }}</p>
+    @endif
+</div>
+
+
+
                             
-                                <div class="templateVariations">
-                                    <h5 class="mb-4 mt-4">{{ localize('Associa Template varianti') }}</h5>
-                                    <select class="select2 form-control" id="template_variations" name="template_variations">
-                                        <option>Seleziona un template</option>
-                                        @foreach ($templates as $template)
-                                        <option value="{{ $template->id }}"
-                                            {{ $product->templateVariations->contains($template->id) ? 'selected' : '' }}>
-                                            {{ $template->name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
+                            <div class="templateVariations">
+                                <h5 class="mb-4 mt-4">{{ localize('Associa Template varianti') }}</h5>
+                                <select class="select2 form-control" id="template_variations" name="template_variations">
+                                    <option value="">Seleziona un template</option>
+                                    @foreach ($templates as $template)
+                                    <option value="{{ $template->id }}" {{ $product->templateVariations->contains($template->id) ? 'selected' : '' }}>
+                                        {{ $template->name }}
+                                        @if($template->conditionGroup)
+                                        + Condizione ({{ $template->conditionGroup->name }})
+                                        @endif
+                                    </option>
+                                    @endforeach
+                                </select>
+
+                                <!-- Aggiungi i link per accedere al template e alla condizione -->
+                                @foreach ($templates as $template)
+                                @if($product->templateVariations->contains($template->id))
+                                <div class="mt-2">
+                                    <a href="{{ route('admin.templates.variations.edit', $template->id) }}" target="_blank" class="btn btn-sm btn-link">
+                                        {{ localize('Modifica Template') }} <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    @if($template->conditionGroup)
+                                    <a href="{{ route('admin.conditions.edit', $template->conditionGroup->id) }}" target="_blank" class="btn btn-sm btn-link">
+                                        {{ localize('Modifica Condizione') }} <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    @endif
                                 </div>
+                                @endif
+                                @endforeach
                             </div>
-                    
-                       
+
+                        </div>
+
+
                     </div>
                     <!--product price sku and stock end-->
 

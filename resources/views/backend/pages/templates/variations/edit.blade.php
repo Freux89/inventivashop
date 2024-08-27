@@ -42,7 +42,21 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="card mb-4" id="section-2">
+    <div class="card-body">
+        <h5 class="mb-4">{{ localize('Associa Template Condizioni') }}</h5>
+        <div class="mb-3">
+            <select class="select2 form-control" id="condition_group_id" name="condition_group_id">
+                <option value="">{{ localize('Seleziona un template condizione') }}</option>
+                @foreach ($conditionGroups as $conditionGroup)
+                    <option value="{{ $conditionGroup->id }}" {{ $template->condition_group_id == $conditionGroup->id ? 'selected' : '' }}>
+                        {{ $conditionGroup->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+</div>
                     <!-- Variations Section Start -->
                     <div class="card mb-4" id="section-5">
                         <div class="card-body">

@@ -30,21 +30,61 @@
 
             <!--left sidebar-->
             <div class="col-xl-12 order-2 order-md-2 order-lg-2 order-xl-1">
-                <form action="{{ route('admin.conditions.update',['id' => $conditionGroup->id])  }}" method="POST" class="pb-650" id="material-form">
+                <form action="{{ route('admin.conditions.update',['id' => $conditionGroup->id])  }}" method="POST" class="pb-650" id="conditionGroupForm">
                     @csrf
                     <!--basic information start-->
 
                     <!--basic information end-->
 
-                    <div class="card mb-4 ">
-                        <div class="card-body ">
-                            <h5 class="mb-4">{{$conditionGroup->product->name}}</h5>
+                    <div class="card mb-4">
+    <div class="card-body">
+        <h5 class="mb-4">{{ localize('Nome Condizione Gruppo') }}</h5>
+        <div class="mb-3">
+            <input type="text" name="name" placeholder="{{ localize('Inserisci il nome della condizione gruppo...') }}" class="form-control" value="{{ $conditionGroup->name }}" required>
+        </div>
+    </div>
+</div>
 
-                            <input type="radio" style="display:none;" name="products" value="{{$conditionGroup->product_id}}" checked>
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="mb-4">{{ localize('Vuoi associare questa condizione gruppo a un prodotto o salvarla come template?') }}</h5>
 
+        <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="group_type" id="associateProduct" value="product" {{ $conditionGroup->product_id ? 'checked' : '' }}>
+                <label class="form-check-label" for="associateProduct">
+                    {{ localize('Associare a un prodotto') }}
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="group_type" id="createTemplate" value="template" {{ is_null($conditionGroup->product_id) ? 'checked' : '' }}>
+                <label class="form-check-label" for="createTemplate">
+                    {{ localize('Rendi questa condizione un template') }}
+                </label>
+            </div>
+        </div>
 
-                        </div>
+        <div id="productSelection" style="{{ is_null($conditionGroup->product_id) ? 'display: none;' : '' }}">
+            <h5 class="mb-4">{{ localize('Seleziona un prodotto') }}</h5>
+            <div class="mb-3">
+                <input type="text" id="searchProducts" placeholder="{{ localize('Cerca prodotti...') }}" class="form-control">
+            </div>
+            <div class="card-fixed-height" id="products">
+                @foreach($products as $product)
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="products" id="product_{{ $product->id }}" value="{{ $product->id }}" {{ $conditionGroup->product_id == $product->id ? 'checked' : '' }}>
+                        <label class="form-check-label" for="product_{{ $product->id }}">
+                            {{ $product->name }}
+                        </label>
                     </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+
 
                     <div class="card mb-4">
                         <div class="card-body">
@@ -125,7 +165,50 @@
     });
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const associateProduct = document.getElementById('associateProduct');
+        const createTemplate = document.getElementById('createTemplate');
+        const productSelection = document.getElementById('productSelection');
 
+        associateProduct.addEventListener('change', function() {
+            if (this.checked) {
+                productSelection.style.display = 'block';
+            }
+        });
+
+        createTemplate.addEventListener('change', function() {
+            if (this.checked) {
+                productSelection.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+<script>
+    document.getElementById('conditionGroupForm').addEventListener('submit', function(e) {
+        var groupType = document.querySelector('input[name="group_type"]:checked').value;
+        var wasLinkedToTemplate = '{{ $conditionGroup->template ? true : false }}';
+
+        if (groupType === 'product' && wasLinkedToTemplate) {
+            var confirmed = confirm("La condizione è attualmente collegata a un template. Se la associ a un prodotto, verrà dissociata dal template. Vuoi continuare?");
+            if (!confirmed) {
+                e.preventDefault(); // Interrompe il submit se l'utente non conferma
+            }
+        }
+    });
+
+    document.querySelectorAll('input[name="group_type"]').forEach(function(input) {
+        input.addEventListener('change', function() {
+            var productSelection = document.getElementById('productSelection');
+            if (this.value === 'product') {
+                productSelection.style.display = '';
+            } else {
+                productSelection.style.display = 'none';
+            }
+        });
+    });
+</script>
 <script src="{{ staticAsset('backend/assets/js/conditions.js') }}"></script>
 
 

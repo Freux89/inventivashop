@@ -37,7 +37,7 @@
                                             <div class="tt-search-box">
                                                 <div class="input-group">
                                                     <span class="position-absolute top-50 start-0 translate-middle-y ms-2"> <i data-feather="search"></i></span>
-                                                    <input class="form-control rounded-start w-100" type="text" id="search" name="search" placeholder="{{ localize('Cerca per nome prodotto') }}" @isset($searchKey) value="{{ $searchKey }}" @endisset>
+                                                    <input class="form-control rounded-start w-100" type="text" id="search" name="search" placeholder="{{ localize('Cerca per nome condizione') }}" @isset($searchKey) value="{{ $searchKey }}" @endisset>
                                                 </div>
                                             </div>
                                         </div>
@@ -52,59 +52,64 @@
                                 </div>
                             </form>
                             <table class="table tt-footable border-top" data-use-parent-width="true">
-                                <thead>
-                                    <tr>
-                                        <th class="text-start">{{ localize('Nome prodotto') }}</th>
-                                        <!-- <th data-breakpoints="xs sm">{{ localize('Active') }}</th> -->
-                                        <th data-breakpoints="xs sm" class="text-end">
-                                            {{ localize('Action') }}
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+    <thead>
+        <tr>
+            <th class="text-start">{{ localize('Nome Condizione Gruppo') }}</th>
+            <th class="text-start">{{ localize('Collegamento') }}</th>
+            <th data-breakpoints="xs sm" class="text-end">{{ localize('Action') }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($conditionGroups as $conditionGroup)
+        <tr data-id="{{ $conditionGroup->id }}">
+            <td class="text-start">
+                <a href="{{ route('admin.conditions.edit', ['id' => $conditionGroup->id, 'lang_key' => config('app.locale')]) }}" class="d-inline-block">
+                    <h6 class="fs-sm mb-0">
+                        {{ $conditionGroup->name }}
+                    </h6>
+                </a>
+            </td>
 
-                                    @foreach ($products as $key => $product)
-                                    <tr data-id="{{ $product->conditionGroups->first()->id }}">
-                                        <td class="text-start">
+            <td class="text-start">
+    @if($conditionGroup->product_id)
+        <span class="badge bg-primary">{{ localize('Prodotto') }}</span>
+        
+        @else
+        <span class="badge bg-warning">{{ localize('Template') }}</span>
+        
+    
+       
+    @endif
+</td>
 
-                                            <a href="{{ route('admin.conditions.edit', ['id' => $product->conditionGroups->first()->id, 'lang_key' => config('app.locale')]) }}" class="d-inline-block">
+            <td class="text-end">
+                <div class="dropdown tt-tb-dropdown">
+                    <button type="button" class="btn p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i data-feather="more-vertical"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end shadow">
+                        <a class="dropdown-item" href="{{ route('admin.conditions.edit', ['id' => $conditionGroup->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize">
+                            <i data-feather="edit-3" class="me-2"></i>{{ localize('Edit') }}
+                        </a>
 
-                                                <h6 class="fs-sm mb-0">
-                                                    {{ $product->name }}
-                                                </h6>
-                                            </a>
-                                        </td>
-                                       
-                                       
-                                        <td class="text-end">
-                                            <div class="dropdown tt-tb-dropdown">
-                                                <button type="button" class="btn p-0" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i data-feather="more-vertical"></i>
-                                                </button>
-                                                <div class="dropdown-menu dropdown-menu-end shadow">
+                        <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.conditions.delete', $conditionGroup->id) }}" title="{{ localize('Delete') }}">
+                            <i data-feather="trash" class="me-2"></i>{{ localize('Delete') }}
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
 
-                                                    <a class="dropdown-item" href="{{ route('admin.conditions.edit', ['id' => $product->conditionGroups->first()->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize">
-                                                        <i data-feather="edit-3" class="me-2"></i>{{ localize('Edit') }}
-                                                    </a>
-
-                                                    <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.conditions.delete', $product->conditionGroups->first()->id) }}" title="{{ localize('Delete') }}">
-                                                        <i data-feather="trash" class="me-2"></i>{{ localize('Delete') }}
-                                                    </a>
-
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
 <!--pagination start-->
 <div class="d-flex align-items-center justify-content-between px-4 pb-4">
                         <span>{{ localize('Showing') }}
-                            {{ $products->firstItem() }}-{{ $products->lastItem() }} {{ localize('of') }}
-                            {{ $products->total() }} {{ localize('results') }}</span>
+                            {{ $conditionGroups->firstItem() }}-{{ $conditionGroups->lastItem() }} {{ localize('of') }}
+                            {{ $conditionGroups->total() }} {{ localize('results') }}</span>
                         <nav>
-                            {{ $products->appends(request()->input())->links() }}
+                            {{ $conditionGroups->appends(request()->input())->links() }}
                         </nav>
                     </div>
                     <!--pagination end-->

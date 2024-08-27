@@ -282,8 +282,21 @@
 
                                     
                                 </div>
+                                <div class="templateVariations">
+                                <h5 class="mb-4 mt-4">{{ localize('Associa Template varianti') }}</h5>
+                                <select class="select2 form-control" id="template_variations" name="template_variations">
+                                    <option value="">Seleziona un template</option>
+                                    @foreach ($templates as $template)
+                                    <option value="{{ $template->id }}">
+                                        {{ $template->name }}{{ $template->conditionGroup ? ' + Condizione (' . $template->conditionGroup->name . ')' : '' }}
+                                    </option>
+                                    @endforeach
+                                </select>
+
+                            </div>
                             </div>
                             <!--for variation row end-->
+                            
                         </div>
                         <!--product price sku and stock end-->
 

@@ -49,39 +49,51 @@
                                 </div>
                             </form>
                             <table class="table tt-footable border-top" data-use-parent-width="true">
-                                <thead>
-                                    <tr>
-                                        <th class="text-start">{{ localize('Nome Template') }}</th>
-                                        <th data-breakpoints="xs sm" class="text-end">{{ localize('Action') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($templates as $template)
-                                    <tr data-id="{{ $template->id }}">
-                                        <td class="text-start">
-                                            <a href="{{ route('admin.templates.variations.edit', $template->id) }}" class="d-inline-block">
-                                                <h6 class="fs-sm mb-0">{{ $template->name }}</h6>
-                                            </a>
-                                        </td>
-                                        <td class="text-end">
-                                            <div class="dropdown tt-tb-dropdown">
-                                                <button type="button" class="btn p-0" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i data-feather="more-vertical"></i>
-                                                </button>
-                                                <div class="dropdown-menu dropdown-menu-end shadow">
-                                                    <a class="dropdown-item" href="{{ route('admin.templates.variations.edit', $template->id) }}">
-                                                        <i data-feather="edit-3" class="me-2"></i>{{ localize('Edit') }}
-                                                    </a>
-                                                    <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.templates.variations.delete', $template->id) }}" title="{{ localize('Delete') }}">
-                                                        <i data-feather="trash" class="me-2"></i>{{ localize('Delete') }}
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+    <thead>
+        <tr>
+            <th class="text-start">{{ localize('Nome Template') }}</th>
+            <th class="text-start">{{ localize('Condizioni') }}</th>
+            <th data-breakpoints="xs sm" class="text-end">{{ localize('Action') }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($templates as $template)
+        <tr data-id="{{ $template->id }}">
+            <td class="text-start">
+                <a href="{{ route('admin.templates.variations.edit', $template->id) }}" class="d-inline-block">
+                    <h6 class="fs-sm mb-0">{{ $template->name }}</h6>
+                </a>
+            </td>
+            <td class="text-start">
+                @if($template->conditionGroup)
+                    <a href="{{ route('admin.conditions.edit', ['id' => $template->conditionGroup->id, 'lang_key' => config('app.locale')]) }}" target="_blank">
+                        <span class="badge bg-success">{{ $template->conditionGroup->name }}</span>
+                    </a>
+                @else
+                    <span class="badge bg-danger">{{ localize('Non Collegato') }}</span>
+                @endif
+            </td>
+            <td class="text-end">
+                <div class="dropdown tt-tb-dropdown">
+                    <button type="button" class="btn p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i data-feather="more-vertical"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end shadow">
+                        <a class="dropdown-item" href="{{ route('admin.templates.variations.edit', $template->id) }}">
+                            <i data-feather="edit-3" class="me-2"></i>{{ localize('Edit') }}
+                        </a>
+                        <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.templates.variations.delete', $template->id) }}" title="{{ localize('Delete') }}">
+                            <i data-feather="trash" class="me-2"></i>{{ localize('Delete') }}
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
+
                             <!--pagination start-->
                             <div class="d-flex align-items-center justify-content-between px-4 pb-4">
                                 <span>{{ localize('Showing') }}

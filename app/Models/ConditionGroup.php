@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ConditionGroup extends Model
 {
-    protected $fillable = ['product_id'];
+    protected $fillable = ['product_id','name'];
     // Definisci la relazione con il modello Product
     public function product()
     {
@@ -19,4 +19,9 @@ class ConditionGroup extends Model
     {
         return $this->hasMany(Condition::class);
     }
+
+    public function template()
+{
+    return $this->hasOne(Template::class, 'condition_group_id');
+}
 }
