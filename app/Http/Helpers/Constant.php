@@ -713,7 +713,10 @@ if (!function_exists('generateVariationOptions')) {
                         'name' => $variationValue->collectLocalization('name'),
                         'code' => $variationValue->color_code,
                         'image' => $variationValue->image,
-                        'info_description' => $variationValue->info_description
+                        'info_description' => $variationValue->info_description,
+                        'info_video_url' => $variationValue->info_video_url, 
+                        'info_image_id' => $variationValue->info_image_id, 
+                        'info_slider_image_ids' => $variationValue->info_slider_image_ids
                     );
                     array_push($variationValues, $val);
                 }

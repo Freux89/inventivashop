@@ -29223,3 +29223,20 @@ button.accordion-button {
     white-space: nowrap;
     text-align: center;
 }
+
+.overflow-hidden {
+    overflow: hidden;
+}
+.info-swiper .swiper-button-next, 
+.info-swiper .swiper-button-prev {
+    opacity: 1; /* Rendi le frecce sempre visibili */
+    visibility: visible;
+    color: #000; /* Cambia il colore della freccia (ad esempio nero) */
+    display:flex !important;
+    top: calc(50% - 22px);
+}
+
+.info-swiper .swiper-button-next::after, 
+.info-swiper .swiper-button-prev::after {
+    font-size: 20px; /* Cambia la dimensione dell'icona */
+}

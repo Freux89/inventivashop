@@ -93,46 +93,63 @@ class VariationValuesController extends Controller
 
     # update variation value
     public function update(Request $request)
-    {
+{
+    // Aggiorna la validazione per includere i nuovi campi
+    $data = $request->validate([
+        'id' => 'required|integer',
+        'name' => 'required|string',
+        'variation_id' => 'required|integer',
+        'lang_key' => 'required|string',
+        'color_code' => 'nullable|string',
+        'image' => 'nullable|integer',
+        'info_description' => 'nullable|string',
+        'default_price' => 'nullable|numeric',
+        'info_image_id' => 'nullable|integer', // Aggiungi validazione per info_image_id
+        'info_slider_image_ids' => 'nullable|string', // Aggiungi validazione per info_slider_image_ids
+        'info_video_url' => 'nullable|url', // Aggiungi validazione per info_video_url
+    ]);
 
-        $data = $request->validate([
-            'id' => 'required|integer',
-            'name' => 'required|string',
-            'variation_id' => 'required|integer',
-            'lang_key' => 'required|string',
-            'color_code' => 'nullable|string',
-            'image' => 'nullable|integer',  
-            'info_description' => 'nullable|string', 
-            'default_price' => 'nullable|numeric', 
-        ]);
+    $variationValue = VariationValue::findOrFail($data['id']);
 
-        $variationValue = VariationValue::findOrFail($data['id']);
+    if ($data['lang_key'] == env("DEFAULT_LANGUAGE")) {
+        $variationValue->name = $data['name'];
+        $variationValue->image = $data['image'];
+        $textOnly = trim(strip_tags($data['info_description']));
+        $variationValue->info_description = $textOnly === '' ? null : $data['info_description'];
+        $variationValue->default_price = $data['default_price'];
 
-        if ($data['lang_key'] == env("DEFAULT_LANGUAGE")) {
-            $variationValue->name = $data['name'];
-            $variationValue->image = $data['image'];  
-            $variationValue->info_description = $data['info_description']; 
-            $variationValue->default_price = $data['default_price']; // Aggiungi default_price al valore variante
-
+        // Salva le informazioni aggiuntive in base al tipo selezionato
+        if ($request->info_type == 'image') {
+            $variationValue->info_image_id = $data['info_image_id'];
+            $variationValue->info_slider_image_ids = null; // Resetta gli altri campi se non utilizzati
+            $variationValue->info_video_url = null;
+        } elseif ($request->info_type == 'gallery') {
+            $variationValue->info_slider_image_ids = $data['info_slider_image_ids'];
+            $variationValue->info_image_id = null; // Resetta gli altri campi se non utilizzati
+            $variationValue->info_video_url = null;
+        } elseif ($request->info_type == 'video') {
+            $variationValue->info_video_url = $data['info_video_url'];
+            $variationValue->info_image_id = null; // Resetta gli altri campi se non utilizzati
+            $variationValue->info_slider_image_ids = null;
         }
-    
-        $variationValue->variation_id = $data['variation_id'];
-    
-        // if ($data['variation_id'] == 2) {
-        //     $variationValue->color_code = $data['color_code'];
-        // }
-
-        $variationValueLocalization = VariationValueLocalization::firstOrNew(['lang_key' => $request->lang_key, 'variation_value_id' => $variationValue->id]);
-        $variationValueLocalization->name = $request->name;
-        $variationValueLocalization->info_description = $request->info_description; // Aggiungi questo campo
-
-
-        $variationValue->save();
-        $variationValueLocalization->save();
-
-        flash(localize('Variation value has been updated successfully'))->success();
-        return back();
     }
+
+    $variationValue->variation_id = $data['variation_id'];
+
+    $variationValueLocalization = VariationValueLocalization::firstOrNew([
+        'lang_key' => $request->lang_key, 
+        'variation_value_id' => $variationValue->id
+    ]);
+    $variationValueLocalization->name = $request->name;
+    $variationValueLocalization->info_description = $request->info_description;
+
+    $variationValue->save();
+    $variationValueLocalization->save();
+
+    flash(localize('Variation value has been updated successfully'))->success();
+    return back();
+}
+
 
     # update status 
     public function updateStatus(Request $request)
@@ -172,17 +189,35 @@ class VariationValuesController extends Controller
     public function getInfoDescription($id)
     {
         $lang_key = app()->getLocale();
-        $variationValueLocalization = VariationValueLocalization::where('variation_value_id', $id)->where('lang_key', $lang_key)->first();
-
+        $variationValueLocalization = VariationValueLocalization::where('variation_value_id', $id)
+            ->where('lang_key', $lang_key)
+            ->first();
+    
         if ($variationValueLocalization) {
+            $variationValue = VariationValue::find($id);
+    
             return response()->json([
-                'info_description' => $variationValueLocalization->info_description,
+                'html' => view('frontend.default.pages.partials.products.variation_info', [
+                    'info_name' => $variationValueLocalization->name,
+                    'info_description' => $variationValueLocalization->info_description,
+                    'info_image_id' => $variationValue->info_image_id,
+                    'info_slider_image_ids' => $variationValue->info_slider_image_ids,
+                    'info_video_url' => $variationValue->info_video_url, // Aggiunto il video URL
+                ])->render(),
             ]);
         }
-
+    
         return response()->json([
-            'info_description' => '',
+            'html' => view('frontend.default.pages.partials.products.variation_info', [
+                'info_name' => '',
+                'info_description' => '',
+                'info_image_id' => null,
+                'info_slider_image_ids' => null,
+                'info_video_url' => null,
+            ])->render(),
         ], 404);
     }
+    
+
 
 }

@@ -93,6 +93,75 @@
     <label for="name" class="form-label">{{ localize('Info valore variante') }}</label>
     <textarea name="info_description" class="editor" class="form-control" >{{ $variationValue->collectLocalization('info_description', $lang_key) }}</textarea>
 </div>
+
+
+<!-- New Section for Info Type -->
+<h5 class="mb-4">{{ localize('Info Media') }}</h5>
+                            
+                            <!-- Radio Input for selecting the type of info -->
+                            <div class="mb-4">
+    <label class="form-label">{{ localize('Seleziona tipo') }}</label>
+    <div class="d-flex gap-3">
+        <div>
+            <input type="radio" id="info_type_image" name="info_type" value="image" 
+                {{ $variationValue->info_image_id ? 'checked' : '' }}>
+            <label for="info_type_image">{{ localize('Immagine singola') }}</label>
+        </div>
+        <div>
+            <input type="radio" id="info_type_gallery" name="info_type" value="gallery" 
+                {{ $variationValue->info_slider_image_ids ? 'checked' : '' }}>
+            <label for="info_type_gallery">{{ localize('Galleria slide') }}</label>
+        </div>
+        <div>
+            <input type="radio" id="info_type_video" name="info_type" value="video" 
+                {{ $variationValue->info_video_url ? 'checked' : '' }}>
+            <label for="info_type_video">{{ localize('Video') }}</label>
+        </div>
+    </div>
+</div>
+
+                            <!-- Single Image Field -->
+                            <div class="mb-4 info-image-field">
+                                <label class="form-label">{{ localize('Info Image') }}</label>
+                                <div class="tt-image-drop rounded">
+                                    <span class="fw-semibold">{{ localize('Choose Image') }}</span>
+                                    <div class="tt-product-thumb show-selected-files mt-3">
+                                        <div class="avatar avatar-xl cursor-pointer choose-media"
+                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom"
+                                            onclick="showMediaManager(this)" data-selection="single">
+                                            <input type="hidden" name="info_image_id" value="{{ $variationValue->info_image_id }}">
+                                            <div class="no-avatar rounded-circle">
+                                                <span><i data-feather="plus"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Image Gallery Field -->
+                            <div class="mb-4 info-gallery-field d-none">
+                                <label class="form-label">{{ localize('Info Gallery Images') }}</label>
+                                <div class="tt-image-drop rounded">
+                                    <span class="fw-semibold">{{ localize('Choose Images') }}</span>
+                                    <div class="tt-product-thumb show-selected-files mt-3">
+                                        <div class="avatar avatar-xl cursor-pointer choose-media"
+                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom"
+                                            onclick="showMediaManager(this)" data-selection="multiple">
+                                            <input type="hidden" name="info_slider_image_ids" value="{{ $variationValue->info_slider_image_ids }}">
+                                            <div class="no-avatar rounded-circle">
+                                                <span><i data-feather="plus"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Video URL Field -->
+                            <div class="mb-4 info-video-field d-none">
+                                <label for="info_video_url" class="form-label">{{ localize('Info Video URL') }}</label>
+                                <input type="text" name="info_video_url" value="{{ $variationValue->info_video_url }}" id="info_video_url" placeholder="{{ localize('Enter Video URL') }}" class="form-control">
+                            </div>
+
                             </div>
                         </div>
                         <!--basic information end-->
@@ -134,4 +203,43 @@
 
 @section('scripts')
     @include('backend.inc.product-scripts')
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const radioInputs = document.querySelectorAll('input[name="info_type"]');
+    const infoImageField = document.querySelector('.info-image-field');
+    const infoGalleryField = document.querySelector('.info-gallery-field');
+    const infoVideoField = document.querySelector('.info-video-field');
+
+    // Funzione per aggiornare la visibilità dei campi
+    function updateInfoFields() {
+        radioInputs.forEach(function(radio) {
+            if (radio.checked) {
+                if (radio.value === 'image') {
+                    infoImageField.classList.remove('d-none');
+                    infoGalleryField.classList.add('d-none');
+                    infoVideoField.classList.add('d-none');
+                } else if (radio.value === 'gallery') {
+                    infoImageField.classList.add('d-none');
+                    infoGalleryField.classList.remove('d-none');
+                    infoVideoField.classList.add('d-none');
+                } else if (radio.value === 'video') {
+                    infoImageField.classList.add('d-none');
+                    infoGalleryField.classList.add('d-none');
+                    infoVideoField.classList.remove('d-none');
+                }
+            }
+        });
+    }
+
+    // Chiamare la funzione all'inizializzazione per impostare lo stato iniziale
+    updateInfoFields();
+
+    // Aggiungere l'evento 'change' a tutti i radio buttons
+    radioInputs.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            updateInfoFields();
+        });
+    });
+});
+</script>
 @endsection
