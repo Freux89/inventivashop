@@ -72,7 +72,7 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
     @if(!($isDisabled && $isCompletelyDisabled ))
 
     <div class="swiper-slide">
-        <div class="gallery-item-block @if (in_array($value['id'], $variation_value_ids ?? []) || ($key === 0 && empty($variation_value_ids))) selected @endif @if ($isDisabled) disabled ciao-{{$isCompletelyDisabled}} @endif" data-value-id="{{ $value['id'] }}" @if ($isDisabled && $message) data-bs-toggle="tooltip" title="{{ $message }}" @endif>
+        <div class="gallery-item-block @if (in_array($value['id'], $variation_value_ids ?? []) || ($key === 0 && empty($variation_value_ids))) selected @endif @if ($isDisabled) disabled ciao-{{$disableVariationValuesMap[$value['id']]}} @endif" data-value-id="{{ $value['id'] }}" @if ($isDisabled && $message) data-bs-toggle="tooltip" title="{{ $message }}" @endif>
             <div class="picture-box" data-test="select-Substrate-{{ $value['name'] }}">
                 <div class="inner">
                     @if($value['image'])
