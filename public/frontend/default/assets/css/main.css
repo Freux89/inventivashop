@@ -29233,7 +29233,6 @@ button.accordion-button {
     visibility: visible;
     color: #000; /* Cambia il colore della freccia (ad esempio nero) */
     display:flex !important;
-    top: calc(50% - 22px);
 }
 
 .info-swiper .swiper-button-next::after, 
