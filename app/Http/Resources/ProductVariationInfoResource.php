@@ -130,7 +130,7 @@ class ProductVariationInfoResource extends JsonResource
         $summaryBoxVariantsHtml = view('frontend.default.pages.partials.products.summary-box-variants-content', [
             'productVariations' => $filteredProductVariations,
         ])->render();
-dd($conditionEffects);
+
         return [
             'filteredIds' => $filteredIds,
             'recap_body_html' => $recapBodyHtml,
