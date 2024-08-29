@@ -807,6 +807,9 @@ if (!function_exists('prepareConditionsForVariations')) {
                             } elseif (!empty($condition->motivational_message)) {
                                 $motivationalMessages[$affectedValueId] = $condition->motivational_message;
                             }
+                            else{
+                                $motivationalMessages[$affectedValueId] = '';
+                            }
 
                             // Salva il valore di disable_variation_values
                             $disableVariationValuesMap[$affectedValueId] = $action->disable_variation_values;
