@@ -172,11 +172,18 @@ class ProductsController extends Controller
             flash(localize('Invalid product variations, please check again'))->error();
             return redirect()->back();
         }
+        $slug = Str::slug($request->name, '-');
 
+        // Verifica se esiste già un prodotto con lo stesso slug
+        $existingProduct = Product::where('slug', $slug)->first();
+        if ($existingProduct) {
+            // Slug esistente: avvisa l'utente
+            $slug = Str::slug($request->name, '-') . '-' . strtolower(Str::random(5));
+        }
         $product                    = new Product;
         $product->shop_id           = auth()->user()->shop_id;
         $product->name              = $request->name;
-        $product->slug              = Str::slug($request->name, '-') . '-' . strtolower(Str::random(5));
+        $product->slug              = $slug;
         $product->brand_id          = $request->brand_id;
         $product->unit_id           = $request->unit_id;
         $product->sell_target       = $request->sell_target;
@@ -353,10 +360,20 @@ $templates = Template::where('template_type', 'variation')->get();
         if ($product->shop_id != auth()->user()->shop_id) {
             abort(403);
         }
+        $slug = Str::slug($request->slug, '-');
 
+        // Verifica se esiste già un prodotto con lo stesso slug
+        $existingProduct = Product::where('slug', $slug)->first();
+        
+        if ($existingProduct) {
+            // Slug esistente: avvisa l'utente
+            flash(localize('Lo slug "' . $slug . '" esiste già. Scegli un altro slug per il prodotto.'))->error();
+            return redirect()->back();
+        }
         if ($request->lang_key == env("DEFAULT_LANGUAGE")) {
             $product->name              = $request->name;
-            $product->slug              = (!is_null($request->slug)) ? Str::slug($request->slug, '-') : Str::slug($request->name, '-') . '-' . strtolower(Str::random(5));
+            
+            $product->slug = $slug;            
             $product->description       = $request->description;
             $product->sell_target       = $request->sell_target;
             $product->brand_id          = $request->brand_id;

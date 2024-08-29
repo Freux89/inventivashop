@@ -70,11 +70,15 @@ class CategoriesController extends Controller
             $category->level = 0;
         }
 
-        if ($request->slug != null) {
-            $category->slug = Str::slug($request->slug);
-        } else {
-            $category->slug = Str::slug($request->name) . '-' . Str::random(5);
+        $slug = Str::slug($request->name, '-');
+
+        // Verifica se esiste già un prodotto con lo stesso slug
+        $existingCategory= Category::where('slug', $slug)->first();
+        if ($existingCategory) {
+            // Slug esistente: avvisa l'utente
+            $slug = Str::slug($request->name) . '-' . Str::random(5);
         }
+        $category->slug = $slug;
 
         $category->meta_title = $request->meta_title;
         $category->meta_description = $request->meta_description;
@@ -130,6 +134,18 @@ class CategoriesController extends Controller
             $category->name = $request->name;
             $category->thumbnail_image = $request->image;
             $category->meta_image = $request->meta_image;
+
+
+            $slug = Str::slug($request->slug, '-');
+
+        // Verifica se esiste già un prodotto con lo stesso slug
+        $existingCategory= Category::where('slug', $slug)->first();
+        
+        if ($existingCategory) {
+            // Slug esistente: avvisa l'utente
+            flash(localize('Lo slug "' . $slug . '" esiste già. Scegli un altro slug per la categoria.'))->error();
+            return redirect()->back();
+        }
 
             $category->slug = (!is_null($request->slug)) ? Str::slug($request->slug, '-') : Str::slug($request->name, '-') . '-' . strtolower(Str::random(5));
             if ($request->sorting_order_level != null) {
