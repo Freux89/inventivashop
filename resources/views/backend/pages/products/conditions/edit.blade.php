@@ -148,17 +148,17 @@
 
     conditions.forEach(function(condition, conditionIndex) {
         // Supponendo che ogni condizione abbia un array di `variantValues`
-        selectedVariantValues[conditionIndex] = condition.product_variation_id.toString();
+        selectedVariantValues[conditionIndex] = condition.variation_value_id.toString();
 
         // Preparare l'oggetto delle azioni per questa condizione
         selectedActionVariants[conditionIndex] = {};
 
         // Supponendo che ogni condizione abbia un array di `actions`
         condition.actions.forEach(function(action, actionIndex) {
-        if (action.variant_id) {
+        if (action.variation_id) {
             // Ottieni il variation_key della prima product_variation associata
             
-            selectedActionVariants[conditionIndex][actionIndex] = action.variant_id.toString();
+            selectedActionVariants[conditionIndex][actionIndex] = action.variation_id.toString();
                 
             
         }

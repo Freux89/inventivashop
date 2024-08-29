@@ -204,13 +204,15 @@ class ConditionGroupController extends Controller
     
                     foreach ($conditionData['action'] ?? [] as $actionData) {
                         $applyToAll = in_array('All', $actionData['shutdownVariantValue']);
-    
+                        $disableVariationValues = isset($actionData['disableVariationValues']) && $actionData['disableVariationValues'] == 1;
+
                         $action = new Action([
                             'condition_id' => $condition->id,
                             'action_type' => 'Spegni',
                             'variation_id' => $actionData['shutdownVariant'],
                             'motivational_message' => $actionData['motivational_message'],
                             'apply_to_all' => $applyToAll,
+                            'disable_variation_values' => $disableVariationValues,
                         ]);
                         $action->save();
     

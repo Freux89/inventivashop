@@ -9,4 +9,15 @@
         </option>
         @endforeach
     </select>
+    <!-- Checkbox per specificare il comportamento di disabilitazione -->
+<div class="col-12 mt-3">
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="disableVariationValuesCheck_{{ $conditionIndex }}_{{ $actionIndex }}" name="condition[{{ $conditionIndex }}][action][{{ $actionIndex }}][disableVariationValues]" value="1" {{ isset($disableVariationValues) && $disableVariationValues ? 'checked' : '' }}>
+        <label class="form-check-label" for="disableVariationValuesCheck_{{ $conditionIndex }}_{{ $actionIndex }}">
+            {{ localize('Disabilita i valori varianti invece di renderli opachi') }}
+        </label>
+    </div>
+    <small class="text-muted">{{ localize('Se "Tutti i valori" è selezionato, l\'intera variante sarà disabilitata.') }}</small>
+</div>
+
 </div>

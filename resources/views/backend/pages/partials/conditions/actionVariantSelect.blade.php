@@ -22,7 +22,8 @@
                     'conditionIndex' => $conditionIndex,
                     'values' => $values,
                     'selectedValuesId' => $selectedValuesId,
-                    'applyToAll' => $applyToAll
+                    'applyToAll' => $applyToAll,
+                    'disableVariationValues' => $action->disable_variation_values
         ])
     @endif
     <div class="row mt-4">

@@ -807,6 +807,9 @@ if (!function_exists('prepareConditionsForVariations')) {
                             } elseif (!empty($condition->motivational_message)) {
                                 $motivationalMessages[$affectedValueId] = $condition->motivational_message;
                             }
+
+                            // Salva il valore di disable_variation_values
+                            $disableVariationValuesMap[$affectedValueId] = $action->disable_variation_values;
                         }
                     }
                 }
@@ -834,7 +837,8 @@ if (!function_exists('prepareConditionsForVariations')) {
         // Restituisci gli array dei valori da disabilitare e dei messaggi motivazionali
         return [
             'valuesToDisable' => array_unique($valuesToDisable),
-            'motivationalMessages' => $motivationalMessages
+            'motivationalMessages' => $motivationalMessages,
+            'disableVariationValuesMap' => $disableVariationValuesMap, 
         ];
     }
 }

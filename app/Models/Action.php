@@ -14,7 +14,7 @@ class Action extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['condition_id', 'variation_id', 'action_type', 'variation_value_id', 'apply_to_all', 'motivational_message'];
+    protected $fillable = ['condition_id', 'variation_id', 'action_type', 'variation_value_id', 'apply_to_all', 'motivational_message','disable_variation_values'];
 
     public function variationValues()
     {

@@ -66,9 +66,11 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
     @php
         $isDisabled = in_array($value['id'], $conditionEffects ?? []);
         $message = $motivationalMessages[$value['id']] ?? '';
+        $isCompletelyDisabled = $disableVariationValuesMap[$value['id']] ?? 0;
         
     @endphp
-    
+    @if(!($isDisabled && $isCompletelyDisabled ))
+
     <div class="swiper-slide">
         <div class="gallery-item-block @if (in_array($value['id'], $variation_value_ids ?? []) || ($key === 0 && empty($variation_value_ids))) selected @endif @if ($isDisabled) disabled @endif" data-value-id="{{ $value['id'] }}" @if ($isDisabled && $message) data-bs-toggle="tooltip" title="{{ $message }}" @endif>
             <div class="picture-box" data-test="select-Substrate-{{ $value['name'] }}">
@@ -95,6 +97,7 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
             @endif
         </div>
     </div>
+    @endif
     @endforeach
     </div>
     <div class="swiper-button-next"></div>
@@ -109,7 +112,10 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
     @php
         $isDisabled = in_array($value['id'], $conditionEffects ?? []);
         $message = $motivationalMessages[$value['id']] ?? '';
+        $isCompletelyDisabled = $disableVariationValuesMap[$value['id']] ?? 0;
     @endphp
+    @if(!($isDisabled && $isCompletelyDisabled ))
+
     <div class="grid-item mb-4 @if (in_array($value['id'], $variation_value_ids ?? []) || ($key === 0 && empty($variation_value_ids))) selected @endif @if ($isDisabled) disabled @endif" data-value-id="{{ $value['id'] }}" @if ($isDisabled && $message) data-bs-toggle="tooltip" title="{{ $message }}" @endif>
         <div class="gallery-item-block">
             <div class="picture-box" data-test="select-Substrate-{{ $value['name'] }}">
@@ -132,6 +138,7 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
             @endif
         </div>
     </div>
+    @endif
     @endforeach
 </div>
 <div id="grid-info-description">
@@ -147,8 +154,11 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
     @php
         $isDisabled = in_array($value['id'], $conditionEffects ?? []);
         $message = $motivationalMessages[$value['id']] ?? '';
+        $isCompletelyDisabled = $disableVariationValuesMap[$value['id']] ?? 0;
     @endphp
+    @if(!($isDisabled && $isCompletelyDisabled ))
     <option value="{{ $value['id'] }}" {{ in_array($value['id'], $variation_value_ids ?? []) ? 'selected' : '' }} {{ $isDisabled  ? 'disabled' : '' }}>{{ $value['name'] }}</option>
+    @endif
     @endforeach
 </select>
 @endif

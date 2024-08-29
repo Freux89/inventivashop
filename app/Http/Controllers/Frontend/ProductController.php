@@ -213,6 +213,7 @@ class ProductController extends Controller
             'variation_value_ids' => $selectedVariantValueIds,
             'conditionEffects' => $conditionEffects['valuesToDisable'],
             'motivationalMessages' => $conditionEffects['motivationalMessages'],
+            'disableVariationValuesMap' => $conditionEffects['disableVariationValuesMap'],
             'indicativeDeliveryDays' => $indicativeDeliveryDays,
             'netPrice' => formatPrice($netPrice),
             'netPriceFloat' => $netPrice,
