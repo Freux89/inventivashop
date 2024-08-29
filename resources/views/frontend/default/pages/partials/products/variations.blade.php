@@ -66,7 +66,7 @@ usort($variation['values'], function ($a, $b) use ($conditionEffects) {
     @php
         $isDisabled = in_array($value['id'], $conditionEffects ?? []);
         $message = $motivationalMessages[$value['id']] ?? '';
-        $isCompletelyDisabled = $disableVariationValuesMap[$value['id']] ?? 0;
+        $isCompletelyDisabled = (int) ($disableVariationValuesMap[$value['id']] ?? 0);
         
     @endphp
     @if(!($isDisabled && $isCompletelyDisabled ))
