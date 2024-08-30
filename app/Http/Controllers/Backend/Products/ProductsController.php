@@ -363,8 +363,9 @@ $templates = Template::where('template_type', 'variation')->get();
         $slug = Str::slug($request->slug, '-');
 
         // Verifica se esiste già un prodotto con lo stesso slug
-        $existingProduct = Product::where('slug', $slug)->first();
         
+        $existingProduct = Product::where('slug', $slug)->where('id', '!=', $product->id)->first();
+
         if ($existingProduct) {
             // Slug esistente: avvisa l'utente
             flash(localize('Lo slug "' . $slug . '" esiste già. Scegli un altro slug per il prodotto.'))->error();

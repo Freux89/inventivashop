@@ -139,7 +139,7 @@ class CategoriesController extends Controller
             $slug = Str::slug($request->slug, '-');
 
         // Verifica se esiste già un prodotto con lo stesso slug
-        $existingCategory= Category::where('slug', $slug)->first();
+        $existingCategory= Category::where('slug', $slug)->where('id', '!=', $category->id)->first();
         
         if ($existingCategory) {
             // Slug esistente: avvisa l'utente

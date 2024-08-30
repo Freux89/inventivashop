@@ -55,4 +55,9 @@ class Category extends Model
     {
         return $this->belongsToMany(Category::class, 'category_relations', 'category_id', 'related_category_id');
     }
+
+    public function workflows()
+    {
+        return $this->belongsToMany(Workflow::class, 'category_workflow');
+    }
 }

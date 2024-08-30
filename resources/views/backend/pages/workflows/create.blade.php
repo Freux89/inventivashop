@@ -51,6 +51,28 @@
                     </div>
                     <!--basic information end-->
 
+<!-- Nuova Sezione per le Categorie -->
+<div class="card mb-4 ">
+    <div class="card-body ">
+        <h5 class="mb-4">{{ localize('A quali categorie vuoi applicare questa lavorazione?') }}</h5>
+        <div class="mb-3">
+            <input type="text" id="searchCategories" placeholder="Cerca categorie..." class="form-control">
+        </div>
+        <div class="card-fixed-height" id="categories">
+            @foreach($categories as $category)
+            <div class="mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="categories[]" id="category_{{ $category->id }}" value="{{ $category->id }}">
+                    <label class="form-check-label" for="category_{{ $category->id }}">
+                        {{ $category->name }}
+                    </label>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
                     <div class="card mb-4 ">
                         <div class="card-body ">
                             <h5 class="mb-4">{{ localize('A quali prodotti vuoi applicare questa lavorazione?') }}</h5>
@@ -182,6 +204,21 @@
 
                 // Mostra il prodotto se il nome corrisponde al filtro
                 productDiv.style.display = productName.toUpperCase().includes(filter) ? "" : "none";
+            });
+        });
+
+
+        document.getElementById("searchCategories").addEventListener("keyup", function() {
+            let input = this;
+            let filter = input.value.toUpperCase();
+            let categoriesContainer = document.getElementById("categories");
+            let categoryDivs = categoriesContainer.querySelectorAll(".mb-3");
+
+            categoryDivs.forEach(function(categoryDiv) {
+                let categoryLabel = categoryDiv.querySelector(".form-check-label");
+                let categoryName = categoryLabel.textContent || categoryLabel.innerText;
+
+                categoryDiv.style.display = categoryName.toUpperCase().includes(filter) ? "" : "none";
             });
         });
     });

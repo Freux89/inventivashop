@@ -19,4 +19,9 @@ class Workflow extends Model
     {
         return $this->belongsToMany(VariationValue::class, 'variation_value_workflows');
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_workflow');
+    }
 }

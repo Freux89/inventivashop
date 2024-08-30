@@ -80,6 +80,12 @@
                                         </td>
                                         <td>{{ $workflow->duration }} {{localize('giorni')}}</td>
                                         <td> <span style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-html="true" title="
+                                        @if($workflow->categories->isNotEmpty())
+        Categorie:<br>
+        @foreach($workflow->categories as $category)
+            {{ $category->name }}<br>
+        @endforeach
+    @endif                                    
     @if($workflow->products->isNotEmpty())
         Prodotti:<br>
         @foreach($workflow->products as $product)
@@ -93,10 +99,10 @@
         @endforeach
     @endif
     ">
-                                                {{ $workflow->products->count() + $workflow->variationValues->count() }}
+                                                {{ $workflow->categories->count() + $workflow->products->count() + $workflow->variationValues->count() }}
                                             </span></td>
-                                            <td>{{ optional($workflow->created_at)->format('d/m/Y H:i') }}</td>
-                                            <td>{{ optional($workflow->updated_at)->format('d/m/Y H:i') }}</td>
+                                        <td>{{ optional($workflow->created_at)->format('d/m/Y H:i') }}</td>
+                                        <td>{{ optional($workflow->updated_at)->format('d/m/Y H:i') }}</td>
                                         <!-- <td>
                                             <div class="form-check form-switch">
                                                 <input type="checkbox" class="form-check-input" onchange="updateStatus(this)" @if ($workflow->is_active) checked @endif
@@ -125,16 +131,16 @@
                                     @endforeach
                                 </tbody>
                             </table>
-<!--pagination start-->
-<div class="d-flex align-items-center justify-content-between px-4 pb-4">
-                        <span>{{ localize('Showing') }}
-                            {{ $workflows->firstItem() }}-{{ $workflows->lastItem() }} {{ localize('of') }}
-                            {{ $workflows->total() }} {{ localize('results') }}</span>
-                        <nav>
-                            {{ $workflows->appends(request()->input())->links() }}
-                        </nav>
-                    </div>
-                    <!--pagination end-->
+                            <!--pagination start-->
+                            <div class="d-flex align-items-center justify-content-between px-4 pb-4">
+                                <span>{{ localize('Showing') }}
+                                    {{ $workflows->firstItem() }}-{{ $workflows->lastItem() }} {{ localize('of') }}
+                                    {{ $workflows->total() }} {{ localize('results') }}</span>
+                                <nav>
+                                    {{ $workflows->appends(request()->input())->links() }}
+                                </nav>
+                            </div>
+                            <!--pagination end-->
 
                         </div>
                     </div>

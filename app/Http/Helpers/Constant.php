@@ -977,8 +977,8 @@ if (!function_exists('indicativeDeliveryDays')) {
         // Ottieni il tempo medio di spedizione dalla zona di spedizione più veloce
         $fastestShipping = LogisticZone::min('average_delivery_days') ?? 0;
 
-        // Ottieni la durata della lavorazione del prodotto
-        $productWorkDuration = $product->workflows()->first()->duration ?? 0;
+        
+        $effectiveDuration = getEffectiveWorkDuration($product);
 
         // Calcola la durata totale delle lavorazioni delle varianti selezionate
         $variantsWorkDuration = 0;
@@ -996,11 +996,36 @@ if (!function_exists('indicativeDeliveryDays')) {
         }
 
         // La consegna indicativa è la somma dei giorni di lavorazione del prodotto, delle varianti e dei giorni di spedizione
-        $indicativeDeliveryDays = $productWorkDuration + $variantsWorkDuration + $fastestShipping;
+        $indicativeDeliveryDays = $effectiveDuration + $variantsWorkDuration + $fastestShipping;
 
         return $indicativeDeliveryDays;
     }
 }
+
+
+if (!function_exists('getEffectiveWorkDuration')) {
+    function getEffectiveWorkDuration($product)
+    {
+        // Recupera la durata della lavorazione del prodotto
+        $productWorkDuration = $product->workflows()->first()->duration ?? 0;
+    
+        // Se il prodotto ha una durata di lavorazione specificata, restituiscila
+        if ($productWorkDuration > 0) {
+            return $productWorkDuration;
+        }
+    
+        // Se il prodotto non ha giorni di lavorazione, controlla le categorie
+        $categoryDurations = $product->categories->map(function($category) {
+            return $category->workflows()->first()->duration ?? 0;
+        });
+    
+        // Trova la durata massima tra tutte le categorie
+        $maxCategoryDuration = $categoryDurations->max() ?? 0;
+    
+        return $maxCategoryDuration;
+    }
+}
+
 
 if (!function_exists('variationTaxAmount')) {
     // return tax of a variation

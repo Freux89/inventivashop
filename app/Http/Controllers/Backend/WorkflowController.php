@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Workflow;
 use App\Models\Variation;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\VariationValue;
 
 class WorkflowController extends Controller
@@ -43,16 +44,17 @@ class WorkflowController extends Controller
     {
         $products = Product::all(); // Recupera tutti i prodotti
         $variations = Variation::all(); // Recupera tutti i valori delle varianti
-
-        return view('backend.pages.workflows.create', compact('products', 'variations')); // Restituisce la vista per creare una nuova lavorazione
+        $categories = Category::all();
+        return view('backend.pages.workflows.create', compact('products', 'variations', 'categories')); // Restituisce la vista per creare una nuova lavorazione
     }
 
     public function edit($id)
     {
+        $categories = Category::all();
         $products = Product::all(); // Recupera tutti i prodotti
         $variations = Variation::all(); // Recupera tutti i valori delle varianti
         $workflow = Workflow::findOrFail($id); // Trova la lavorazione per ID o fallisce
-        return view('backend.pages.workflows.edit', compact('workflow', 'products', 'variations'));
+        return view('backend.pages.workflows.edit', compact('workflow', 'products', 'variations', 'categories'));
     }
 
 
@@ -75,6 +77,20 @@ class WorkflowController extends Controller
         $workflow->name = $request->name;
         $workflow->duration = $request->duration;
         $workflow->save();
+
+ // Gestione delle associazioni delle categorie
+ if ($request->has('categories')) {
+    foreach ($request->categories as $categoryId) {
+        // Rimuovi l'associazione della categoria da altre lavorazioni
+        Workflow::whereHas('categories', function ($query) use ($categoryId) {
+            $query->where('categories.id', $categoryId);
+        })->each(function ($workflow) use ($categoryId) {
+            $workflow->categories()->detach($categoryId);
+        });
+    }
+    // Associa le categorie selezionate alla nuova lavorazione
+    $workflow->categories()->attach($request->categories);
+}
 
         // Associazione dei prodotti selezionati alla lavorazione
         if ($request->has('products')) {
@@ -127,7 +143,21 @@ class WorkflowController extends Controller
         $workflow->name = $request->name;
         $workflow->duration = $request->duration;
         $workflow->save();
-
+// Gestione delle categorie associate
+if ($request->has('categories')) {
+    foreach ($request->categories as $categoryId) {
+        // Rimuovi l'associazione della categoria da altre lavorazioni
+        Workflow::whereHas('categories', function ($query) use ($categoryId) {
+            $query->where('categories.id', $categoryId);
+        })->each(function ($workflow) use ($categoryId) {
+            $workflow->categories()->detach($categoryId);
+        });
+    }
+    // Associazione delle categorie selezionate alla nuova lavorazione
+    $workflow->categories()->sync($request->categories);
+} else {
+    $workflow->categories()->detach(); // Rimuove tutte le associazioni se nessuna categoria è selezionata
+}
         // Gestione dei prodotti associati
         if ($request->has('products')) {
             foreach ($request->products as $productId) {
@@ -163,8 +193,10 @@ $workflow->variationValues()->sync($request->variation_values);
 
     public function delete($id)
     {
+        
         $workflow = Workflow::findOrFail($id);
 
+        $workflow->categories()->detach();
         // Rimuove le associazioni con i prodotti
         $workflow->products()->detach();
 
