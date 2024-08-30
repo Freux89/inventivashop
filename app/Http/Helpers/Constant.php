@@ -743,7 +743,7 @@ if (!function_exists('prepareConditionsForVariations')) {
         $valuesToDisable = [];
         $motivationalMessages = [];
         $checkedVariationValueIds = [];
-
+        $disableVariationValuesMap = [];
        
        // Ottieni gli ID dei valori delle varianti dalla collezione di varianti iniziali (sia prodotto che template)
     $initialVariationValueIds = collect($initialVariations)->map(function ($variation) {
@@ -972,13 +972,13 @@ if (!function_exists('variationDiscountedPrice')) {
 
 
 if (!function_exists('indicativeDeliveryDays')) {
-    function indicativeDeliveryDays($product, $variations)
+    function indicativeDeliveryDays($product, $variations,$selectedQuantity)
     {
         // Ottieni il tempo medio di spedizione dalla zona di spedizione più veloce
         $fastestShipping = LogisticZone::min('average_delivery_days') ?? 0;
 
         
-        $effectiveDuration = getEffectiveWorkDuration($product);
+        $effectiveDuration = getEffectiveWorkDuration($product,$selectedQuantity);
 
         // Calcola la durata totale delle lavorazioni delle varianti selezionate
         $variantsWorkDuration = 0;
@@ -990,7 +990,16 @@ if (!function_exists('indicativeDeliveryDays')) {
             // Cerca l'oggetto VariationValue usando l'ID estratto
             $variationValue = VariationValue::find($variationValueId);
             if ($variationValue) {
-                $workDuration = $variationValue->workflows()->first()->duration ?? 0;
+                // Recupera il workflow associato al valore della variante
+                $variationWorkflow = $variationValue->workflows()->first();
+                $workDuration = $variationWorkflow->duration ?? 0;
+
+                // Calcola l'aumento della durata in base alla quantità della variante
+                if ($variationWorkflow && $variationWorkflow->quantity > 0 && $variationWorkflow->increase_duration > 0) {
+                    $increments = floor($selectedQuantity / $variationWorkflow->quantity); 
+                    $workDuration += $increments * $variationWorkflow->increase_duration; 
+                }
+
                 $variantsWorkDuration += $workDuration;
             }
         }
@@ -1004,26 +1013,46 @@ if (!function_exists('indicativeDeliveryDays')) {
 
 
 if (!function_exists('getEffectiveWorkDuration')) {
-    function getEffectiveWorkDuration($product)
-    {
-        // Recupera la durata della lavorazione del prodotto
-        $productWorkDuration = $product->workflows()->first()->duration ?? 0;
-    
-        // Se il prodotto ha una durata di lavorazione specificata, restituiscila
-        if ($productWorkDuration > 0) {
-            return $productWorkDuration;
+    function getEffectiveWorkDuration($product, $selectedQuantity)
+{
+    // Recupera il primo workflow associato al prodotto
+    $productWorkflow = $product->workflows()->first();
+    $productWorkDuration = $productWorkflow->duration ?? 0;
+
+    // Se il prodotto ha una durata di lavorazione specificata, calcola l'aumento basato su quantity e increase_duration
+    if ($productWorkDuration > 0) {
+        // Calcola l'incremento della durata se il prodotto ha un workflow associato con quantity e increase_duration
+        if ($productWorkflow->quantity > 0 && $productWorkflow->increase_duration > 0) {
+            // Calcola quanti incrementi si applicano in base alla quantità selezionata
+            $increments = floor($selectedQuantity / $productWorkflow->quantity); 
+            // Aumenta la durata in base agli incrementi calcolati
+            $productWorkDuration += $increments * $productWorkflow->increase_duration; 
         }
-    
-        // Se il prodotto non ha giorni di lavorazione, controlla le categorie
-        $categoryDurations = $product->categories->map(function($category) {
-            return $category->workflows()->first()->duration ?? 0;
-        });
-    
-        // Trova la durata massima tra tutte le categorie
-        $maxCategoryDuration = $categoryDurations->max() ?? 0;
-    
-        return $maxCategoryDuration;
+        return $productWorkDuration;
     }
+
+    // Se il prodotto non ha una lavorazione, controlla le categorie per la lavorazione
+    $categoryDurations = $product->categories->map(function($category) use ($selectedQuantity) {
+        $categoryWorkflow = $category->workflows()->first();
+        $categoryDuration = $categoryWorkflow->duration ?? 0;
+
+        // Calcola l'incremento della durata se la categoria ha un workflow associato con quantity e increase_duration
+        if ($categoryWorkflow && $categoryWorkflow->quantity > 0 && $categoryWorkflow->increase_duration > 0) {
+            // Calcola quanti incrementi si applicano in base alla quantità selezionata
+            $increments = floor($selectedQuantity / $categoryWorkflow->quantity); 
+            // Aumenta la durata in base agli incrementi calcolati
+            $categoryDuration += $increments * $categoryWorkflow->increase_duration; 
+        }
+
+        return $categoryDuration;
+    });
+
+    // Trova la durata massima tra tutte le categorie
+    $maxCategoryDuration = $categoryDurations->max() ?? 0;
+
+    return $maxCategoryDuration;
+}
+
 }
 
 

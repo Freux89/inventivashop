@@ -180,7 +180,7 @@ class ProductController extends Controller
             }
         }
 
-        $indicativeDeliveryDays = indicativeDeliveryDays($product, $uniqueFilteredVariations);
+        $indicativeDeliveryDays = indicativeDeliveryDays($product, $uniqueFilteredVariations,1);
 
         // Calcolo dei prezzi
         $priceWithTax = variationPrice($product, $uniqueFilteredVariations);

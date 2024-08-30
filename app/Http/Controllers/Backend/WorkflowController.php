@@ -66,6 +66,8 @@ class WorkflowController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:workflows,name',
             'duration' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1',
+            'increase_duration' => 'required|integer|min:0',
             'products' => 'nullable|array',
             'products.*' => 'exists:products,id',
             'variation_values' => 'nullable|array',
@@ -76,6 +78,8 @@ class WorkflowController extends Controller
         $workflow = new Workflow();
         $workflow->name = $request->name;
         $workflow->duration = $request->duration;
+        $workflow->quantity = $request->quantity; // Salva il valore di 'quantity'
+        $workflow->increase_duration = $request->increase_duration;
         $workflow->save();
 
  // Gestione delle associazioni delle categorie
@@ -133,6 +137,8 @@ class WorkflowController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:workflows,name,' . $workflow->id,
             'duration' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1',
+            'increase_duration' => 'required|integer|min:0',
             'products' => 'nullable|array',
             'products.*' => 'exists:products,id',
             'variation_values' => 'nullable|array',
@@ -142,6 +148,8 @@ class WorkflowController extends Controller
         // Aggiornamento della lavorazione
         $workflow->name = $request->name;
         $workflow->duration = $request->duration;
+        $workflow->quantity = $request->quantity; // Salva il valore di 'quantity'
+        $workflow->increase_duration = $request->increase_duration;
         $workflow->save();
 // Gestione delle categorie associate
 if ($request->has('categories')) {

@@ -47,6 +47,22 @@
                                 </span>
                             </div>
 
+                            <div class="mb-4">
+    <label for="quantity" class="form-label">{{ localize('Quantità per Aumento Durata') }}</label>
+    <input class="form-control" type="number" id="quantity" placeholder="{{ localize('Inserisci la quantità per aumentare la durata') }}" name="quantity" value="{{ $workflow->quantity ?? 1 }}" required min="1">
+    <span class="fs-sm text-muted">
+        {{ localize('Specifica ogni quante unità di quantità deve aumentare la durata della lavorazione. Il valore deve essere un numero intero positivo.') }}
+    </span>
+</div>
+
+<div class="mb-4">
+    <label for="increase_duration" class="form-label">{{ localize('Aumento Durata (giorni)') }}</label>
+    <input class="form-control" type="number" id="increase_duration" placeholder="{{ localize('Inserisci l\'aumento di durata in giorni') }}" name="increase_duration" value="{{ $workflow->increase_duration ?? 0 }}" required min="0">
+    <span class="fs-sm text-muted">
+        {{ localize('Specifica quanti giorni deve aumentare la durata della lavorazione per ogni quantità specificata. Il valore deve essere un numero intero.') }}
+    </span>
+</div>
+
                             <!-- Resto del modulo omesso per brevità -->
 
                         </div>

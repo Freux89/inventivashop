@@ -73,7 +73,7 @@ class ProductVariationInfoResource extends JsonResource
 
         $filteredIds = $filteredProductVariations->isEmpty() ? [] : $filteredProductVariations->pluck('id')->toArray();
 
-        $indicativeDeliveryDays = indicativeDeliveryDays($product, $filteredProductVariations);
+        $indicativeDeliveryDays = indicativeDeliveryDays($product, $filteredProductVariations,$this->quantity);
         
         $selectedVariantValueIds = $filteredProductVariations->pluck('variation_value_id')->toArray();;
 
