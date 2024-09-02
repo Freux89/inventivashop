@@ -11,6 +11,7 @@ class CategoryLocalization extends Model
 
     protected $fillable = [
         'name',
+        'description',
         'category_id',
         'lang_key',
     ];

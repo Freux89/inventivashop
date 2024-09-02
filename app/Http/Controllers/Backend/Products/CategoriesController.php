@@ -53,6 +53,7 @@ class CategoriesController extends Controller
     {
         $category = new Category;
         $category->name = $request->name;
+        $category->description = $request->description;
         $category->sorting_order_level = 0;
         $category->thumbnail_image = $request->image;
         $category->meta_image = $request->meta_image;
@@ -88,6 +89,7 @@ class CategoriesController extends Controller
 
         $categoryLocalization = CategoryLocalization::firstOrNew(['lang_key' => env('DEFAULT_LANGUAGE'), 'category_id' => $category->id]);
         $categoryLocalization->name = $category->name;
+        $categoryLocalization->description = $request->description;
         $categoryLocalization->meta_title = $category->meta_title;
         $categoryLocalization->meta_description = $category->meta_description;
         $categoryLocalization->thumbnail_image = $request->image;
@@ -132,6 +134,7 @@ class CategoriesController extends Controller
 
         if ($request->lang_key == env("DEFAULT_LANGUAGE")) {
             $category->name = $request->name;
+            $category->description = $request->description;
             $category->thumbnail_image = $request->image;
             $category->meta_image = $request->meta_image;
 
@@ -179,6 +182,7 @@ class CategoriesController extends Controller
 
         $categoryLocalization = CategoryLocalization::firstOrNew(['lang_key' => $request->lang_key, 'category_id' => $category->id]);
         $categoryLocalization->name = $request->name;
+        $categoryLocalization->description = $request->description;
         $categoryLocalization->meta_title = $request->meta_title;
         $categoryLocalization->meta_description = $request->meta_description;
         $categoryLocalization->thumbnail_image = $request->image;

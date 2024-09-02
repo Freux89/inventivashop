@@ -37,7 +37,11 @@
                                     <input class="form-control" type="text" id="name"
                                         placeholder="{{ localize('Type your category name') }}" name="name" required>
                                 </div>
-
+                                <div class="mb-4">
+    <label for="description" class="form-label">{{ localize('Descrizione') }}</label>
+    <textarea class="form-control editor" id="description"
+         name="description" rows="4"></textarea>
+</div>
                                 <div class="mb-4">
                                     <label for="parent_id" class="form-label">{{ localize('Base Category') }}</label>
                                     <select class="form-control select2" name="parent_id" class="w-100"

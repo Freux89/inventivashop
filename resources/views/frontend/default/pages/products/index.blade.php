@@ -38,7 +38,7 @@ $agent = new \Jenssegers\Agent\Agent;
                         </nav>
                     </div>
                     <h1 class="mb-2 mt-4 mt-lg-0">{{ $category ? $category->name : ($tag ? $tag->name : localize('Products')) }} </h1>
-                    <p>Nel competitivo settore alberghiero, la prima impressione è fondamentale per impressionare i clienti e fidelizzarli. La segnaletica all’interno di un hotel svolge un ruolo cruciale nell’orientare gli ospiti, creare un’esperienza di soggiorno piacevole e garantire un flusso efficiente all’interno della struttura.</p>
+                    <div>{!! $category->description !!}</div>
                 </div>
 
             </div>

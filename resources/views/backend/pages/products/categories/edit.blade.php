@@ -60,7 +60,10 @@
     <label for="slug" class="form-label">{{ localize('Slug') }}</label>
     <input class="form-control" type="text" id="slug"  name="slug" required value="{{ $category->slug }}">
 </div>
-
+<div class="mb-4">
+    <label for="description" class="form-label">{{ localize('Descrizione') }}</label>
+    <textarea class="form-control editor" id="description" name="description" rows="4">{{ $category->collectLocalization('description') }}</textarea>
+</div>
                             @if (env('DEFAULT_LANGUAGE') == $lang_key)
                             <div class="mb-4">
                                 <label for="parent_id" class="form-label">{{ localize('Base Category') }}</label>
