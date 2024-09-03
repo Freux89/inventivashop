@@ -139,36 +139,38 @@ jQuery(function ($) {
         speed: 700,
         loop: true,
         loopedSlides: 6,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        on: {
+            init: function() {
+                adjustThumbnailHeight();
+            },
+            resize: function() {
+                adjustThumbnailHeight();
+            }
+        }
     });
+    
     let productThumbnailSlider = new Swiper(".product-thumbnail-slider", {
-        slidesPerView: 4,
+        slidesPerView: 4, // Visualizza 4 thumbnails alla volta
+        direction: 'vertical', 
         speed: 700,
         loop: true,
-        spaceBetween: 20,
+        spaceBetween: 10,
         slideToClickedSlide: true,
-        loopedSlides: 6,
-        centeredSlides: true,
-        breakpoints: {
-            0: {
-                slidesPerView: 2,
-            },
-            380: {
-                slidesPerView: 3,
-            },
-            576: {
-                slidesPerView: 4,
-            },
-        },
+        loopAdditionalSlides: 4, // Aggiunge slide addizionali per un loop più fluido
+        centeredSlides: false, // Disabilita il centraggio delle slides per partire dalla prima
+        initialSlide: 0, // Inizia dalla prima slide
+        watchSlidesVisibility: true,
+        watchSlidesProgress: true,
     });
-    if (quickViewProductSlider && quickViewProductSlider.length > 0) {
-        quickViewProductSlider.forEach(function (item, index) {
-            item.controller.control = productThumbnailSlider[index];
-            productThumbnailSlider[index].controller.control = item;
-        });
-    } else {
-        quickViewProductSlider.controller.control = productThumbnailSlider;
-        productThumbnailSlider.controller.control = quickViewProductSlider;
-    }
+    
+    quickViewProductSlider.controller.control = productThumbnailSlider;
+    productThumbnailSlider.controller.control = quickViewProductSlider;
+    
+    
     let rlProductSlider = new Swiper(".rl-products-slider", {
         slidesPerView: 4,
         speed: 700,

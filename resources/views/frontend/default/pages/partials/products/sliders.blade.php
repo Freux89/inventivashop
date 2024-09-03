@@ -1,12 +1,12 @@
 @section('styles')
 <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
 @endsection
-
-<div class="quickview-double-slider">
-    @php
+@php
         $galleryImages = explode(',', $product->gallery_images);
     @endphp
-    <div class="quickview-product-slider swiper">
+    <div class="quickview-double-slider d-flex" >
+    <!-- Slider principale del prodotto -->
+    <div class="quickview-product-slider swiper me-1" style="width: 80%;">
         <div class="swiper-wrapper">
             @foreach ($galleryImages as $galleryImage)
                 <div class="swiper-slide text-center">
@@ -17,16 +17,33 @@
             @endforeach
         </div>
     </div>
-    <div class="product-thumbnail-slider swiper mt-80">
+    <!-- Slider delle thumbnails -->
+    <div class="product-thumbnail-slider swiper" style="width: 20%;">
         <div class="swiper-wrapper">
             @foreach ($galleryImages as $galleryImage)
-                <div
-                    class="swiper-slide product-thumb-single rounded-2 d-flex align-items-center justify-content-center">
-                    <img src="{{ uploadedAsset($galleryImage) }}?thumb"
-                        alt="{{ $product->collectLocalization('name') }}" class="img-fluid">
+                <div class="swiper-slide product-thumb-single rounded-2 d-flex align-items-center justify-content-center">
+                    <img src="{{ uploadedAsset($galleryImage) }}?thumb" alt="{{ $product->collectLocalization('name') }}" class="img-fluid">
                 </div>
             @endforeach
         </div>
     </div>
 </div>
+<script>
+  function adjustThumbnailHeight() {
+    const productSliderHeight = document.querySelector('.quickview-product-slider .swiper-slide-active img').clientHeight;
+    const thumbnailSlider = document.querySelector('.product-thumbnail-slider');
+
+    if (thumbnailSlider) {
+        thumbnailSlider.style.height = `${productSliderHeight}px`; // Imposta l'altezza delle thumbnails uguale allo slider principale
+
+        const slides = document.querySelectorAll('.product-thumbnail-slider .swiper-slide');
+        slides.forEach(slide => {
+            slide.style.height = `calc((100% - 40px) / 4)`; // Distribuisce equamente l'altezza per 4 slides
+        });
+    }
+}
+
+
+
+</script>
 

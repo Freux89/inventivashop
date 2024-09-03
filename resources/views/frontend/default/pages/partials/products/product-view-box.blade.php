@@ -1,7 +1,7 @@
 <div class="gstore-product-quick-view bg-white rounded-3 py-6">
     @include('frontend.default.pages.products.inc.breadcrumb')
     <div class="row g-4">
-        <div class="col-xl-6 position-relative">
+        <div class="col-xl-7 position-relative">
             <div class="product-info pe-md-4">
 
                 <h1 class="mt-80 mb-3">{{ $product->collectLocalization('name') }}</h1>
@@ -11,7 +11,7 @@
             </div>
 
         </div>
-        <div class="col-xl-6 align-self-end">
+        <div class="col-xl-5 align-self-end">
             <!-- sliders -->
             @include('frontend.default.pages.partials.products.sliders', compact('product'))
             <!-- sliders -->
