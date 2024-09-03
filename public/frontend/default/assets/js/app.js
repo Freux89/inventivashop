@@ -139,10 +139,7 @@ jQuery(function ($) {
         speed: 700,
         loop: true,
         loopedSlides: 6,
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
+        
         on: {
             init: function() {
                 adjustThumbnailHeight();
