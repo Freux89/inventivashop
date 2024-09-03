@@ -12338,9 +12338,9 @@ progress {
     width: 100%;
     padding: 15px 15px;
     font-size: 1rem;
-    font-weight: 400;
+    font-weight: 600;
     line-height: 1.5;
-    color: #5d6374;
+    color: var(--in-primary-3);
     background-clip: padding-box;
     border: 1px solid rgb(196 196 196);
     -webkit-appearance: none;
