@@ -35,9 +35,13 @@
             <span class="fs-sm text-muted">{{ localize('Imposta la grandezza del sottotitolo in px.') }}</span>
         </div>
         <div class="col-md-3">
-            <label for="subtitleColor" class="form-label">{{ localize('Colore del Sottotitolo') }}</label>
-            <input class="form-control color-picker" type="color" id="subtitleColor" name="subtitleColor" value="{{ isset($item->settings['subtitleColor']) ? $item->settings['subtitleColor'] : '' }}">
-            <span class="fs-sm text-muted">{{ localize('Scegli il colore del titolo.') }}</span>
+        <x-color-picker 
+    id="subtitleColor" 
+    name="subtitleColor" 
+    value="{{ old('subtitleColor', $item->settings['subtitleColor'] ?? '') }}"
+    label="{{ localize('Colore del Sottotitolo') }}"
+/>
+<span class="fs-sm text-muted">{{ localize('Scegli il colore del titolo.') }}</span>
         </div>
 
     </div>
@@ -74,9 +78,13 @@
             <span class="fs-sm text-muted">{{ localize('Inserisci il testo che apparirà sul pulsante.') }}</span>
         </div>
         <div class="col-md-2">
-            <label for="buttonTextColor" class="form-label">{{ localize('Colore Pulsante') }}</label>
-            <input class="form-control color-picker" type="color" id="buttonTextColor" name="buttonTextColor" value="{{ isset($item->settings['buttonTextColor']) ? $item->settings['buttonTextColor'] : '' }}">
-            <span class="fs-sm text-muted">{{ localize('Scegli il colore del testo del pulsante.') }}</span>
+        <x-color-picker 
+    id="buttonTextColor" 
+    name="buttonTextColor" 
+    value="{{ old('buttonTextColor', $item->settings['buttonTextColor'] ?? '') }}"
+    label="{{ localize('Colore Pulsante') }}"
+/>
+ <span class="fs-sm text-muted">{{ localize('Scegli il colore del testo del pulsante.') }}</span>
         </div>
         <div class="col-md-3">
             <label for="buttonUrl" class="form-label">{{ localize('URL del Pulsante') }}</label>

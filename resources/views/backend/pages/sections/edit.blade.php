@@ -71,8 +71,15 @@ $currentItemsCount = count($section->items); // Numero attuale di colonne presen
                                     <input class="form-control" type="number" id="titleSize" name="settings[titleSize]" value="{{ isset($section->settings['titleSize']) ? $section->settings['titleSize'] : '30' }}" min="10" max="72">
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="titleColor" class="form-label">{{ localize('Colore Titolo') }}</label>
-                                    <input type="color" class="form-control color-picker" id="titleColor" name="settings[titleColor]" value="{{ old('settings.titleColor', $section->settings['titleColor'] ?? '#105862') }}">
+                                <x-color-picker 
+    id="titleColor" 
+    name="settings[titleColor]" 
+    value="{{ old('settings.titleColor', $section->settings['titleColor'] ?? '#105862') }}"
+    label="Colore del Titolo"
+/>
+
+
+
                                 </div>
 
                                 <div class="col-md-3 mb-3">
@@ -103,8 +110,13 @@ $currentItemsCount = count($section->items); // Numero attuale di colonne presen
                                     <strong>{{ localize('Sfondo') }}</strong>
                                 </div>
                                 <div class="col-md-12 mb-3">
-                                    <label for="backgroundColor" class="form-label">{{ localize('Colore Sfondo') }}</label>
-                                    <input type="color" class="form-control color-picker" id="backgroundColor" name="settings[backgroundColor]" value="{{ old('settings.backgroundColor', $section->settings['backgroundColor'] ?? '#ffffff') }}">
+                                <x-color-picker 
+    id="backgroundColor" 
+    name="settings[backgroundColor]" 
+    value="{{ old('settings.backgroundColor', $section->settings['backgroundColor'] ?? '#ffffff') }}"
+    label="{{ localize('Colore Sfondo') }}"
+/>
+    
                                 </div>
 
                                 <div class="col-md-4">
@@ -142,9 +154,13 @@ $currentItemsCount = count($section->items); // Numero attuale di colonne presen
     </div>
 </section>
 @endsection
+@section('scripts')
+
 
 @if($section->type == 'columns')
-@section('scripts')
+
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var currentValidLayout = document.getElementById('columnLayout').value;
@@ -187,6 +203,5 @@ $currentItemsCount = count($section->items); // Numero attuale di colonne presen
         updateColumnDisplay();
     });
 </script>
-
-@endsection
 @endif
+@endsection

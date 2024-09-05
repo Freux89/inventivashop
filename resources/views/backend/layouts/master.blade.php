@@ -17,6 +17,7 @@
     <!--build:css-->
     @include('backend.inc.styles')
     <link rel="stylesheet" href="https://kit-free.fontawesome.com/releases/v6.4.2/css/free.min.css" media="all">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/>
     <!-- end build -->
     @yield('extra-head')
 
@@ -70,7 +71,7 @@
 
     <!-- scripts from different pages -->
     @yield('scripts')
-
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@1.8.2/dist/pickr.min.js"></script>
     <!-- required scripts -->
     <script>
         "use strict";
@@ -146,7 +147,58 @@
         @foreach (session('flash_notification', collect())->toArray() as $message)
             notifyMe("{{ $message['level'] }}", "{{ $message['message'] }}");
         @endforeach
+
+
+        
+
     </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const colorPickers = document.querySelectorAll('.color-picker-button');
+
+        colorPickers.forEach(pickerElement => {
+            const id = pickerElement.getAttribute('data-id');
+            const inputElement = document.getElementById(id);
+
+            const pickr = Pickr.create({
+                el: pickerElement,
+                theme: 'classic', // classic, monolith, nano
+                default: inputElement.value,
+                swatches: [
+                    '#C9AC20', '#4E838E', '#289BB1', '#801854',
+                    '#D4F3F9', '#EAEAEA', '#DADADA', '#FFF2CE',
+                    '#98C0C6', '#9BA3A4', '#DAD0A6', '#9A7785', '#e7eeef',
+                    '#580830', '#a18110', '#105862', '#007480',
+                    '#404647', '#f4f8f8', '#ffffff', '#000000'
+                ],
+                components: {
+                    // Main components
+                    preview: true,
+                    opacity: true,
+                    hue: true,
+
+                    // Input / output Options
+                    interaction: {
+                        input: true,
+                        save: true
+                    }
+                }
+            });
+
+            // Aggiorna il colore al cambiamento
+            pickr.on('change', (color, source, instance) => {
+                inputElement.value = color.toHEXA().toString();
+                pickerElement.style.backgroundColor = color.toHEXA().toString();
+            });
+
+            // Chiudi la finestra di selezione del colore dopo aver cliccato su "Save"
+            pickr.on('save', (color, instance) => {
+                instance.hide(); // Chiude la finestra
+            });
+        });
+    });
+</script>
+
     @yield('extra-script-footer')
 </body>
 

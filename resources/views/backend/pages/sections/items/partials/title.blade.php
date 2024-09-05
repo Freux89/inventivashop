@@ -14,8 +14,13 @@
             <span class="fs-sm text-muted">{{ localize('Imposta la grandezza del titolo in px.') }}</span>
         </div>
         <div class="col-md-3">
-            <label for="titleColor" class="form-label">{{ localize('Colore del Titolo') }}</label>
-            <input class="form-control color-picker" type="color" id="titleColor" name="titleColor" value="{{ isset($item->settings['titleColor']) ? $item->settings['titleColor'] : '' }}">
+        <x-color-picker 
+    id="titleColor" 
+    name="titleColor" 
+    value="{{ old('titleColor', $item->settings['titleColor'] ?? '') }}"
+    label="{{ localize('Colore del Titolo') }}"
+/>
+
             <span class="fs-sm text-muted">{{ localize('Scegli il colore del titolo.') }}</span>
         </div>
         

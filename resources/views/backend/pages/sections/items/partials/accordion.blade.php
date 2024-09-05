@@ -29,8 +29,13 @@
             <span class="fs-sm text-muted">{{ localize('Imposta la grandezza dei titoli presenti nell\'accordion') }}</span>
         </div>
         <div class="col-md-3">
-            <label for="titleColorAccordion" class="form-label">{{ localize('Colore') }}</label>
-            <input class="form-control color-picker" type="color" id="titleColorAccordion" name="titleColorAccordion" value="{{ isset($item->settings['titleColorAccordion']) ? $item->settings['titleColorAccordion'] : '' }}">
+        <x-color-picker 
+    id="titleColorAccordion" 
+    name="titleColorAccordion" 
+    value="{{ old('titleColorAccordion', $item->settings['titleColorAccordion'] ?? '') }}"
+    label="{{ localize('Colore') }}"
+/>
+
             <span class="fs-sm text-muted">{{ localize('Scegli il colore dei titoli presenti nell\'accordion.') }}</span>
         </div>
       
@@ -48,9 +53,14 @@
             <span class="fs-sm text-muted">{{ localize('Imposta la grandezza della descrizione presenti nell\'accordion') }}</span>
         </div>
         <div class="col-md-3">
-            <label for="descriptionColorAccordion" class="form-label">{{ localize('Colore') }}</label>
-            <input class="form-control color-picker" type="color" id="descriptionColorAccordion" name="descriptionColorAccordion" value="{{ isset($item->settings['descriptionColorAccordion']) ? $item->settings['descriptionColorAccordion'] : '' }}">
-            <span class="fs-sm text-muted">{{ localize('Scegli il colore della descrizione presenti nell\'accordion.') }}</span>
+        <x-color-picker 
+    id="descriptionColorAccordion" 
+    name="descriptionColorAccordion" 
+    value="{{ old('descriptionColorAccordion', $item->settings['descriptionColorAccordion'] ?? '') }}"
+    label="{{ localize('Colore') }}"
+/>
+    
+        <span class="fs-sm text-muted">{{ localize('Scegli il colore della descrizione presenti nell\'accordion.') }}</span>
         </div>
       
     </div>
