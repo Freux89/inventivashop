@@ -231,6 +231,7 @@ if (!function_exists('calculateVariationPrice')) {
         
         // Verifica se il valore variante ha un materiale collegato
         if (hasMaterial($productVariation->variationValue)) {
+            dd($productVariation->variationValue);
             // Recupera il materiale associato
             $material = $productVariation->variationValue->material()->first();
             
