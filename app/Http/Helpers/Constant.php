@@ -226,8 +226,8 @@ if (!function_exists('calculateVariationPrice')) {
     function calculateVariationPrice($product_price, $productVariation)
     {
         // Definisci le dimensioni statiche (altezza e larghezza in mm)
-        $height_mm = 500;
-        $width_mm = 700;
+        $height_mm = 150;
+        $width_mm = 150;
         
         // Verifica se il valore variante ha un materiale collegato
         if (hasMaterial($productVariation->variationValue)) {
