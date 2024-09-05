@@ -272,7 +272,7 @@ if (!function_exists('calculateMaterialPrice')) {
 
         // Inizializza la variabile del prezzo
         $price = 0;
-
+dd($material->price_type);
         // Calcola il prezzo in base al tipo di calcolo selezionato
         if ($material->price_type == 'mq') {
             // Calcolo in metri quadrati
