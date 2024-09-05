@@ -280,7 +280,7 @@ if (!function_exists('calculateMaterialPrice')) {
 
             // Trova il prezzo in base agli scaglioni di prezzo per mq
             $price = findDynamicPriceByTier($material, $area_mq);
-
+dd($price);
             // Se non ci sono scaglioni applicabili, usa il prezzo di default al mq
             if (is_null($price)) {
                 $price = $material->price * $area_mq;
