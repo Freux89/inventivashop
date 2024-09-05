@@ -228,9 +228,7 @@ if (!function_exists('calculateVariationPrice')) {
         // Definisci le dimensioni statiche (altezza e larghezza in mm)
         $height_mm = 150;
         $width_mm = 150;
-        if($productVariation->variationValue->id == 3){
-            dd(hasMaterial($productVariation->variationValue));
-        }
+        
         // Verifica se il valore variante ha un materiale collegato
         if (hasMaterial($productVariation->variationValue)) {
             // Recupera il materiale associato
@@ -274,7 +272,7 @@ if (!function_exists('calculateMaterialPrice')) {
 
         // Inizializza la variabile del prezzo
         $price = 0;
-dd($material->price_type);
+
         // Calcola il prezzo in base al tipo di calcolo selezionato
         if ($material->price_type == 'mq') {
             // Calcolo in metri quadrati
@@ -282,7 +280,7 @@ dd($material->price_type);
 
             // Trova il prezzo in base agli scaglioni di prezzo per mq
             $price = findDynamicPriceByTier($material, $area_mq);
-dd($price);
+
             // Se non ci sono scaglioni applicabili, usa il prezzo di default al mq
             if (is_null($price)) {
                 $price = $material->price * $area_mq;
@@ -1052,7 +1050,7 @@ if (!function_exists('variationPrice')) {
     function variationPrice($product, $variations)
     {
         $price = $product->price;
-        dd($variations);
+        
         // Calcola il prezzo delle varianti
         foreach ($variations as $variation) {
 
