@@ -231,15 +231,21 @@ if (!function_exists('calculateVariationPrice')) {
         
         // Verifica se il valore variante ha un materiale collegato
         if (hasMaterial($productVariation->variationValue)) {
-            // Recupera il materiale associato
-            $material = $productVariation->variationValue->material()->first();
             
-            // Calcola il prezzo basato sul materiale
-            $material_price = calculateMaterialPrice($material, $height_mm, $width_mm);
-            
-            // Applica il calcolo basato sul tipo di variazione della variante prodotto
-            return $product_price + $material_price;
-           
+            // Recupera tutti i materiali associati
+            $materials = $productVariation->variationValue->material;
+        
+            // Inizializza la variabile del prezzo totale del materiale
+            $total_material_price = 0;
+        
+            // Itera su ogni materiale associato e calcola il prezzo
+            foreach ($materials as $material) {
+                $material_price = calculateMaterialPrice($material, $height_mm, $width_mm);
+                $total_material_price += $material_price;
+            }
+        
+            // Somma il prezzo totale dei materiali al prezzo base del prodotto
+            return $product_price + $total_material_price;
         }
 
         // Se non c'è un materiale collegato, calcola il prezzo basato sulla variante del prodotto
@@ -289,7 +295,7 @@ if (!function_exists('calculateMaterialPrice')) {
              $processing_price = calculateProcessingPrice($material, $area_mq);
         } elseif ($material->price_type == 'linear') {
             // Calcolo in metri lineari (assumendo che il calcolo sia basato sull'altezza)
-            $linear_m = $height_m;
+            $linear_m = (($width_mm * 2) + ($height_mm * 2)) / 1000;
 
             // Trova il prezzo in base agli scaglioni di prezzo per metro lineare
             $price = findDynamicPriceByTier($material, $linear_m);

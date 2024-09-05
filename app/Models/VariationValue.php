@@ -75,7 +75,6 @@ class VariationValue extends Model
     {
         // Definisce la relazione molti-a-molti con Material utilizzando la tabella pivot material_variation_value
         // Ritorna il primo materiale trovato
-        return $this->belongsToMany(Material::class, 'material_variation_value', 'variation_value_id', 'material_id')
-                    ->first(); // Restituisce il primo materiale (o null se non esiste)
+        return $this->belongsToMany(Material::class, 'material_variation_value', 'variation_value_id', 'material_id')->where('materials.is_active', 1);
     }
 }
