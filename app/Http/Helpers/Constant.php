@@ -1052,7 +1052,7 @@ if (!function_exists('variationPrice')) {
     function variationPrice($product, $variations)
     {
         $price = $product->price;
-        
+        dd($variations);
         // Calcola il prezzo delle varianti
         foreach ($variations as $variation) {
 
