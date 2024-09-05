@@ -225,16 +225,33 @@ if (!function_exists('localize')) {
 if (!function_exists('calculateVariationPrice')) {
     function calculateVariationPrice($product_price, $productVariation)
     {
+        // Definisci le dimensioni statiche (altezza e larghezza in mm)
+        $height_mm = 500;
+        $width_mm = 700;
+        
+        // Verifica se il valore variante ha un materiale collegato
+        if (hasMaterial($productVariation->variationValue)) {
+            // Recupera il materiale associato
+            $material = $productVariation->variationValue->material()->first();
+            
+            // Calcola il prezzo basato sul materiale
+            $material_price = calculateMaterialPrice($material, $height_mm, $width_mm);
+            
+            // Applica il calcolo basato sul tipo di variazione della variante prodotto
+            return $product_price + $material_price;
+           
+        }
+
+        // Se non c'è un materiale collegato, calcola il prezzo basato sulla variante del prodotto
         $price_change_type = $productVariation->price_change_type;
 
         if ($productVariation->price != 0) {
             $price = $productVariation->price;
         } else {
-
             $default_price = $productVariation->variationValue->default_price;
-
             $price = $default_price ? $default_price : 0;
         }
+
         if ($price_change_type == 'replace') {
             return $price;
         } elseif ($price_change_type == 'amount') {
@@ -246,7 +263,144 @@ if (!function_exists('calculateVariationPrice')) {
         return $product_price;
     }
 }
+if (!function_exists('calculateMaterialPrice')) {
+    function calculateMaterialPrice($material, $height_mm, $width_mm)
+    {
+        // Converti le dimensioni da mm a metri
+        $height_m = $height_mm / 1000;
+        $width_m = $width_mm / 1000;
 
+        // Inizializza la variabile del prezzo
+        $price = 0;
+
+        // Calcola il prezzo in base al tipo di calcolo selezionato
+        if ($material->price_type == 'mq') {
+            // Calcolo in metri quadrati
+            $area_mq = $height_m * $width_m;
+
+            // Trova il prezzo in base agli scaglioni di prezzo per mq
+            $price = findDynamicPriceByTier($material, $area_mq);
+
+            // Se non ci sono scaglioni applicabili, usa il prezzo di default al mq
+            if (is_null($price)) {
+                $price = $material->price * $area_mq;
+            }
+             // Calcola il prezzo di lavorazione
+             $processing_price = calculateProcessingPrice($material, $area_mq);
+        } elseif ($material->price_type == 'linear') {
+            // Calcolo in metri lineari (assumendo che il calcolo sia basato sull'altezza)
+            $linear_m = $height_m;
+
+            // Trova il prezzo in base agli scaglioni di prezzo per metro lineare
+            $price = findDynamicPriceByTier($material, $linear_m);
+
+            // Se non ci sono scaglioni applicabili, usa il prezzo di default al metro lineare
+            if (is_null($price)) {
+                $price = $material->price * $linear_m;
+            }
+            $processing_price = calculateProcessingPrice($material, $linear_m);
+        }
+
+        $price += $processing_price;
+
+        return $price;
+    }
+}
+
+if (!function_exists('calculateProcessingPrice')) {
+    function calculateProcessingPrice($material, $quantity)
+    {
+        // Controlla se esiste un prezzo di lavorazione e una quantità minima per il calcolo
+        if (!$material->processing_price || !$material->min_quantity_processing) {
+            return 0; // Nessun prezzo di lavorazione applicabile
+        }
+
+        // Calcola il coefficiente di riparto
+        $coefficiente_riparto = $quantity / $material->min_quantity_processing;
+        
+        // Calcola il prezzo di lavorazione
+        $prezzo_lavorazione = ($material->processing_price / $coefficiente_riparto) * $quantity;
+       
+        return $prezzo_lavorazione;
+    }
+}
+
+if (!function_exists('findDynamicPriceByTier')) {
+    function findDynamicPriceByTier($material, $quantity)
+    {
+        // Ottieni tutti gli scaglioni ordinati per quantità minima
+        $tiers = $material->priceTiers->sortBy('min_quantity')->values();
+        
+        // Trova gli scaglioni inferiore e superiore che racchiudono la quantità
+        $lower_tier = null;
+        $upper_tier = null;
+
+        foreach ($tiers as $index => $tier) {
+            if ($quantity >= $tier->min_quantity) {
+                $lower_tier = $tier;
+                // Verifica se esiste un livello superiore
+                if (isset($tiers[$index + 1])) {
+                    $upper_tier = $tiers[$index + 1];
+                }
+            } else {
+                break;
+            }
+        }
+
+        // Se non esiste un livello superiore, utilizza il livello inferiore per calcolare il prezzo
+        if (is_null($upper_tier)) {
+            return $lower_tier ? $lower_tier->price * $quantity : null;
+        }
+
+        // Calcola il prezzo interpolato tra il livello inferiore e quello superiore
+        $interpolated_price = interpolatePrice(
+            $lower_tier->min_quantity,
+            $lower_tier->price,
+            $upper_tier->min_quantity,
+            $upper_tier->price,
+            $quantity
+        );
+
+        return $interpolated_price;
+    }
+}
+
+if (!function_exists('interpolatePrice')) {
+    function interpolatePrice($min_quantity_low, $price_low, $min_quantity_high, $price_high, $quantity)
+    {
+        if ($min_quantity_high == $min_quantity_low) {
+            // Se sono uguali, utilizza semplicemente il prezzo più basso (dato che siamo nell'ultima fascia)
+            return $price_low * $quantity;
+        }
+        // Calcola il prezzo interpolato
+        $slope = ($price_high - $price_low) / ($min_quantity_high - $min_quantity_low);
+        $price = $price_low + ($quantity - $min_quantity_low) * $slope;
+
+        return $price * $quantity; // Restituisci il prezzo totale per la quantità specificata
+    }
+}
+
+
+if (!function_exists('findPriceByTier')) {
+    function findPriceByTier($material, $quantity)
+    {
+        // Trova il primo scaglione di prezzo che corrisponde alla quantità (mq o linear)
+        $price_tier = $material->priceTiers
+            ->where('min_quantity', '<=', $quantity)
+            ->sortByDesc('min_quantity')
+            ->first();
+
+        // Restituisce il prezzo per l'unità di quantità (mq o linear) o null se nessuno scaglione è applicabile
+        return $price_tier ? $price_tier->price : null;
+    }
+}
+if (!function_exists('hasMaterial')) {
+    function hasMaterial($variationValue)
+    {
+        // Usa il metodo material() e controlla se il risultato è non nullo
+        return $variationValue->material() !== null;
+    }
+}
 if (!function_exists('newLocalization')) {
     # new localization
     function newLocalization($lang, $t_key, $key)
@@ -901,8 +1055,9 @@ if (!function_exists('variationPrice')) {
         foreach ($variations as $variation) {
 
             $price = calculateVariationPrice($price, $variation);
+            
         }
-
+        
         foreach ($product->taxes as $product_tax) {
             if ($product_tax->tax_type == 'percent') {
                 $price += ($price * $product_tax->tax_value) / 100;

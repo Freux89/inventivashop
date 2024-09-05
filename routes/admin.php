@@ -206,7 +206,7 @@ Route::group(
             Route::get('/add-materials', [MaterialController::class, 'create'])->name('admin.materials.create');
             Route::post('/material', [MaterialController::class, 'store'])->name('admin.materials.store');
             Route::get('/materials/edit/{id}', [MaterialController::class, 'edit'])->name('admin.materials.edit');
-            Route::post('/materials/update', [MaterialController::class, 'update'])->name('admin.materials.update');
+            Route::put('/materials/{material}', [MaterialController::class, 'update'])->name('admin.materials.update');
             Route::post('/materials/update-status', [MaterialController::class, 'updateStatus'])->name('admin.materials.updateStatus');
             Route::get('/materials/delete/{id}', [MaterialController::class, 'delete'])->name('admin.materials.delete');
 

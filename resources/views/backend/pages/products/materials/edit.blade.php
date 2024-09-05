@@ -7,38 +7,22 @@
 @section('contents')
 <section class="tt-section pt-4">
     <div class="container">
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="card tt-page-header">
-                    <div class="card-body">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-auto flex-grow-1">
-                                <div class="tt-page-title">
-                                    <h2 class="h5 mb-0">{{ localize('Update Product') }} <sup class="badge bg-soft-warning px-2">{{ $lang_key }}</sup></h2>
-                                </div>
-                            </div>
-                            <div class="col-4 col-md-2">
-                                <select id="language" class="w-100 form-control text-capitalize country-flag-select" data-toggle="select2" onchange="localizeData(this.value)">
-                                    @foreach (\App\Models\Language::all() as $key => $language)
-                                    <option value="{{ $language->code }}" {{ $lang_key == $language->code ? 'selected' : '' }} data-flag="{{ staticAsset('backend/assets/img/flags/' . $language->flag . '.png') }}">
-                                        {{ $language->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <div class="row mb-3">
             <div class="col-12">
                 <div class="card tt-page-header">
                     <div class="card-body d-lg-flex align-items-center justify-content-lg-between">
-                        <div class="tt-page-title">
-                            <h2 class="h5 mb-lg-0">{{ localize('Modifica materiale') }}</h2>
+                        <div class="col-auto">
+                            <div class="tt-page-title">
+                                <h2 class="h5 mb-lg-0">{{ localize('Modifica materiale') }}</h2>
+                            </div>
                         </div>
 
+                        <div class="col-auto">
+                            <a href="{{ route('admin.materials.index') }}" class="btn btn-link">
+                                <i class="fas fa-arrow-left"></i> Torna all'elenco
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -47,12 +31,11 @@
         <div class="row mb-4 g-4">
 
             <!--left sidebar-->
-            <div class="col-xl-9 order-2 order-md-2 order-lg-2 order-xl-1">
-                <form action="{{ route('admin.materials.update') }}" method="POST" class="pb-650" id="material-form">
+            <div class="col-xl-12 order-2 order-md-2 order-lg-2 order-xl-1">
+                <form action="{{ route('admin.materials.update', $material->id) }}" method="POST" class="pb-650" id="material-form">
                     @csrf
-
+                    @method('PUT')
                     <input type="hidden" name="id" value="{{ $material->id }}">
-                    <input type="hidden" name="lang_key" value="{{ $lang_key }}">
                     <!--basic information start-->
                     <div class="card mb-4" id="section-1">
                         <div class="card-body">
@@ -60,30 +43,30 @@
 
                             <div class="mb-4">
                                 <label for="name" class="form-label">{{ localize('Nome materiale') }}</label>
-                                <input class="form-control" type="text" id="name" placeholder="{{ localize('Digita il nome del materiale') }}" name="name" value="{{ $material->collectLocalization('name', $lang_key) }}" required>
+                                <input class="form-control" type="text" id="name" placeholder="{{ localize('Digita il nome del materiale') }}" name="name" value="{{ $material->collectLocalization('name') }}" required>
                                 <span class="fs-sm text-muted">
                                     {{ localize('Il nome del materiale è obbligatorio e si consiglia di renderlo unico.') }}
                                 </span>
                             </div>
 
-                            <div class="mb-4">
+                            <!-- <div class="mb-4">
                                 <label for="description" class="form-label">{{ localize('Description') }}</label>
-                                <textarea id="description" class="editor" name="description">{{ $material->collectLocalization('description', $lang_key) }}</textarea>
-                            </div>
+                                <textarea id="description" class="editor" name="description">{{ $material->collectLocalization('description') }}</textarea>
+                            </div> -->
 
                         </div>
                     </div>
                     <!--basic information end-->
-                    @if (env('DEFAULT_LANGUAGE') == $lang_key)
+
                     <!--material image and texture-->
-                    <div class="card mb-4" id="section-2">
+                    <!-- <div class="card mb-4" id="section-2">
                         <div class="card-body">
                             <h5 class="mb-4">{{ localize('Images') }}</h5>
                             <div class="mb-4">
                                 <label class="form-label">{{ localize('Thumbnail') }} (592x592)</label>
                                 <div class="tt-image-drop rounded">
                                     <span class="fw-semibold">{{ localize('Scegli la miniatura del materiale') }}</span>
-                                    <!-- choose media -->
+                                   
                                     <div class="tt-product-thumb show-selected-files mt-3">
                                         <div class="avatar avatar-xl cursor-pointer choose-media" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" onclick="showMediaManager(this)" data-selection="single">
                                             <input type="hidden" name="thumbnail_image" value="{{ $material->thumbnail_image }}">
@@ -92,12 +75,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- choose media -->
+                                
                                 </div>
                             </div>
 
                         </div>
-                    </div>
+                    </div> -->
 
 
 
@@ -110,6 +93,19 @@
                             </div>
 
                             <div class="row g-3">
+                                <div class="col-lg-12">
+                                <div class="mb-3">
+    <label for="purchase_price" class="form-label">{{ localize('Prezzo di Acquisto') }}</label>
+    <input type="number" min="0" step="0.0001" id="purchase_price" name="purchase_price" placeholder="{{ localize('Prezzo di acquisto') }}" class="form-control" value="{{ old('purchase_price', $material->purchase_price ?? '') }}">
+</div>
+
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label for="processing_price" class="form-label">{{ localize('Prezzo Lavorazione') }}</label>
+                                        <input type="number" min="0" step="0.0001" id="processing_price" name="processing_price" placeholder="{{ localize('Prezzo lavorazione') }}" class="form-control" value="{{ old('processing_price', $material->processing_price ?? '') }}">
+                                    </div>
+                                </div>
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="price" class="form-label">{{ localize('Price') }}</label>
@@ -133,63 +129,76 @@
 
                         </div>
                     </div>
+                    <div class="card mb-4" id="section-price-tiers">
+                        <div class="card-body">
+                            <h5 class="mb-4">{{ localize('Scaglioni di Prezzo') }}</h5>
 
+                            <div id="price-tier-container">
+                                @if(old('price_tiers') || isset($material))
+                                @foreach(old('price_tiers', $material->priceTiers ?? []) as $index => $tier)
+                                <div class="row g-3 align-items-center mb-2">
+                                    <div class="col-lg-4">
+                                        <input type="number" name="price_tiers[{{ $index }}][min_quantity]" class="form-control" placeholder="{{ localize('Quantità minima (mq o metri lineari)') }}" value="{{ old('price_tiers.'.$index.'.min_quantity', $tier['min_quantity'] ?? '') }}" min="0" step="0.0001">
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <input type="number" name="price_tiers[{{ $index }}][price]" class="form-control" placeholder="{{ localize('Prezzo per la quantità minima') }}" value="{{ old('price_tiers.'.$index.'.price', $tier['price'] ?? '') }}" min="0" step="0.0001">
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <button type="button" class="btn btn-danger remove-price-tier">{{ localize('Rimuovi') }}</button>
+                                    </div>
+                                </div>
+                                @endforeach
+                                @endif
+                            </div>
+
+                            <button type="button" class="btn btn-secondary" id="add-price-tier">{{ localize('Aggiungi Scaglione') }}</button>
+                        </div>
+                    </div>
 
                     <div class="card mb-4" id="section-6">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <h5 class="mb-4">{{ localize('Caratteristiche materiale') }}</h5>
-
-                            </div>
-                            <div class="row g-3">
+                            <h5 class="mb-4">{{ localize('Seleziona uno o più valori variante che vuoi collegare a questo materiale') }}</h5>
+                            <span class="text-muted">
+                                Se uno dei valori variante associati a questo materiale viene selezionato dal cliente durante la configurazione del prodotto, le regole di prezzo definite per questo materiale avranno la precedenza su tutte le altre regole di prezzo associate ai valori variante, al template del prodotto o alle varianti specifiche.
+                            </span>
+                            <div class="row g-3 mt-1">
                                 <div class="col-lg-12">
-                                    <div class="mb-4">
-                                        <label for="has_features" class="form-label">Il materiale ha caratteristiche?</label>
-                                        <input type="checkbox" name="has_features" id="has_features" class="form-check-input">
-                                    </div>
-                                    @if($materialFeatures && count($materialFeatures) > 0)
-                                    <div id="features_container" style="display: none;">
-                                        @foreach($materialFeatures as $feature)
-                                        <div class="mb-3">
-                                            <label class="form-label">{{ $feature->name }}</label>
-                                            @foreach($feature->variationValues as $value)
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="feature_values[]" id="feature_value_{{ $feature->id }}" value="{{ $feature->id }}">
-                                                <label class="form-check-label" for="feature_value_{{ $feature->id }}">
-                                                    {{ $value->name }}
-                                                </label>
-                                            </div>
+                                    <select class="form-select select2" name="variation_values[]" id="variation_value-select" multiple>
+                                        @foreach ($variations as $variation)
+                                        <optgroup label="{{ $variation->name }}">
+                                            @foreach ($variation->variationValues as $value)
+                                            <option value="{{ $value->id }}"
+                                                @if (in_array($value->id, $material->variationValues->pluck('id')->toArray())) selected @endif>
+                                                {{ $value->name }}
+                                            </option>
                                             @endforeach
-                                        </div>
+                                        </optgroup>
                                         @endforeach
-                                    </div>
-                                    @endif
+                                    </select>
+
+
                                 </div>
 
 
                             </div>
                         </div>
+                    </div>
 
-
-
-                        @endif
-                        <!-- submit button -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-4">
-                                    <button class="btn btn-primary" type="submit">
-                                        <i data-feather="save" class="me-1"></i> {{ localize('Salva') }}
-                                    </button>
-                                </div>
+                    <div class="row mt-7">
+                        <div class="col-12">
+                            <div class="mb-4">
+                                <button class="btn btn-primary" type="submit">
+                                    <i data-feather="save" class="me-1"></i> {{ localize('Salva') }}
+                                </button>
                             </div>
                         </div>
-                        <!-- submit button end -->
+                    </div>
 
                 </form>
             </div>
-        </div>
+
             <!--right sidebar-->
-            <div class="col-xl-3 order-1 order-md-1 order-lg-1 order-xl-2">
+            <!-- <div class="col-xl-3 order-1 order-md-1 order-lg-1 order-xl-2">
                 <div class="card tt-sticky-sidebar">
                     <div class="card-body">
                         <h5 class="mb-4">{{ localize('Informazioni materiale') }}</h5>
@@ -205,15 +214,14 @@
                                     <a href="#section-5">{{ localize('Prezzo') }}</a>
                                 </li>
                                 <li>
-                                    <a href="#section-6">{{ localize('Caratteristiche materiale
-') }}</a>
+                                    <a href="#section-6">{{ localize('Valori variante') }}</a>
                                 </li>
 
                             </ul>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </section>
@@ -221,18 +229,31 @@
 
 @section('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const featuresCheckbox = document.getElementById('has_features');
-        const featuresContainer = document.getElementById('features_container');
+    document.getElementById('add-price-tier').addEventListener('click', function() {
+        let container = document.getElementById('price-tier-container');
+        let index = container.children.length;
+        let html = `
+            <div class="row g-3 align-items-center mb-2">
+                <div class="col-lg-4">
+                    <input type="number" name="price_tiers[${index}][min_quantity]" class="form-control" placeholder="{{ localize('Quantità minima (mq o metri lineari)') }}" min="0" step="0.0001">
+                </div>
+                <div class="col-lg-4">
+                    <input type="number" name="price_tiers[${index}][price]" class="form-control" placeholder="{{ localize('Prezzo per la quantità minima') }}" min="0" step="0.0001">
+                </div>
+                <div class="col-lg-4">
+                    <button type="button" class="btn btn-danger remove-price-tier">{{ localize('Rimuovi') }}</button>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    });
 
-        featuresCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                featuresContainer.style.display = 'block';
-            } else {
-                featuresContainer.style.display = 'none';
-            }
-        });
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove-price-tier')) {
+            event.target.closest('.row').remove();
+        }
     });
 </script>
-@include('backend.inc.product-scripts')
 @endsection
+
+@include('backend.inc.product-scripts')

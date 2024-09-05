@@ -72,9 +72,9 @@
                                         <td>
 
                                         <a href="{{ route('admin.materials.edit', ['id' => $material->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}" class="d-flex align-items-center">
-                                                <div class="avatar avatar-sm">
+                                                <!-- <div class="avatar avatar-sm">
                                                     <img class="rounded-circle" src="{{ uploadedAsset($material->thumbnail_image) }}" alt="" onerror="this.onerror=null;this.src='{{ staticAsset('backend/assets/img/placeholder-thumb.png') }}';" />
-                                                </div>
+                                                </div> -->
                                                 <h6 class="fs-sm mb-0 ms-2">
                                                     {{ $material->collectLocalization('name') }}
                                                 </h6>

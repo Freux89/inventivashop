@@ -184,6 +184,7 @@ class ProductController extends Controller
 
         // Calcolo dei prezzi
         $priceWithTax = variationPrice($product, $uniqueFilteredVariations);
+        
         $discountedPriceWithTax = variationDiscountedPrice($product, $uniqueFilteredVariations);
 
         // Assumendo che $product_tax sia la percentuale di tassazione, ad esempio 0.22 per il 22%

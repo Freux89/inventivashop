@@ -16,7 +16,7 @@ class SectionServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             $currentRouteName = request()->route()->getName();
             $currentRouteParameters = request()->route()->parameters();
-    
+    // migliorare meglio  currentRouteName perchè non restituisce il fatto che sia una home, product o category
             // Determina il tipo di pagina e l'ID o slug da route name o parameters
             $positionableType = $this->determineType($currentRouteName);
             
