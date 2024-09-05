@@ -15,6 +15,7 @@ class SectionServiceProvider extends ServiceProvider
     {
         View::composer('*', function ($view) {
             $currentRouteName = request()->route()->getName();
+            
             $currentRouteParameters = request()->route()->parameters();
     // migliorare meglio  currentRouteName perchè non restituisce il fatto che sia una home, product o category
             // Determina il tipo di pagina e l'ID o slug da route name o parameters
@@ -65,7 +66,10 @@ class SectionServiceProvider extends ServiceProvider
     $typeMap = [
         'category.show' => 'Category',
         'products.show' => 'Product',
-        'home.pages.show' => 'Page'
+        'home.pages.show' => 'Page',
+        'products.breadcrumb.show' => 'Product',
+        'category.breadcrumb.show' => 'Category',
+
     ];
 
     // Controlla se il nome della rotta esiste nella mappa e restituisci il tipo corrispondente
