@@ -71,7 +71,7 @@ class VariationValue extends Model
         return $this->belongsTo(Variation::class);
     }
 
-    public function material()
+    public function materials()
     {
         // Definisce la relazione molti-a-molti con Material utilizzando la tabella pivot material_variation_value
         // Ritorna il primo materiale trovato

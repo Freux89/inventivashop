@@ -228,12 +228,12 @@ if (!function_exists('calculateVariationPrice')) {
         // Definisci le dimensioni statiche (altezza e larghezza in mm)
         $height_mm = 150;
         $width_mm = 150;
-        
+       
         // Verifica se il valore variante ha un materiale collegato
         if (hasMaterial($productVariation->variationValue)) {
             
             // Recupera tutti i materiali associati
-            $materials = $productVariation->variationValue->material;
+            $materials = $productVariation->variationValue->materials;
         
             // Inizializza la variabile del prezzo totale del materiale
             $total_material_price = 0;
@@ -404,7 +404,7 @@ if (!function_exists('hasMaterial')) {
     function hasMaterial($variationValue)
     {
         // Usa il metodo material() e controlla se il risultato è non nullo
-        return $variationValue->material() !== null;
+        return $variationValue->materials()->exists();
     }
 }
 if (!function_exists('newLocalization')) {
