@@ -111,4 +111,25 @@ class SectionController extends Controller
         }
         return 0;
     }
+
+
+    public function duplicate($id)
+    {
+        // Trova la sezione da duplicare
+        $section = Section::findOrFail($id);
+
+        // Duplica la sezione
+        $newSection = $section->replicate();
+        $newSection->name = $section->name . ' (Copy)'; // Aggiungi "(Copy)" per differenziare la nuova sezione
+        $newSection->save();
+
+        // Duplica gli item collegati alla sezione
+        foreach ($section->items as $item) {
+            $newItem = $item->replicate();
+            $newItem->section_id = $newSection->id; // Associa il nuovo item alla nuova sezione
+            $newItem->save();
+        }
+
+        return redirect()->route('admin.sections.index')->with('success', 'Sezione duplicata con successo.');
+    }
 }

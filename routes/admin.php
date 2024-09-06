@@ -438,6 +438,7 @@ Route::group(
 
         Route::get('/sections/delete/{id}', [SectionController::class, 'delete'])->name('admin.sections.delete');
         Route::post('/sections/update-status', [SectionController::class, 'updateStatus'])->name('admin.sections.updateStatus');
+        Route::get('/sections/duplicate/{id}', [SectionController::class, 'duplicate'])->name('admin.sections.duplicate');
 
         // Section items
 

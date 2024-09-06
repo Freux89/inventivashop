@@ -92,16 +92,18 @@
                                                     <i data-feather="more-vertical"></i>
                                                 </button>
                                                 <div class="dropdown-menu dropdown-menu-end shadow">
+    <a class="dropdown-item" href="{{ route('admin.sections.edit', ['id' => $section->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize">
+        <i data-feather="edit-3" class="me-2"></i>{{ localize('Edit') }}
+    </a>
 
-                                                    <a class="dropdown-item" href="{{ route('admin.sections.edit', ['id' => $section->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize">
-                                                        <i data-feather="edit-3" class="me-2"></i>{{ localize('Edit') }}
-                                                    </a>
+    <a class="dropdown-item" href="{{ route('admin.sections.duplicate', $section->id) }}">
+        <i data-feather="copy" class="me-2"></i>{{ localize('Duplica') }}
+    </a>
 
-                                                    <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.sections.delete', $section->id) }}" title="{{ localize('Delete') }}">
-                                                        <i data-feather="trash" class="me-2"></i>{{ localize('Delete') }}
-                                                    </a>
-
-                                                </div>
+    <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.sections.delete', $section->id) }}" title="{{ localize('Delete') }}">
+        <i data-feather="trash" class="me-2"></i>{{ localize('Delete') }}
+    </a>
+</div>
                                             </div>
                                         </td>
                                     </tr>
