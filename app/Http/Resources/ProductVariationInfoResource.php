@@ -64,7 +64,9 @@ class ProductVariationInfoResource extends JsonResource
 
             return $variation;
         })->filter(); // Rimuovi le varianti prodotto null
-     
+
+        // Aggiorno nuovamente le condizioni con le nuove varianti prodotto aggiornate.
+        $conditionEffects = prepareConditionsForVariations($product, $filteredProductVariations );
         // Converti la collezione filtrata in una lista di varianti prodotto
         $filteredProductVariations = $filteredProductVariations->values();
 
@@ -76,7 +78,7 @@ class ProductVariationInfoResource extends JsonResource
         $indicativeDeliveryDays = indicativeDeliveryDays($product, $filteredProductVariations,$this->quantity);
         
         $selectedVariantValueIds = $filteredProductVariations->pluck('variation_value_id')->toArray();;
-
+        
 
         // Prezzo con IVA
 
