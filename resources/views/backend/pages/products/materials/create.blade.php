@@ -121,7 +121,7 @@
                                         <optgroup label="{{ $variation->name }}">
                                             @foreach ($variation->variationValues as $value)
                                             <option value="{{ $value->id }}" {{ in_array($value->id, old('variation_values', [])) ? 'selected' : '' }}>
-                                                {{ $value->name }}
+                                            {{ $variation->name }}:{{ $value->name }}
                                             </option>
                                             @endforeach
                                         </optgroup>

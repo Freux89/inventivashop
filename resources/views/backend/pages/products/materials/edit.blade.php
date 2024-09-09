@@ -169,7 +169,7 @@
                                             @foreach ($variation->variationValues as $value)
                                             <option value="{{ $value->id }}"
                                                 @if (in_array($value->id, $material->variationValues->pluck('id')->toArray())) selected @endif>
-                                                {{ $value->name }}
+                                                {{ $variation->name }}: {{ $value->name }}
                                             </option>
                                             @endforeach
                                         </optgroup>
