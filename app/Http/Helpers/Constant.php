@@ -221,13 +221,30 @@ if (!function_exists('localize')) {
         return isset($localization_english[$t_key]) ? trim($localization_english[$t_key]) : $key;
     }
 }
-
+if (!function_exists('findProductVariationWithDimensions')) {
+function findProductVariationWithDimensions($productVariations)
+{
+    foreach ($productVariations as $productVariation) {
+        if ($productVariation->variationValue->width && $productVariation->variationValue->height) {
+            return $productVariation;
+        }
+    }
+    return null; // Nessuna variante trovata con dimensioni
+}
+}
 if (!function_exists('calculateVariationPrice')) {
-    function calculateVariationPrice($product_price, $productVariation)
+    function calculateVariationPrice($product_price, $productVariation,$productVariations)
     {
-        // Definisci le dimensioni statiche (altezza e larghezza in mm)
-        $height_mm = 150;
-        $width_mm = 150;
+        $productVariationWithDimensions = findProductVariationWithDimensions($productVariations);
+
+        // Inizializza larghezza e altezza
+        $height_mm = 1;
+        $width_mm = 1;
+
+        if ($productVariationWithDimensions) {
+            $height_mm = $productVariationWithDimensions->variationValue->height;
+            $width_mm = $productVariationWithDimensions->variationValue->width;
+        }
        
         // Verifica se il valore variante ha un materiale collegato
         if (hasMaterial($productVariation->variationValue)) {
@@ -1060,7 +1077,7 @@ if (!function_exists('variationPrice')) {
         // Calcola il prezzo delle varianti
         foreach ($variations as $variation) {
 
-            $price = calculateVariationPrice($price, $variation);
+            $price = calculateVariationPrice($price, $variation,$variations);
             
         }
         
@@ -1083,7 +1100,7 @@ if (!function_exists('variationDiscountedPrice')) {
 
         // Calcola il prezzo delle varianti
         foreach ($variations as $variation) {
-            $price = calculateVariationPrice($price, $variation);
+            $price = calculateVariationPrice($price, $variation,$variations);
         }
 
         $discount_applicable = false;

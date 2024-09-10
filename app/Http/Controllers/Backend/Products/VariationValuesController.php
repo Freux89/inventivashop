@@ -50,7 +50,7 @@ class VariationValuesController extends Controller
             'variation_id' => 'required|integer',
             'color_code' => 'nullable|string',
             'image' => 'nullable|integer',  
-            'default_price' => 'nullable|numeric',
+            'default_price' => 'nullable|numeric'
         ]);
 
         $variationValue = new VariationValue;
@@ -107,6 +107,8 @@ class VariationValuesController extends Controller
         'info_image_id' => 'nullable|integer', // Aggiungi validazione per info_image_id
         'info_slider_image_ids' => 'nullable|string', // Aggiungi validazione per info_slider_image_ids
         'info_video_url' => 'nullable|url', // Aggiungi validazione per info_video_url
+        'width' => 'nullable|integer|required_with:height',
+        'height' => 'nullable|integer|required_with:width',
     ]);
 
     $variationValue = VariationValue::findOrFail($data['id']);
@@ -117,6 +119,8 @@ class VariationValuesController extends Controller
         $textOnly = trim(strip_tags($data['info_description']));
         $variationValue->info_description = $textOnly === '' ? null : $data['info_description'];
         $variationValue->default_price = $data['default_price'];
+        $variationValue->width = $data['width'];
+        $variationValue->height = $data['height'];
 
         // Salva le informazioni aggiuntive in base al tipo selezionato
         if ($request->info_type == 'image') {
