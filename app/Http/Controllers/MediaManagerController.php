@@ -75,16 +75,29 @@ class MediaManagerController extends Controller
     }
 
     # delete media
-    public function delete($id)
-    {
-        $mediaFile = MediaManager::findOrFail($id);
-        if (!is_null($mediaFile)) {
-            fileDelete($mediaFile->media_file);
-            # todo:: check auth user, media user -- 
-            $mediaFile->delete();
-        }
+    // public function delete($id)
+    // {
+    //     $mediaFile = MediaManager::findOrFail($id);
+    //     if (!is_null($mediaFile)) {
+    //         fileDelete($mediaFile->media_file);
+    //         # todo:: check auth user, media user -- 
+    //         $mediaFile->delete();
+    //     }
 
-        flash(localize('File has been deleted successfully'))->success();
-        return back();
+    //     flash(localize('File has been deleted successfully'))->success();
+    //     return back();
+    // }
+
+    public function delete($id)
+{
+    
+    $mediaFile = MediaManager::findOrFail($id);
+    if (!is_null($mediaFile)) {
+        fileDelete($mediaFile->media_file);
+        # todo:: check auth user, media user --
+        $mediaFile->delete();
     }
+
+    return response()->json(['success' => true, 'message' => 'Il file è stato cancellato con successo']);
+}
 }

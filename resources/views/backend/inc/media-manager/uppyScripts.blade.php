@@ -288,4 +288,34 @@
         TT.getMediaSearch = $('input[name=media-search]').val();
         getMediaFiles(TT.getMediaType, TT.getMediaSearch, TT.getMediaSearch != '' ? true : false);
     })
+
+
+    function deleteMedia(element, mediaId) {
+        // Prevenire l'aggiornamento della pagina
+        event.preventDefault();
+
+        // Ottenere l'URL per la richiesta AJAX
+        const url = element.getAttribute('data-href');
+
+        // Effettuare la chiamata AJAX
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}', // Token CSRF per la protezione della richiesta
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Rimuovere l'immagine dalla pagina senza ricaricarla
+                document.getElementById('media-item-' + mediaId).remove();
+            } else {
+                console.error(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 </script>

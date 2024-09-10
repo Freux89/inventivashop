@@ -36205,7 +36205,7 @@ html:not([dir="rtl"]) .toast-close-button {
 [data-type="media-index"] .tt-media-wrap .tt-media-item.active-image:after {
     display: none;
 }
-[data-type="media-index"]
+
     .tt-media-wrap
     .tt-media-item:hover
     .tt-media-action-wrap {

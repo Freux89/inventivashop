@@ -18,6 +18,7 @@ use App\Models\ProductVariationStock;
 use App\Models\ProductVariationCombination;
 use App\Models\Tag;
 use App\Models\Template;
+use App\Models\MediaManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -341,7 +342,7 @@ if ($request->has('template_variations') && !empty($request->template_variations
         $variations = Variation::isActive()->get();
         $taxes = Tax::isActive()->get();
         $tags = Tag::all();
-$templates = Template::where('template_type', 'variation')->get();
+        $templates = Template::where('template_type', 'variation')->get();
 
         return view('backend.pages.products.products.edit', compact('product', 'categories', 'brands', 'units', 'variations', 'taxes', 'lang_key', 'tags','templates'));
     }
@@ -371,6 +372,11 @@ $templates = Template::where('template_type', 'variation')->get();
             flash(localize('Lo slug "' . $slug . '" esiste già. Scegli un altro slug per il prodotto.'))->error();
             return redirect()->back();
         }
+
+        
+
+        // Verifica e ottieni gli ID validi per le immagini della galleria
+        $validGalleryImageIds = $this->getValidImageIds($request->images);
         if ($request->lang_key == env("DEFAULT_LANGUAGE")) {
             $product->name              = $request->name;
             
@@ -381,8 +387,9 @@ $templates = Template::where('template_type', 'variation')->get();
             $product->unit_id           = $request->unit_id;
             $product->short_description = $request->short_description;
 
-            $product->thumbnail_image   = $request->image;
-            $product->gallery_images   = $request->images;
+            $product->thumbnail_image = $this->getValidImageId($request->image);
+            $product->gallery_images = !empty($validGalleryImageIds) ? implode(',', $validGalleryImageIds) : null;
+
             $product->size_guide        = $request->size_guide;
             $product->price =  priceToUsd($request->price);
             # min-max price
@@ -581,6 +588,25 @@ $templates = Template::where('template_type', 'variation')->get();
         flash(localize('Product has been updated successfully'))->success();
         return back();
     }
+
+
+    private function getValidImageId($imageId)
+{
+    // Verifica se l'immagine esiste
+    return MediaManager::where('id', $imageId)->exists() ? $imageId : null;
+}
+
+/**
+ * Metodo per verificare una lista di ID di immagini
+ */
+private function getValidImageIds($imageIds)
+{
+    // Dividi gli ID delle immagini in un array
+    $imageIdArray = explode(',', $imageIds);
+
+    // Recupera solo gli ID delle immagini esistenti nel database
+    return MediaManager::whereIn('id', $imageIdArray)->pluck('id')->toArray();
+}
 
     # update status
     public function updateFeatured(Request $request)

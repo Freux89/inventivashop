@@ -1,5 +1,5 @@
 @forelse ($mediaFiles as $key => $mediaFile)
-    <div class="tt-media-item" data-active-file-id="{{ $mediaFile->id }}"
+    <div class="tt-media-item" data-active-file-id="{{ $mediaFile->id }}" id="media-item-{{ $mediaFile->id }}"
         onclick="handleSelectedFiles({{ $mediaFile->id }})">
         <div class="tt-media-img">
             @if ($mediaFile->media_type == 'image')
@@ -16,10 +16,10 @@
         </div>
 
         @can('delete_media')
-            <div class="tt-media-action-wrap d-flex align-items-center justify-content-center">
+        <div class="tt-media-action-wrap d-flex align-items-center justify-content-center">
                 <a class="tt-remove btn btn-sm px-2 btn-danger media-delete-btn" data-bs-toggle="tooltip"
                     data-bs-placement="top" data-bs-title="Remove this file"
-                    data-href="{{ route('uppy.delete', $mediaFile->id) }}" onclick="confirmDelete(this)"><i
+                    data-href="{{ route('uppy.delete', $mediaFile->id) }}" onclick="deleteMedia(this, {{ $mediaFile->id }})"><i
                         data-feather="trash"></i></a>
             </div>
         @endcan
