@@ -349,44 +349,67 @@ if (!function_exists('calculateProcessingPrice')) {
 }
 
 if (!function_exists('findDynamicPriceByTier')) {
+    /**
+     * Calcola il prezzo dinamico totale in base agli scaglioni di prezzo del materiale.
+     *
+     * @param object $material Oggetto materiale con gli scaglioni di prezzo.
+     * @param float $quantity Quantità (metri quadri) inserita dall'utente.
+     * @return float Prezzo totale calcolato.
+     */
     function findDynamicPriceByTier($material, $quantity)
     {
         // Ottieni tutti gli scaglioni ordinati per quantità minima
         $tiers = $material->priceTiers->sortBy('min_quantity')->values();
-        
-        // Trova gli scaglioni inferiore e superiore che racchiudono la quantità
-        $lower_tier = null;
-        $upper_tier = null;
 
-        foreach ($tiers as $index => $tier) {
-            if ($quantity >= $tier->min_quantity) {
-                $lower_tier = $tier;
-                // Verifica se esiste un livello superiore
-                if (isset($tiers[$index + 1])) {
-                    $upper_tier = $tiers[$index + 1];
-                }
-            } else {
+        // Se la quantità è inferiore o uguale al minimo scaglione, ritorna il prezzo totale per il primo scaglione
+        if ($quantity <= $tiers->first()->min_quantity) {
+            return $tiers->first()->price * $quantity;
+        }
+
+        // Se la quantità è superiore o uguale al massimo scaglione, ritorna il prezzo totale per l'ultimo scaglione
+        if ($quantity >= $tiers->last()->min_quantity) {
+            return $tiers->last()->price * $quantity;
+        }
+
+        // Cerca gli scaglioni correlati
+        $previousTier = null;
+        $nextTier = null;
+
+        foreach ($tiers as $tier) {
+            if ($quantity < $tier->min_quantity) {
+                $nextTier = $tier;
                 break;
             }
+            $previousTier = $tier;
         }
 
-        // Se non esiste un livello superiore, utilizza il livello inferiore per calcolare il prezzo
-        if (is_null($upper_tier)) {
-            return $lower_tier ? $lower_tier->price * $quantity : null;
-        }
+        // Prezzo e quantità dei scaglioni precedente e successivo
+        $pricePrevious = $previousTier->price;
+        $priceNext = $nextTier->price;
+        $quantityPrevious = $previousTier->min_quantity;
+        $quantityNext = $nextTier->min_quantity;
 
-        // Calcola il prezzo interpolato tra il livello inferiore e quello superiore
-        $interpolated_price = interpolatePrice(
-            $lower_tier->min_quantity,
-            $lower_tier->price,
-            $upper_tier->min_quantity,
-            $upper_tier->price,
-            $quantity
-        );
+        // Calcolo del prezzo totale per entrambi gli scaglioni
+        $totalPricePrevious = $pricePrevious * $quantityPrevious;
+        $totalPriceNext = $priceNext * $quantityNext;
 
-        return $interpolated_price;
+        // Calcolo del prezzo totale interpolato
+        $interpolation = ($quantity - $quantityPrevious) / ($quantityNext - $quantityPrevious);
+        $calculatedTotalPrice = $totalPricePrevious + $interpolation * ($totalPriceNext - $totalPricePrevious);
+
+        return $calculatedTotalPrice;
     }
 }
+
+
+
+
+
+
+
+
+
+
 
 if (!function_exists('interpolatePrice')) {
     function interpolatePrice($min_quantity_low, $price_low, $min_quantity_high, $price_high, $quantity)
