@@ -85,6 +85,7 @@ Route::group(['prefix' => '', 'middleware' => ['auth']], function () {
     Route::get('/media-manager/get-selected-files', [MediaManagerController::class, 'selectedFiles'])->name('uppy.selectedFiles');
     Route::post('/media-manager/add-files', [MediaManagerController::class, 'store'])->name('uppy.store');
     Route::delete('/media-manager/delete-files/{id}', [MediaManagerController::class, 'delete'])->name('uppy.delete');
+    Route::post('/media/update-details', [MediaManagerController::class, 'updateDetails'])->name('media.updateDetails');
 
 });
 

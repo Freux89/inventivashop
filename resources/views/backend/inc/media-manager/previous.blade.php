@@ -3,10 +3,8 @@
         onclick="handleSelectedFiles({{ $mediaFile->id }})">
         <div class="tt-media-img">
             @if ($mediaFile->media_type == 'image')
-                <img src={{ uploadedAsset($mediaFile->id) }} class="img-fluid" />
-            @else
+                <img src="{{ uploadedAsset($mediaFile->id) }}" class="img-fluid" />
             @endif
-
         </div>
         <div class="tt-media-info-wrap p-2">
             <div class="tt-media-info">
@@ -17,14 +15,21 @@
 
         @can('delete_media')
         <div class="tt-media-action-wrap d-flex align-items-center justify-content-center">
+                <!-- Pulsante Modifica -->
+                <a class="btn btn-sm px-2 btn-warning media-edit-btn me-2" data-bs-toggle="tooltip"
+                   data-bs-placement="top" data-bs-title="Modifica file"
+                   onclick="openEditModal({{ $mediaFile->id }}, '{{ $mediaFile->alt_text }}', '{{ $mediaFile->description }}'); event.stopPropagation();">
+                    <i data-feather="edit"></i>
+                </a>
+
+                <!-- Pulsante Elimina -->
                 <a class="tt-remove btn btn-sm px-2 btn-danger media-delete-btn" data-bs-toggle="tooltip"
-                    data-bs-placement="top" data-bs-title="Remove this file"
-                    data-href="{{ route('uppy.delete', $mediaFile->id) }}" onclick="deleteMedia(this, {{ $mediaFile->id }})"><i
-                        data-feather="trash"></i></a>
+                   data-bs-placement="top" data-bs-title="Rimuovi file"
+                   data-href="{{ route('uppy.delete', $mediaFile->id) }}" onclick="deleteMedia(this, {{ $mediaFile->id }}); event.stopPropagation();">
+                    <i data-feather="trash"></i>
+                </a>
             </div>
         @endcan
-
-
     </div>
 
 @empty

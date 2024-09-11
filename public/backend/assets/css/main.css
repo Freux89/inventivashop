@@ -36793,3 +36793,7 @@ button.note-btn.dropdown-toggle:after {
         height:2em;
         width:4em !important;
     }
+
+    .modal.nested-modal {
+        z-index: 1060; /* Imposta uno z-index superiore al backdrop del secondo modale */
+    }

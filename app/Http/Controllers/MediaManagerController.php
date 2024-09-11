@@ -89,15 +89,41 @@ class MediaManagerController extends Controller
     // }
 
     public function delete($id)
-{
-    
-    $mediaFile = MediaManager::findOrFail($id);
-    if (!is_null($mediaFile)) {
-        fileDelete($mediaFile->media_file);
-        # todo:: check auth user, media user --
-        $mediaFile->delete();
+    {
+
+        $mediaFile = MediaManager::findOrFail($id);
+        if (!is_null($mediaFile)) {
+            fileDelete($mediaFile->media_file);
+            # todo:: check auth user, media user --
+            $mediaFile->delete();
+        }
+
+        return response()->json(['success' => true, 'message' => 'Il file è stato cancellato con successo']);
     }
 
-    return response()->json(['success' => true, 'message' => 'Il file è stato cancellato con successo']);
-}
+    public function updateDetails(Request $request)
+    {
+        // Validazione dei dati ricevuti
+        $request->validate([
+            'media_id' => 'required|exists:media_managers,id',
+            'alt_text' => 'nullable|string|max:255',
+            'description' => 'nullable|string'
+        ]);
+
+        try {
+            // Trova l'immagine tramite l'ID
+            $mediaFile = MediaManager::findOrFail($request->media_id);
+
+            // Aggiorna i campi alt_text e description
+            $mediaFile->alt_text = $request->alt_text;
+            $mediaFile->description = $request->description;
+            $mediaFile->save();
+
+            // Restituisce una risposta JSON di successo
+            return response()->json(['success' => true, 'message' => 'Dettagli immagine aggiornati con successo.']);
+        } catch (\Exception $e) {
+            // Gestione dell'errore e restituzione di una risposta JSON di errore
+            return response()->json(['success' => false, 'message' => 'Errore durante l\'aggiornamento dei dettagli dell\'immagine.'], 500);
+        }
+    }
 }

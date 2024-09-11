@@ -319,3 +319,59 @@
         });
     }
 </script>
+
+<script>
+   function openEditModal(mediaId, altText = '', description = '') {
+        // Popola i campi del modale con i dati esistenti
+        document.getElementById('mediaId').value = mediaId;
+        document.getElementById('mediaAltText').value = altText;
+        document.getElementById('mediaDescription').value = description;
+
+        // Inizializza il modale senza backdrop
+        var editModalElement = document.getElementById('editMediaModal');
+        var editModal = new bootstrap.Modal(editModalElement, {
+            backdrop: false // Disabilita il backdrop
+        });
+
+        editModal.show();
+    }
+
+    function saveMediaDetails() {
+        var mediaId = document.getElementById('mediaId').value;
+        var altText = document.getElementById('mediaAltText').value;
+        var description = document.getElementById('mediaDescription').value;
+
+        // Effettua la chiamata AJAX per salvare i dettagli
+        fetch('{{ route('media.updateDetails') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Token CSRF per la protezione della richiesta
+            },
+            body: JSON.stringify({
+                media_id: mediaId,
+                alt_text: altText,
+                description: description
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+
+                // Aggiorna l'onclick dell'immagine modificata con i nuovi dettagli
+                var editButton = document.querySelector(`#media-item-${mediaId} .media-edit-btn`);
+                editButton.setAttribute('onclick', `openEditModal(${mediaId}, '${altText}', '${description}')`);
+
+                // Chiudi il modale dopo il salvataggio
+                var editModal = bootstrap.Modal.getInstance(document.getElementById('editMediaModal'));
+                editModal.hide();
+            } else {
+                alert('Errore durante il salvataggio dei dettagli.');
+            }
+        })
+        .catch(error => {
+            console.error('Errore:', error);
+        });
+    }
+</script>

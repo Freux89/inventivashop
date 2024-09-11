@@ -9,11 +9,19 @@
     <div class="quickview-product-slider swiper me-1" style="width: 80%;">
         <div class="swiper-wrapper">
             @foreach ($galleryImages as $galleryImage)
-                <div class="swiper-slide text-center">
-                    <a href="{{ uploadedAsset($galleryImage) }}" data-lightbox="product-gallery">
-                        <img src="{{ uploadedAsset($galleryImage) }}" alt="{{ $product->collectLocalization('name') }}" class="img-fluid">
-                    </a>
-                </div>
+            @php
+        // Recupera i dettagli dell'immagine dalla tabella media_managers
+        $media = \App\Models\MediaManager::find($galleryImage);
+        // Imposta l'alt con il nome del prodotto se l'alt dell'immagine non è presente
+        $altText = $media && $media->alt_text ? $media->alt_text : $product->collectLocalization('name');
+        // Ottieni la descrizione dell'immagine
+        $description = $media ? $media->description : '';
+    @endphp
+    <div class="swiper-slide text-center">
+        <a href="{{ uploadedAsset($galleryImage) }}" data-lightbox="product-gallery" data-title="{{ $description }}">
+            <img src="{{ uploadedAsset($galleryImage) }}" alt="{{ $altText }}" class="img-fluid">
+        </a>
+    </div>
             @endforeach
         </div>
     </div>
