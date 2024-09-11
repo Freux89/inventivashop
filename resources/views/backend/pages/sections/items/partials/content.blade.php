@@ -35,13 +35,12 @@
             <span class="fs-sm text-muted">{{ localize('Imposta la grandezza del sottotitolo in px.') }}</span>
         </div>
         <div class="col-md-3">
-        <x-color-picker 
-    id="subtitleColor" 
-    name="subtitleColor" 
-    value="{{ old('subtitleColor', $item->settings['subtitleColor'] ?? '') }}"
-    label="{{ localize('Colore del Sottotitolo') }}"
-/>
-<span class="fs-sm text-muted">{{ localize('Scegli il colore del titolo.') }}</span>
+            <x-color-picker
+                id="subtitleColor"
+                name="subtitleColor"
+                value="{{ old('subtitleColor', $item->settings['subtitleColor'] ?? '') }}"
+                label="{{ localize('Colore del Sottotitolo') }}" />
+            <span class="fs-sm text-muted">{{ localize('Scegli il colore del titolo.') }}</span>
         </div>
 
     </div>
@@ -78,18 +77,26 @@
             <span class="fs-sm text-muted">{{ localize('Inserisci il testo che apparirà sul pulsante.') }}</span>
         </div>
         <div class="col-md-2">
-        <x-color-picker 
-    id="buttonTextColor" 
-    name="buttonTextColor" 
-    value="{{ old('buttonTextColor', $item->settings['buttonTextColor'] ?? '') }}"
-    label="{{ localize('Colore Pulsante') }}"
-/>
- <span class="fs-sm text-muted">{{ localize('Scegli il colore del testo del pulsante.') }}</span>
+            <x-color-picker
+                id="buttonTextColor"
+                name="buttonTextColor"
+                value="{{ old('buttonTextColor', $item->settings['buttonTextColor'] ?? '') }}"
+                label="{{ localize('Colore Pulsante') }}" />
+            <span class="fs-sm text-muted">{{ localize('Scegli il colore del testo del pulsante.') }}</span>
         </div>
         <div class="col-md-3">
             <label for="buttonUrl" class="form-label">{{ localize('URL del Pulsante') }}</label>
             <input class="form-control" type="url" id="buttonUrl" name="buttonUrl" value="{{ isset($item->settings['buttonUrl']) ? $item->settings['buttonUrl'] : '' }}">
             <span class="fs-sm text-muted">{{ localize('Inserisci l\'URL a cui il pulsante dovrebbe puntare.') }}</span>
         </div>
+
+        <div class="col-md-3 mt-3">
+        <label for="buttonTarget" class="form-label">{{ localize('Azione di apertura') }}</label>
+        <select class="form-select" id="buttonTarget" name="buttonTarget">
+            <option value="_self" {{ isset($item->settings['buttonTarget']) && $item->settings['buttonTarget'] == '_self' ? 'selected' : '' }}>{{ localize('Stessa finestra') }}</option>
+            <option value="_blank" {{ isset($item->settings['buttonTarget']) && $item->settings['buttonTarget'] == '_blank' ? 'selected' : '' }}>{{ localize('Nuova finestra') }}</option>
+        </select>
+        <span class="fs-sm text-muted">{{ localize('Scegli se aprire il link nella stessa finestra o in una nuova finestra.') }}</span>
+    </div>
     </div>
 </div>

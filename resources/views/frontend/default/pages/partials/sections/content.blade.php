@@ -18,7 +18,13 @@
                 @endif
              
                 @if (isset($item->settings['buttonText']))
-                <a href="{{ $item->settings['buttonUrl'] }}" class="{{ $item->settings['buttonType'] == 'button' ? 'btn btn-primary' : 'subtext-link mt-6' }}" style="color:{{ $item->settings['buttonTextColor'] }}; border-color:{{ $item->settings['buttonTextColor'] }}; font-size:19px;">{{ localize($item->settings['buttonText']) }}</a>
-                @endif
+    <a href="{{ $item->settings['buttonUrl'] }}" 
+       class="{{ $item->settings['buttonType'] == 'button' ? 'btn btn-primary' : 'subtext-link mt-6' }}" 
+       style="color:{{ $item->settings['buttonTextColor'] }}; border-color:{{ $item->settings['buttonTextColor'] }}; font-size:19px;" 
+       {{ isset($item->settings['buttonTarget']) ? 'target=' . $item->settings['buttonTarget'] : '' }}>
+       {{ localize($item->settings['buttonText']) }}
+    </a>
+@endif
+
             </div>
       

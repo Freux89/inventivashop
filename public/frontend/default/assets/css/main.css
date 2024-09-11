@@ -24408,7 +24408,7 @@ body {
 .btn-primary:hover {
     border-color: var(--in-primary-dark-3);
     background-color: var(--in-primary-dark-3);
-    color: #fff;
+    color: #fff !important;
 }
 .btn-secondary {
     color: var(--bs-btn-bg);
