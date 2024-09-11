@@ -404,29 +404,6 @@ if (!function_exists('findDynamicPriceByTier')) {
 
 
 
-
-
-
-
-
-
-
-if (!function_exists('interpolatePrice')) {
-    function interpolatePrice($min_quantity_low, $price_low, $min_quantity_high, $price_high, $quantity)
-    {
-        if ($min_quantity_high == $min_quantity_low) {
-            // Se sono uguali, utilizza semplicemente il prezzo più basso (dato che siamo nell'ultima fascia)
-            return $price_low * $quantity;
-        }
-        // Calcola il prezzo interpolato
-        $slope = ($price_high - $price_low) / ($min_quantity_high - $min_quantity_low);
-        $price = $price_low + ($quantity - $min_quantity_low) * $slope;
-
-        return $price * $quantity; // Restituisci il prezzo totale per la quantità specificata
-    }
-}
-
-
 if (!function_exists('findPriceByTier')) {
     function findPriceByTier($material, $quantity)
     {
