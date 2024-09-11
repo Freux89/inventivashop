@@ -66,7 +66,7 @@
         </div>
         <div class="col-md-3">
             <label for="buttonUrl" class="form-label">{{ localize('URL del Pulsante') }}</label>
-            <input class="form-control" type="url" id="buttonUrl" name="buttonUrl" value="{{ isset($item->settings['buttonUrl']) ? $item->settings['buttonUrl'] : '' }}">
+            <input class="form-control" type="text" id="buttonUrl" name="buttonUrl" value="{{ isset($item->settings['buttonUrl']) ? $item->settings['buttonUrl'] : '' }}">
             <span class="fs-sm text-muted">{{ localize('Inserisci l\'URL a cui il pulsante dovrebbe puntare.') }}</span>
         </div>
     </div>

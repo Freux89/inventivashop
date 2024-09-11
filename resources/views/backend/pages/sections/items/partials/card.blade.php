@@ -59,7 +59,7 @@
        
         <div class="col-md-3">
             <label for="url" class="form-label">{{ localize('URL') }}</label>
-            <input class="form-control" type="url" id="url" name="url" value="{{ isset($item->settings['url']) ? $item->settings['url'] : '' }}">
+            <input class="form-control" type="text" id="url" name="url" value="{{ isset($item->settings['url']) ? $item->settings['url'] : '' }}">
             
         </div>
     </div>

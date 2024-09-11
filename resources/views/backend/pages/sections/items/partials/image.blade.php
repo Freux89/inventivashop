@@ -43,7 +43,7 @@
     <div class="row mb-4">
         <div class="col-md-3">
             <label for="imageUrl" class="form-label">{{ localize('URL') }}</label>
-            <input class="form-control" type="url" id="imageUrl" name="imageUrl" value="{{ isset($item->settings['imageUrl']) ? $item->settings['imageUrl'] : '' }}">
+            <input class="form-control" type="text" id="imageUrl" name="imageUrl" value="{{ isset($item->settings['imageUrl']) ? $item->settings['imageUrl'] : '' }}">
             <span class="fs-sm text-muted">{{ localize('Inserisci l\'URL a cui l\'immagine dovrebbe puntare.') }}</span>
         </div>
         <div class="col-md-3">

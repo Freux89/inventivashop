@@ -76,7 +76,7 @@
         </div>
         <div class="col-md-3">
             <label for="url" class="form-label">{{ localize('Url') }}</label>
-            <input class="form-control" type="url" id="url" name="url" value="{{ isset($item->settings['url']) ? $item->settings['url'] : '' }}">
+            <input class="form-control" type="text" id="url" name="url" value="{{ isset($item->settings['url']) ? $item->settings['url'] : '' }}">
             <span class="fs-sm text-muted">{{ localize('Inserisci l\'URL dell\'elemento.') }}</span>
         </div>
     </div>

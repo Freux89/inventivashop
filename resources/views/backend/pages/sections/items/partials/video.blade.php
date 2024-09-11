@@ -39,7 +39,7 @@
     <div class="row mb-4">
         <div class="col-md-3">
             <label for="videoUrl" class="form-label">{{ localize('URL video') }}</label>
-            <input class="form-control" type="url" id="videoUrl" name="videoUrl" value="{{ isset($item->settings['videoUrl']) ? $item->settings['videoUrl'] : '' }}">
+            <input class="form-control" type="text" id="videoUrl" name="videoUrl" value="{{ isset($item->settings['videoUrl']) ? $item->settings['videoUrl'] : '' }}">
             <span class="fs-sm text-muted">{{ localize('Inserisci l\'URL del video.') }}</span>
         </div>
     </div>
