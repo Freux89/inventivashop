@@ -44,7 +44,9 @@
         ".gif",
         ".jpg",
         ".jpeg",
-        ".webp"
+        ".webp",
+        ".pdf",
+        ".zip"
     ];
     TT.uploadQty = "single";
     TT.selectedFiles = null;
@@ -372,6 +374,14 @@
         })
         .catch(error => {
             console.error('Errore:', error);
+        });
+    }
+
+    function copyMediaUrl(url) {
+        navigator.clipboard.writeText(url).then(function() {
+            alert('URL copiato negli appunti: ' + url);
+        }, function(err) {
+            console.error('Errore durante la copia dell\'URL: ', err);
         });
     }
 </script>

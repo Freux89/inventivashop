@@ -2,10 +2,23 @@
     <div class="tt-media-item" data-active-file-id="{{ $mediaFile->id }}" id="media-item-{{ $mediaFile->id }}"
         onclick="handleSelectedFiles({{ $mediaFile->id }})">
         <div class="tt-media-img">
-            @if ($mediaFile->media_type == 'image')
-                <img src="{{ uploadedAsset($mediaFile->id) }}" class="img-fluid" />
-            @endif
-        </div>
+    @if ($mediaFile->media_type == 'image')
+        <!-- Anteprima dell'immagine -->
+        <img src="{{ uploadedAsset($mediaFile->id) }}" class="img-fluid" />
+    @elseif ($mediaFile->media_type == 'document')
+        <!-- Icona per i documenti -->
+        @if ($mediaFile->media_extension == 'pdf')
+            <!-- Icona per PDF -->
+            <i class="fas fa-file-pdf fa-3x text-danger"></i>
+        @elseif ($mediaFile->media_extension == 'zip')
+            <!-- Icona per ZIP -->
+            <i class="fas fa-file-archive fa-3x text-warning"></i>
+        @else
+            <!-- Icona per altri tipi di documenti -->
+            <i class="fas fa-file-alt fa-3x text-secondary"></i>
+        @endif
+    @endif
+</div>
         <div class="tt-media-info-wrap p-2">
             <div class="tt-media-info">
                 <p class="fs-base mb-0 text-truncate">{{ $mediaFile->media_name }}</p>
@@ -14,6 +27,12 @@
         </div>
         @can('delete_media')
             <div class="tt-media-action-wrap d-flex align-items-center justify-content-center">
+                   <!-- Pulsante per Copiare l'URL -->
+<a class="btn btn-sm px-2 btn-info media-copy-url-btn me-2" data-bs-toggle="tooltip"
+   data-bs-placement="top" data-bs-title="Copia URL"
+   onclick="copyMediaUrl('{{ uploadedAsset($mediaFile->id) }}'); event.stopPropagation();">
+    <i data-feather="link"></i>
+</a>
                 <!-- Pulsante Modifica -->
                 <a class="btn btn-sm px-2 btn-warning media-edit-btn me-2" data-bs-toggle="tooltip"
                    data-bs-placement="top" data-bs-title="Modifica file"
