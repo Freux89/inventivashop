@@ -361,6 +361,10 @@ if (!function_exists('findDynamicPriceByTier')) {
         // Ottieni tutti gli scaglioni ordinati per quantità minima
         $tiers = $material->priceTiers->sortBy('min_quantity')->values();
 
+        if ($tiers->isEmpty()) {
+            return null;
+        }
+
         // Se la quantità è inferiore o uguale al minimo scaglione, ritorna il prezzo totale per il primo scaglione
         if ($quantity <= $tiers->first()->min_quantity) {
             return $tiers->first()->price * $quantity;
