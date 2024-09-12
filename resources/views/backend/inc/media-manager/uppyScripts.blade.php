@@ -293,9 +293,16 @@
 
 
     function deleteMedia(element, mediaId) {
-        // Prevenire l'aggiornamento della pagina
-        event.preventDefault();
+    // Prevenire l'aggiornamento della pagina
+    event.preventDefault();
+    
+    // Mostrare il modal di conferma
+    const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+    confirmDeleteModal.show();
 
+    // Aggiungere un listener per il pulsante di conferma
+    const confirmButton = document.getElementById('confirmDeleteButton');
+    confirmButton.onclick = function () {
         // Ottenere l'URL per la richiesta AJAX
         const url = element.getAttribute('data-href');
 
@@ -319,7 +326,12 @@
         .catch(error => {
             console.error('Error:', error);
         });
-    }
+
+        // Nascondere il modal dopo la conferma
+        confirmDeleteModal.hide();
+    };
+}
+
 </script>
 
 <script>
