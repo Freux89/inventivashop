@@ -35,3 +35,32 @@
     </div>
   </div>
 </div>
+
+<!-- Modale per l'Editing -->
+<div class="modal fade" id="editMediaModal" tabindex="-1" aria-labelledby="editMediaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMediaModalLabel">Modifica Dettagli Immagine</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMediaForm">
+                    <div class="mb-3">
+                        <label for="mediaAltText" class="form-label">Testo Alternativo (Alt)</label>
+                        <input type="text" class="form-control" id="mediaAltText" name="alt_text" placeholder="Inserisci il testo alternativo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="mediaDescription" class="form-label">Descrizione</label>
+                        <textarea class="form-control" id="mediaDescription" name="description" placeholder="Inserisci la descrizione"></textarea>
+                    </div>
+                    <input type="hidden" id="mediaId" name="media_id">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                <button type="button" class="btn btn-primary" onclick="saveMediaDetails()">Salva Modifiche</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -343,9 +343,7 @@
 
         // Inizializza il modale senza backdrop
         var editModalElement = document.getElementById('editMediaModal');
-        var editModal = new bootstrap.Modal(editModalElement, {
-            backdrop: false // Disabilita il backdrop
-        });
+        var editModal = new bootstrap.Modal(editModalElement);
 
         editModal.show();
     }
