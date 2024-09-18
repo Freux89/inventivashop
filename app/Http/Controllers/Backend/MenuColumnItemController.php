@@ -37,35 +37,33 @@ class MenuColumnItemController extends Controller
     $request->validate([
         'menu_column_id' => 'required|exists:menu_columns,id',
         'title' => 'nullable|string|max:255',
-        'font_size' => 'nullable|integer|min:1|max:100', // Grandezza del font opzionale
-        'title_color' => 'nullable|string|max:7', // Colore del titolo in formato hex (es. #FFFFFF)
-        'is_bold' => 'nullable|boolean', // Se il testo è in grassetto
-        'margin_top' => 'nullable|integer|min:0|max:5', // Margine superiore, valori da 0 a 5
-        'margin_bottom' => 'nullable|integer|min:0|max:5', // Margine inferiore, valori da 0 a 5
+        'font_size' => 'nullable|integer|min:1|max:100',
+        'title_color' => 'nullable|string|max:7',
+        'is_bold' => 'nullable|boolean',
+        'margin_top' => 'nullable|integer|min:0|max:5',
+        'margin_bottom' => 'nullable|integer|min:0|max:5',
         'link_type' => 'nullable|in:url,product,category',
         'url' => 'nullable|required_if:link_type,url|string',
         'product_id' => 'nullable|required_if:link_type,product|exists:products,id',
         'category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
-        'link_title' => 'nullable|string|max:255', // Titolo del link opzionale
-        'description' => 'nullable|string', // Descrizione opzionale che può contenere HTML
-        'image_id' => 'nullable|integer', // File immagine opzionale
+        'link_title' => 'nullable|string|max:255',
+        'description' => 'nullable|string',
+        'image_id' => 'nullable|integer',
     ]);
 
     // Creazione del nuovo item
     $menuColumnItem = new MenuColumnItem();
     $menuColumnItem->menu_column_id = $request->menu_column_id;
     $menuColumnItem->title = $request->title;
-    $menuColumnItem->font_size = $request->font_size ?? 14; // Assegna la grandezza del font con valore di default 14
-    $menuColumnItem->title_color = $request->title_color; // Assegna il colore del titolo
-    $menuColumnItem->is_bold = $request->is_bold ? true : false; // Assegna se il testo è in grassetto
-    $menuColumnItem->margin_top = $request->margin_top ?? 0; // Assegna il margine superiore con valore di default 0
-    $menuColumnItem->margin_bottom = $request->margin_bottom ?? 0; // Assegna il margine inferiore con valore di default 0
+    $menuColumnItem->font_size = $request->font_size ?? 14;
+    $menuColumnItem->title_color = $request->title_color;
+    $menuColumnItem->is_bold = $request->is_bold ? true : false;
+    $menuColumnItem->margin_top = $request->margin_top ?? 0;
+    $menuColumnItem->margin_bottom = $request->margin_bottom ?? 0;
     $menuColumnItem->image_id = $request->image_id;
     $menuColumnItem->apply_link_to_image = $request->has('apply_link_to_image') ? true : false;
-
-    $menuColumnItem->link_title = $request->link_title; // Assegna il titolo del link
-    $cleanedDescription = $this->cleanHtmlContent($request->description);
-    $menuColumnItem->description = $cleanedDescription; // Assegna la descrizione
+    $menuColumnItem->link_title = $request->link_title;
+    $menuColumnItem->description = $this->cleanHtmlContent($request->description);
 
     // Gestione del tipo di collegamento
     if ($request->link_type === 'url') {
@@ -76,11 +74,16 @@ class MenuColumnItemController extends Controller
         $menuColumnItem->category_id = $request->category_id;
     }
 
+    // Assegnazione posizione
+    $lastPosition = MenuColumnItem::where('menu_column_id', $request->menu_column_id)->max('position');
+    $menuColumnItem->position = $lastPosition + 1;
+
     $menuColumnItem->save();
 
     return redirect()->route('admin.menu-columns.edit', $request->menu_column_id)
         ->with('success', localize('Item aggiunto con successo!'));
 }
+
 
 
 

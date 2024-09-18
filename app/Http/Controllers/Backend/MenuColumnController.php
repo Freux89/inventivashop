@@ -38,7 +38,7 @@ class MenuColumnController extends Controller
         'title' => 'required|string|max:255',
         'column_width' => 'required|integer|min:1|max:12',
         'padding_left' => 'nullable|integer|min:0|max:9',
-        'padding_right' => 'nullable|integer|min:0|max:9'
+        'padding_right' => 'nullable|integer|min:0|max:9',
     ]);
 
     // Creazione della nuova colonna
@@ -50,11 +50,17 @@ class MenuColumnController extends Controller
     $menuColumn->padding_right = $request->padding_right;
     $menuColumn->border_left = $request->border_left ? true : false;
     $menuColumn->border_right = $request->border_right ? true : false;
+
+    // Assegnazione posizione
+    $lastPosition = MenuColumn::where('menu_item_id', $request->menu_item_id)->max('position');
+    $menuColumn->position = $lastPosition + 1;
+
     $menuColumn->save();
 
     return redirect()->route('admin.menu-items.edit', $request->menu_item_id)
         ->with('success', localize('Colonna aggiunta con successo!'));
 }
+
 
     /**
      * Mostra la pagina per modificare una colonna esistente.

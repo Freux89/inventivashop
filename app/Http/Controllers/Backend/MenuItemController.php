@@ -30,38 +30,41 @@ class MenuItemController extends Controller
     }
 
     public function store(Request $request)
-{
-    // Validazione dei dati
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'menu_id' => 'required|exists:menus,id',
-        'link_type' => 'nullable|in:url,product,category', // Il tipo di collegamento è opzionale
-        'url' => 'nullable|required_if:link_type,url|string',
-        'product_id' => 'nullable|required_if:link_type,product|exists:products,id',
-        'category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
-        'menu_type' => 'nullable|in:dropdown,columns', // Il tipo di menu è opzionale
-    ]);
-
-    // Creazione del nuovo menu item
-    $menuItem = new MenuItem();
-    $menuItem->menu_id = $request->menu_id;
-    $menuItem->title = $request->title;
-
-    // Gestione del tipo di collegamento
-    if ($request->link_type === 'url') {
-        $menuItem->url = $request->url;
-    } elseif ($request->link_type === 'product') {
-        $menuItem->product_id = $request->product_id;
-    } elseif ($request->link_type === 'category') {
-        $menuItem->category_id = $request->category_id;
-    }
-
+    {
+        // Validazione dei dati
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'menu_id' => 'required|exists:menus,id',
+            'link_type' => 'nullable|in:url,product,category', // Il tipo di collegamento è opzionale
+            'url' => 'nullable|required_if:link_type,url|string',
+            'product_id' => 'nullable|required_if:link_type,product|exists:products,id',
+            'category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
+            'menu_type' => 'nullable|in:dropdown,columns', // Il tipo di menu è opzionale
+        ]);
     
-
-    $menuItem->save();
-
-    return redirect()->route('admin.menus.edit', $request->menu_id)->with('success', localize('Item del menu aggiunto con successo!'));
-}
+        // Creazione del nuovo menu item
+        $menuItem = new MenuItem();
+        $menuItem->menu_id = $request->menu_id;
+        $menuItem->title = $request->title;
+    
+        // Gestione del tipo di collegamento
+        if ($request->link_type === 'url') {
+            $menuItem->url = $request->url;
+        } elseif ($request->link_type === 'product') {
+            $menuItem->product_id = $request->product_id;
+        } elseif ($request->link_type === 'category') {
+            $menuItem->category_id = $request->category_id;
+        }
+    
+        // Assegnazione posizione
+        $lastPosition = MenuItem::where('menu_id', $request->menu_id)->max('position');
+        $menuItem->position = $lastPosition + 1;
+    
+        $menuItem->save();
+    
+        return redirect()->route('admin.menus.edit', $request->menu_id)->with('success', localize('Item del menu aggiunto con successo!'));
+    }
+    
 
 
 
