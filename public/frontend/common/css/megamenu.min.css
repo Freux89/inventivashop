@@ -317,6 +317,8 @@
 
 .menu-columns-wrapper {
     display: flex;
+    min-width: 768px;
+    justify-content: center;
 }
 
 @media (max-width: 768px) {
@@ -332,11 +334,18 @@
 }
 
 @media (max-width: 768px) {
+   
+    .menu-columns-wrapper{
+        min-width: 0;  
+    }
     .menu-columns-wrapper div {
         border-left: none !important;
         border-right: none !important;
         padding-right: calc(var(--bs-gutter-x)* 0.5)  !important;
         padding-left: calc(var(--bs-gutter-x)* 0.5)  !important;
+    }
+    .mega-menu .menu-dropdown .menu-item-wrapper{
+        justify-content: start;
     }
 
 }
