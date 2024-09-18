@@ -111,8 +111,10 @@
     <div class="container">
         <div class="gshop-navbar rounded position-relative pt-6 px-2 px-md-6">
             <div class="row align-items-center justify-content-between m-0">
-<div class="col-4 d-block d-md-none">
-M
+<div class="mobile-nav-icon col-4 d-block d-md-none">
+          <a class="" href="#">
+            <span class="fa fa-bars"></span>
+          </a>
 </div>
                 <div class="col-xxl-2 col-xl-3 col-md-3 col-4 p-0">
                     <a href="{{ route('home') }}" class="logo">
@@ -232,71 +234,7 @@ M
                     </div>
                 </div>
             </div>
-            <div class="row">
-                
-            <nav class="gshop-navmenu d-none d-lg-block p-0 my-3">
-                            <ul class="d-flex align-itmes-center justify-content-start">
-                                <li><a href="{{ route('home') }}">{{ localize('Home') }}</a></li>
-                                <li>
-                                    <a href="javascript:void(0)" class="category-dropdown-btn fw-bold d-none d-sm-inline-block">{{ localize('Categories') }}<span class="ms-1"><i class="fa-solid fa-angle-down"></i></span></a>
-                                    <div class="category-dropdown-box scrollbar">
-
-                                        <ul class="category-dropdown-menu">
-                                            @php
-                                            $categories = [];
-                                            if (getSetting('navbar_categories') != null) {
-                                            $categories = \App\Models\Category::whereIn('id', json_decode(getSetting('navbar_categories')))->get();
-                                            }
-                                            @endphp
-                                            @foreach ($categories as $navbarCat)
-                                            <li>
-                                                <a href="{{ route('category.show', ['categorySlug' => $navbarCat->slug]) }}" class="d-flex align-items-center">
-                                                    <div class="me-2 avatar-icon">
-                                                        <img src="{{ uploadedAsset($navbarCat->collectLocalization('thumbnail_image')) }}" alt="" class="rounded-circle h-100 w-100">
-                                                    </div>
-                                                    <span>{{ $navbarCat->collectLocalization('name') }}</span>
-                                                </a>
-                                            </li>
-                                            @endforeach
-
-                                        </ul>
-                                    </div>
-                                </li>
-
-                                <li class="has-submenu">
-                                    <a href="javascript:void(0);">{{ localize('Pages') }}<span class="ms-1 fs-xs float-end"><i class="fa-solid fa-angle-down"></i></span></a>
-                                    <ul>
-                                        @php
-                                        $pages = [];
-                                        if (getSetting('navbar_pages') != null) {
-                                        $pages = \App\Models\Page::whereIn('id', json_decode(getSetting('navbar_pages')))->get();
-                                        }
-                                        @endphp
-
-                                        <li>
-                                            <a href="{{ route('home.blogs') }}">{{ localize('Blogs') }}</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('home.pages.aboutUs') }}">{{ localize('About Us') }}</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('home.pages.contactUs') }}">{{ localize('Contact Us') }}</a>
-                                        </li>
-
-                                        @foreach ($pages as $navbarPage)
-                                        <li>
-                                            <a href="{{ route('home.pages.show', $navbarPage->slug) }}" class="d-flex align-items-center">
-                                                <span>{{ $navbarPage->collectLocalization('title') }}</span>
-                                            </a>
-                                        </li>
-                                        @endforeach
-                                    </ul>
-                                </li>
-
-                                
-                            </ul>
-                        </nav>
-            </div>
+            @include('frontend.default.inc.menu')
         </div>
     </div>
     <div class="container promo-banner text-center py-1 mt-6 mt-lg-0">

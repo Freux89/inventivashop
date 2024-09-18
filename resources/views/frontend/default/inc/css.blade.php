@@ -9,3 +9,4 @@
 
 <link rel="stylesheet" href="{{ staticAsset('frontend/common/css/select2.css') }}">
 <link rel="stylesheet" href="{{ staticAsset('frontend/common/css/custom.css') }}">
+<link rel="stylesheet" href="{{ staticAsset('frontend/common/css/megamenu.min.css') }}">

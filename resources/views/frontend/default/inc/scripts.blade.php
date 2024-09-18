@@ -15,7 +15,7 @@
 <script src="{{ staticAsset('frontend/common/js/toastr.min.js') }}"></script>
 <script src="{{ staticAsset('frontend/common/js/select2.js') }}"></script>
 <script src="{{ staticAsset('frontend/default/assets/js/app.js') }}"></script>
-
+<script src="{{ staticAsset('frontend/common/js/megamenu.min.js') }}"></script>
 <script>
     "use strict"
 
@@ -616,14 +616,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     initTooltip();
 
-    document.addEventListener("DOMContentLoaded", function () {
-            $(".summary").stick_in_parent();
-        });
+    // document.addEventListener("DOMContentLoaded", function () {
+    //         $(".summary").stick_in_parent();
+    //     });
 
 
         document.addEventListener('DOMContentLoaded', function() {
             var breadcrumbContent = document.querySelector('.breadcrumb-content');
-            breadcrumbContent.scrollLeft = breadcrumbContent.scrollWidth;
+        //    breadcrumbContent.scrollLeft = breadcrumbContent.scrollWidth;
         });
 
         function initializeToggleDetails() {
@@ -645,5 +645,10 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeToggleDetails();
     initializeQuantityDiscounts();
         });
+
+
+
+    
+    
 
 </script>

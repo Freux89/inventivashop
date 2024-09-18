@@ -6,6 +6,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
+use App\Models\Menu;
 use Illuminate\Support\Facades\View;
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         $this->composeCartData();
+
+
+        $this->composeMenu();
+
     }
     
     protected function composeCartData()
@@ -53,6 +58,25 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
+    protected function composeMenu()
+    {
+         // Componi la vista con il menu principale
+         View::composer('frontend.default.inc.menu', function ($view) {
+            $menu = Menu::with([
+                'items' => function ($query) {
+                    $query->orderBy('position');
+                },
+                'items.columns' => function ($query) {
+                    $query->orderBy('position');
+                },
+                'items.columns.items' => function ($query) {
+                    $query->orderBy('position');
+                }
+            ])->where('is_main', true)->first();
 
+            $view->with('menu', $menu);
+        });
+
+    }
     
 }

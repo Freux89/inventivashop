@@ -127,7 +127,7 @@
         @endif 
 
         <!--footer section end-->
-
+        <div class="menu-overlay"></div>
     </div>
 
 
@@ -154,7 +154,7 @@
             }
         </script>
         <!--for pwa-->
-
+        
         </body>
 
         </html>

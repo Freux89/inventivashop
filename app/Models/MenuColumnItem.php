@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-class MenuItem extends Model
+class MenuColumnItem extends Model
 {
     use HasFactory;
-
     protected static function boot()
     {
         parent::boot();
@@ -18,28 +17,10 @@ class MenuItem extends Model
             $builder->orderBy('position');
         });
     }
-
-    // Relazione con il Menu
-    public function menu()
+    // Relazione con il MenuColumn
+    public function menuColumn()
     {
-        return $this->belongsTo(Menu::class);
-    }
-
-    // Relazione con i MenuColumns
-    public function columns()
-    {
-        return $this->hasMany(MenuColumn::class)->orderBy('position');
-    }
-
-    // Relazione con MenuItem per gestire il menu a discesa
-    public function parent()
-    {
-        return $this->belongsTo(MenuItem::class, 'parent_id');
-    }
-
-    public function children()
-    {
-        return $this->hasMany(MenuItem::class, 'parent_id');
+        return $this->belongsTo(MenuColumn::class);
     }
 
     // Relazione con il prodotto

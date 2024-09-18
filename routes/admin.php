@@ -31,6 +31,8 @@ use App\Http\Controllers\Backend\Sections\SectionController;
 use App\Http\Controllers\Backend\Sections\SectionPositionController;
 use App\Http\Controllers\Backend\Sections\SectionItemController;
 use App\Http\Controllers\Backend\MenuItemController;
+use App\Http\Controllers\Backend\MenuColumnController;
+use App\Http\Controllers\Backend\MenuColumnItemController;
 use App\Http\Controllers\Backend\Products\BrandsController;
 use App\Http\Controllers\Backend\Products\UnitsController;
 use App\Http\Controllers\Backend\Products\TaxesController;
@@ -414,20 +416,40 @@ Route::group(
 
         # menu manager
 
-        Route::get('/menus', [MenuController::class, 'index'])->name('admin.menus.index');
+        Route::get('/menus',  [MenuController::class, 'index'])->name('admin.menus.index');
         Route::get('/menus/create', [MenuController::class, 'create'])->name('admin.menus.create');
         Route::get('/menus/edit/{id}', [MenuController::class, 'edit'])->name('admin.menus.edit');
-        Route::post('/menus', [MenuController::class, 'store'])->name('admin.menus.store');
+        Route::post('/menus', [MenuController::class, 'store'] )->name('admin.menus.store');
         Route::put('/menus/update/{id}', [MenuController::class, 'update'])->name('admin.menus.update');
         Route::get('/menus/delete/{id}', [MenuController::class, 'destroy'])->name('admin.menus.delete');
 
-        // MenuItems
-        Route::get('/menus/{menu}/items', [MenuItemController::class, 'index'])->name('admin.menuitems.index');
-        Route::get('/menus/{menu}/items/create', [MenuItemController::class, 'create'])->name('admin.menuitems.create');
-        Route::get('/menus/{menu}/items/edit/{id}', [MenuItemController::class, 'edit'])->name('admin.menuitems.edit');
-        Route::post('/menus/{menu}/items', [MenuItemController::class, 'store'])->name('admin.menuitems.store');
-        Route::post('/menus/{menu}/items/update/{id}', [MenuItemController::class, 'update'])->name('admin.menuitems.update');
-        Route::get('/menus/{menu}/items/delete/{id}', [MenuItemController::class, 'destroy'])->name('admin.menuitems.delete');
+        // Rotte per la gestione dei Menu Items
+        Route::get('/menu-items/create/{menu_id}', [MenuItemController::class, 'create'])->name('admin.menu-items.create');
+        Route::post('/menu-items', [MenuItemController::class, 'store'])->name('admin.menu-items.store');
+        Route::get('/menu-items/edit/{id}', [MenuItemController::class, 'edit'])->name('admin.menu-items.edit');
+        Route::put('/menu-items/update/{id}', [MenuItemController::class, 'update'])->name('admin.menu-items.update');
+        Route::get('/menu-items/delete/{id}', [MenuItemController::class, 'destroy'])->name('admin.menu-items.delete');
+        Route::post('/menu-items/positions', [MenuItemController::class, 'updatePositions'])->name('admin.menu-items.positions');
+        Route::get('/menu-items/{id}/duplicate', [MenuItemController::class, 'duplicate'])->name('admin.menu-items.duplicate');
+
+        // Rotte per la gestione delle Colonne del Menu Item
+        Route::get('/menu-columns/create/{menu_item_id}', [MenuColumnController::class, 'create'])->name('admin.menu-columns.create');
+        Route::post('/menu-columns', [MenuColumnController::class, 'store'])->name('admin.menu-columns.store');
+        Route::get('/menu-columns/edit/{id}', [MenuColumnController::class, 'edit'])->name('admin.menu-columns.edit');
+        Route::put('/menu-columns/update/{id}', [MenuColumnController::class, 'update'])->name('admin.menu-columns.update');
+        Route::get('/menu-columns/delete/{id}', [MenuColumnController::class, 'destroy'])->name('admin.menu-columns.delete');
+        Route::post('/menu-columns/positions', [MenuColumnController::class, 'updatePositions'])->name('admin.menu-columns.positions');
+        Route::get('/menu-columns/{id}/duplicate', [MenuColumnController::class, 'duplicate'])->name('admin.menu-columns.duplicate');
+
+        // Rotte per la gestione degli Items delle Colonne del Menu
+        Route::get('/menu-column-items/create/{menu_column_id}', [MenuColumnItemController::class, 'create'])->name('admin.menu-column-items.create');
+        Route::post('/menu-column-items', [MenuColumnItemController::class, 'store'])->name('admin.menu-column-items.store');
+        Route::get('/menu-column-items/edit/{id}', [MenuColumnItemController::class, 'edit'])->name('admin.menu-column-items.edit');
+        Route::put('/menu-column-items/update/{id}', [MenuColumnItemController::class, 'update'])->name('admin.menu-column-items.update');
+        Route::get('/menu-column-items/delete/{id}', [MenuColumnItemController::class, 'destroy'])->name('admin.menu-column-items.delete');
+        Route::post('/menu-column-items/positions', [MenuColumnItemController::class, 'updatePositions'])->name('admin.menu-column-items.positions');
+        Route::get('/menu-column-items/{id}/duplicate', [MenuColumnItemController::class, 'duplicate'])->name('admin.menu-column-items.duplicate');
+
 
         // Sections
         Route::get('/sections', [SectionController::class, 'index'])->name('admin.sections.index');

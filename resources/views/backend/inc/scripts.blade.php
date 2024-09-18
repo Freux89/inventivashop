@@ -12,6 +12,9 @@
 <script src="{{ staticAsset('backend/assets/js/vendors/apexcharts.min.js') }}"></script>
 <script src="{{ staticAsset('backend/assets/js/vendors/apex-scripts.js') }}"></script>
 <script src="{{ staticAsset('backend/assets/js/app.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>
+<!-- HoverIntent -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.hoverintent/1.9.0/jquery.hoverIntent.min.js"></script>
 
 <!-- localizations & others -->
 <script>
