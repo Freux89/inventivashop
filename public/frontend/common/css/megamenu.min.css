@@ -318,6 +318,8 @@
 .menu-columns-wrapper {
     display: flex;
     min-width: 768px;
+    width: 100%;
+    max-width: 1680px;
     justify-content: center;
 }
 
