@@ -24150,6 +24150,7 @@ body {
     visibility: visible;
     top: 100%;
     display:block;
+    z-index: 1000;
 }
 .gshop-header-contact::before {
     left: -24px;
