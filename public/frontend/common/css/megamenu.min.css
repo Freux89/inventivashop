@@ -70,7 +70,9 @@
 .mega-menu .main-links ul li {
     width: auto;
     float: left;
-    margin-right: 40px
+    margin-right: 40px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .mega-menu .main-links ul li [data-submenu] ,.mega-menu .main-links ul li a {
@@ -87,7 +89,9 @@
 .mega-menu .main-links ul li a.highlight {
     border-bottom: 4px solid red
 }
-
+.caret {
+    display: none !important;
+}
 .mega-menu .main-links ul li [data-submenu] .caret.caret-down {
     border: solid #000;
     border-width: 0 2px 2px 0;
