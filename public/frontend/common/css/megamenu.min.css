@@ -96,7 +96,7 @@
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
     margin-left: 8px;
-    margin-bottom: 2px
+    margin-bottom: 4px
 }
 
 .mega-menu .main-links ul li [data-submenu] .caret.caret-up {
@@ -174,7 +174,8 @@
     }
 
     .mega-menu.sticky-header.responsive-menu .main-links {
-        margin-top: 15px
+        margin-top: 15px !important;
+
     }
 
     .mega-menu.sticky-header.responsive-menu .menu-dropdown {
@@ -295,7 +296,7 @@
 .mega-menu .back-link,
 .mega-menu .close-menu {
     color: #333;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     text-decoration: none;
     transition: color 0.3s;
@@ -350,4 +351,46 @@
         justify-content: start;
     }
 
+}
+
+@media (max-width: 768px) {
+    .main-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .main-links ul li {
+        
+        justify-content: space-between; /* Distribuisce il titolo a sinistra e la freccia a destra */
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eaeaea; /* Aggiunge una linea separatrice tra le voci */
+    }
+    
+    .main-links ul li div {
+        width: 100%;
+        flex-grow: 1; /* Assicura che il titolo occupi lo spazio rimanente */
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .main-links ul li .caret {
+        margin-left: auto; /* Spinge la freccia a destra */
+        width: 10px;
+    height: 10px;
+    }
+    .mega-menu .main-links ul li [data-submenu] .caret.caret-up{
+        border: solid #000;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 2px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    margin-left: 8px;
+    margin-bottom: 2px;
+    }
+    .main-links ul li {
+        padding: 12px 20px; /* Aumenta leggermente il padding su mobile */
+    }
 }

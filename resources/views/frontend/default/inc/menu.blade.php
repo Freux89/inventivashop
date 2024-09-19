@@ -10,9 +10,9 @@
                         {{ $item->title }}
                     </a>
                     @else
-                    <span data-submenu="{{ str_replace(' ', '-', strtolower($item->title)) }}">
-                        {{ $item->title }}
-                    </span>
+                    <div data-submenu="{{ str_replace(' ', '-', strtolower($item->title)) }}">
+                       <span>{{ $item->title }}</span> 
+                    </div>
                     @endif
                 </li>
                 @endforeach
