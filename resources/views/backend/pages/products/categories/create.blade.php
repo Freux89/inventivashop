@@ -42,6 +42,10 @@
     <textarea class="form-control editor" id="description"
          name="description" rows="4"></textarea>
 </div>
+<div class="mb-4">
+    <label for="long_description" class="form-label">{{ localize('Descrizione lunga') }}</label>
+    <textarea class="form-control editor" id="long_description" name="long_description" rows="6"></textarea>
+</div>
                                 <div class="mb-4">
                                     <label for="parent_id" class="form-label">{{ localize('Base Category') }}</label>
                                     <select class="form-control select2" name="parent_id" class="w-100"

@@ -50,57 +50,60 @@ class CategoriesController extends Controller
 
     # add new data
     public function store(Request $request)
-    {
-        $category = new Category;
-        $category->name = $request->name;
-        $category->description = $request->description;
-        $category->sorting_order_level = 0;
-        $category->thumbnail_image = $request->image;
-        $category->meta_image = $request->meta_image;
+{
+    $category = new Category;
+    $category->name = $request->name;
+    $category->description = $request->description;
+    $category->long_description = $request->long_description; // Nuovo campo
+    $category->sorting_order_level = 0;
+    $category->thumbnail_image = $request->image;
+    $category->meta_image = $request->meta_image;
 
-        if ($request->sorting_order_level != null) {
-            $category->sorting_order_level = $request->sorting_order_level;
-        }
-
-        if ($request->parent_id != "0") {
-            $category->parent_id = $request->parent_id;
-            $parent = Category::find($request->parent_id);
-            $category->level = $parent->level + 1;
-        } else {
-            $category->parent_id = $request->parent_id;
-            $category->level = 0;
-        }
-
-        $slug = Str::slug($request->name, '-');
-
-        // Verifica se esiste già un prodotto con lo stesso slug
-        $existingCategory= Category::where('slug', $slug)->first();
-        if ($existingCategory) {
-            // Slug esistente: avvisa l'utente
-            $slug = Str::slug($request->name) . '-' . Str::random(5);
-        }
-        $category->slug = $slug;
-
-        $category->meta_title = $request->meta_title;
-        $category->meta_description = $request->meta_description;
-
-        $category->save();
-        $category->brands()->sync($request->brand_ids);
-
-        $categoryLocalization = CategoryLocalization::firstOrNew(['lang_key' => env('DEFAULT_LANGUAGE'), 'category_id' => $category->id]);
-        $categoryLocalization->name = $category->name;
-        $categoryLocalization->description = $request->description;
-        $categoryLocalization->meta_title = $category->meta_title;
-        $categoryLocalization->meta_description = $category->meta_description;
-        $categoryLocalization->thumbnail_image = $request->image;
-        $categoryLocalization->meta_image = $request->meta_image;
-
-        $category->save();
-        $categoryLocalization->save();
-
-        flash(localize('Category has been inserted successfully'))->success();
-        return redirect()->route('admin.categories.index');
+    if ($request->sorting_order_level != null) {
+        $category->sorting_order_level = $request->sorting_order_level;
     }
+
+    if ($request->parent_id != "0") {
+        $category->parent_id = $request->parent_id;
+        $parent = Category::find($request->parent_id);
+        $category->level = $parent->level + 1;
+    } else {
+        $category->parent_id = $request->parent_id;
+        $category->level = 0;
+    }
+
+    $slug = Str::slug($request->name, '-');
+
+    // Verifica se esiste già una categoria con lo stesso slug
+    $existingCategory= Category::where('slug', $slug)->first();
+    if ($existingCategory) {
+        // Slug esistente: avvisa l'utente
+        $slug = Str::slug($request->name) . '-' . Str::random(5);
+    }
+    $category->slug = $slug;
+
+    $category->meta_title = $request->meta_title;
+    $category->meta_description = $request->meta_description;
+
+    $category->save();
+    $category->brands()->sync($request->brand_ids);
+
+    $categoryLocalization = CategoryLocalization::firstOrNew(['lang_key' => env('DEFAULT_LANGUAGE'), 'category_id' => $category->id]);
+    $categoryLocalization->name = $category->name;
+    $categoryLocalization->description = $request->description;
+    $categoryLocalization->long_description = $request->long_description; // Nuovo campo
+    $categoryLocalization->meta_title = $category->meta_title;
+    $categoryLocalization->meta_description = $category->meta_description;
+    $categoryLocalization->thumbnail_image = $request->image;
+    $categoryLocalization->meta_image = $request->meta_image;
+
+    $category->save();
+    $categoryLocalization->save();
+
+    flash(localize('Category has been inserted successfully'))->success();
+    return redirect()->route('admin.categories.index');
+}
+
 
     # return view of edit form
     public function edit(Request $request, $id)
@@ -129,19 +132,19 @@ class CategoriesController extends Controller
 
     # update category
     public function update(Request $request)
-    {
-        $category = Category::findOrFail($request->id);
+{
+    $category = Category::findOrFail($request->id);
 
-        if ($request->lang_key == env("DEFAULT_LANGUAGE")) {
-            $category->name = $request->name;
-            $category->description = $request->description;
-            $category->thumbnail_image = $request->image;
-            $category->meta_image = $request->meta_image;
+    if ($request->lang_key == env("DEFAULT_LANGUAGE")) {
+        $category->name = $request->name;
+        $category->description = $request->description;
+        $category->long_description = $request->long_description; // Nuovo campo
+        $category->thumbnail_image = $request->image;
+        $category->meta_image = $request->meta_image;
 
+        $slug = Str::slug($request->slug, '-');
 
-            $slug = Str::slug($request->slug, '-');
-
-        // Verifica se esiste già un prodotto con lo stesso slug
+        // Verifica se esiste già una categoria con lo stesso slug
         $existingCategory= Category::where('slug', $slug)->where('id', '!=', $category->id)->first();
         
         if ($existingCategory) {
@@ -150,59 +153,59 @@ class CategoriesController extends Controller
             return redirect()->back();
         }
 
-            $category->slug = (!is_null($request->slug)) ? Str::slug($request->slug, '-') : Str::slug($request->name, '-') . '-' . strtolower(Str::random(5));
-            if ($request->sorting_order_level != null) {
-                $category->sorting_order_level = $request->sorting_order_level;
-            }
-
-            $oldLevel = $category->level;
-
-            if ($request->parent_id != "0") {
-                $category->parent_id = $request->parent_id;
-                $parent = Category::find((int) $request->parent_id);
-                $category->level = $parent->level + 1;
-            } else {
-                $category->parent_id = 0;
-                $category->level = 0;
-            }
-
-            if ($category->level > $oldLevel) {
-                $this->downLevelOneStep($category->id);
-            } elseif ($category->level < $oldLevel) {
-                $this->upLevelOneStep($category->id);
-            }
-
-            $category->meta_title = $request->meta_title;
-            $category->meta_description = $request->meta_description;
-
-            $category->save();
-            $category->brands()->sync($request->brand_ids);
+        $category->slug = (!is_null($request->slug)) ? Str::slug($request->slug, '-') : Str::slug($request->name, '-') . '-' . strtolower(Str::random(5));
+        
+        if ($request->sorting_order_level != null) {
+            $category->sorting_order_level = $request->sorting_order_level;
         }
 
+        $oldLevel = $category->level;
 
-        $categoryLocalization = CategoryLocalization::firstOrNew(['lang_key' => $request->lang_key, 'category_id' => $category->id]);
-        $categoryLocalization->name = $request->name;
-        $categoryLocalization->description = $request->description;
-        $categoryLocalization->meta_title = $request->meta_title;
-        $categoryLocalization->meta_description = $request->meta_description;
-        $categoryLocalization->thumbnail_image = $request->image;
-        $categoryLocalization->meta_image = $request->meta_image;
+        if ($request->parent_id != "0") {
+            $category->parent_id = $request->parent_id;
+            $parent = Category::find((int) $request->parent_id);
+            $category->level = $parent->level + 1;
+        } else {
+            $category->parent_id = 0;
+            $category->level = 0;
+        }
+
+        if ($category->level > $oldLevel) {
+            $this->downLevelOneStep($category->id);
+        } elseif ($category->level < $oldLevel) {
+            $this->upLevelOneStep($category->id);
+        }
+
+        $category->meta_title = $request->meta_title;
+        $category->meta_description = $request->meta_description;
 
         $category->save();
-        $categoryLocalization->save();
-
-
-
-        if ($request->has('related_categories')) {
-            $category->relatedCategories()->sync($request->related_categories);
-        } else {
-            // Se non ci sono categorie correlate, deselezionale tutte
-            $category->relatedCategories()->sync([]);
-        }
-
-        flash(localize('Category has been updated successfully'))->success();
-        return back();
+        $category->brands()->sync($request->brand_ids);
     }
+
+    $categoryLocalization = CategoryLocalization::firstOrNew(['lang_key' => $request->lang_key, 'category_id' => $category->id]);
+    $categoryLocalization->name = $request->name;
+    $categoryLocalization->description = $request->description;
+    $categoryLocalization->long_description = $request->long_description; // Nuovo campo
+    $categoryLocalization->meta_title = $request->meta_title;
+    $categoryLocalization->meta_description = $request->meta_description;
+    $categoryLocalization->thumbnail_image = $request->image;
+    $categoryLocalization->meta_image = $request->meta_image;
+
+    $category->save();
+    $categoryLocalization->save();
+
+    if ($request->has('related_categories')) {
+        $category->relatedCategories()->sync($request->related_categories);
+    } else {
+        // Se non ci sono categorie correlate, deselezionale tutte
+        $category->relatedCategories()->sync([]);
+    }
+
+    flash(localize('Category has been updated successfully'))->success();
+    return back();
+}
+
 
     # update status
     public function updateFeatured(Request $request)

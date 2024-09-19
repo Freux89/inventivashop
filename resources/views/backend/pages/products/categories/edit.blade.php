@@ -64,6 +64,10 @@
     <label for="description" class="form-label">{{ localize('Descrizione') }}</label>
     <textarea class="form-control editor" id="description" name="description" rows="4">{{ $category->collectLocalization('description') }}</textarea>
 </div>
+<div class="mb-4">
+    <label for="long_description" class="form-label">{{ localize('Descrizione lunga') }}</label>
+    <textarea class="form-control editor" id="long_description" name="long_description" rows="6">{{ $category->collectLocalization('long_description') }}</textarea>
+</div>
                             @if (env('DEFAULT_LANGUAGE') == $lang_key)
                             <div class="mb-4">
                                 <label for="parent_id" class="form-label">{{ localize('Base Category') }}</label>

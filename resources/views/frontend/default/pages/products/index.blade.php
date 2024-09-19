@@ -203,6 +203,7 @@ $agent = new \Jenssegers\Agent\Agent;
                 <!--rightbar-->
 
             </div>
+          
             @endif
             <!-- Categorie correlate -->
             @if (isset($category) && $category->relatedCategories->isNotEmpty())
@@ -226,6 +227,9 @@ $agent = new \Jenssegers\Agent\Agent;
                 </div>
             </div>
             @endif
+            <div class="row">
+            <div class="col-12">{!! $category->long_description !!}</div>
+            </div>
         </div>
     </section>
     <!--shop grid section end-->
