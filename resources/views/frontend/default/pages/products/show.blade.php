@@ -190,7 +190,7 @@ $breadcrumbPath = $breadcrumbs->pluck('slug')->implode('/');
             const swiper = new Swiper(swiperContainer, {
                 slidesPerView: 5,
                 spaceBetween: 0,
-                threshold: 50,
+                threshold: 30,
                     navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
