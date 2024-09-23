@@ -12,7 +12,8 @@
             </div>
             <div id="collapse{{ $index }}-{{ $indexItem }}" class="accordion-collapse collapse " aria-labelledby="heading{{ $index }}-{{ $indexItem }}" data-bs-parent="#faqAccordion{{ $index }}">
                 <div class="accordion-body" style="font-size:{{$item->settings['descriptionSizeAccordion']}}px; color:{{$item->settings['descriptionColorAccordion']}};">
-                    {{ $subItem['description'] }}
+                {!! $subItem['description'] !!}
+
                 </div>
             </div>
         </div>

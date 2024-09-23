@@ -80,7 +80,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="items[{{ $index }}][description]" class="form-label">Descrizione</label>
-                            <textarea class="form-control" name="items[{{ $index }}][description]" placeholder="Inserisci la descrizione">{{ $item['description'] }}</textarea>
+                            <textarea class="form-control editor" name="items[{{ $index }}][description]" placeholder="Inserisci la descrizione">{{ $item['description'] }}</textarea>
                         </div>
                     </div>
                 @endforeach
@@ -120,18 +120,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="mb-3">
                     <label for="items[${maxIndex}][description]" class="form-label">Descrizione</label>
-                    <textarea class="form-control" name="items[${maxIndex}][description]" placeholder="Inserisci la descrizione"></textarea>
+                    <textarea class="form-control editor" name="items[${maxIndex}][description]" placeholder="Inserisci la descrizione"></textarea>
                 </div>
             </div>
         `);
-       
+        initializeSummernote($('.editor').last());
     });
-
+    
     $('#accordionItems').on('click', '.removeItem', function() {
         $(this).closest('.accordion-item').remove();
     });
 
-    
+    function initializeSummernote($textarea) {
+        var buttons = $textarea.data("buttons");
+        var minHeight = $textarea.data("min-height");
+        var placeholder = $textarea.attr("placeholder");
+        var format = $textarea.data("format");
+
+        buttons = !buttons ? [
+            ["font", ["bold", "underline", "italic", "clear"]],
+            ['fontname', ['fontname']],
+            ["para", ["ul", "ol", "paragraph"]],
+            ["style", ["style"]],
+            ['fontsize', ['fontsize']],
+            ["color", ["color"]],
+            ["insert", ["link", "picture", "video"]],
+            ["view", ["undo", "redo"]],
+            ['codeview', ['codeview']],
+        ] : buttons;
+
+        placeholder = !placeholder ? "" : placeholder;
+        minHeight = !minHeight ? 150 : minHeight;
+        format = typeof format == "undefined" ? false : format;
+
+        $textarea.summernote({
+            toolbar: buttons,
+            placeholder: placeholder,
+            height: minHeight,
+            codeviewFilter: false,
+            codeviewIframeFilter: true,
+            disableDragAndDrop: true,
+            callbacks: {},
+        });
+
+        var nativeHtmlBuilderFunc = $textarea.summernote(
+            "module",
+            "videoDialog"
+        ).createVideoNode;
+
+        $textarea.summernote("module", "videoDialog").createVideoNode = function(url) {
+            var wrap = $('<div class="embed-responsive embed-responsive-16by9"></div>');
+            var html = nativeHtmlBuilderFunc(url);
+            html = $(html).addClass("embed-responsive-item");
+            return wrap.append(html)[0];
+        };
+    }
 });
 </script>
 
