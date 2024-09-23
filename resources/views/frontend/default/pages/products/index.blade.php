@@ -15,26 +15,29 @@ $agent = new \Jenssegers\Agent\Agent;
 @section('contents')
 
 <div class="hero-category">
+    <div class="content-wrapper">
+        
+    </div>
     <div class="container">
         <div class="row m-0 h-100">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 p-0">
                 <div class="hero-content">
                     <div class="breadcrumb-content">
                         <nav>
-                        <ol class="breadcrumb">
-    <li class="breadcrumb-item fw-bold" aria-current="page">
-        <a href="{{ route('home') }}">{{ localize('Home') }}</a>
-    </li>
-    @foreach ($breadcrumbs as $breadcrumb)
-        @if (!$loop->last)
-            <li class="breadcrumb-item fw-bold" aria-current="page">
-                <a href="{{ route('category.show', ['categorySlug' => $breadcrumb->slug]) }}">{{ $breadcrumb->name }}</a>
-            </li>
-        @else
-            <li class="breadcrumb-item fw-bold" aria-current="page">{{ $breadcrumb->name }}</li>
-        @endif
-    @endforeach
-</ol>
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item fw-bold" aria-current="page">
+                                    <a href="{{ route('home') }}">{{ localize('Home') }}</a>
+                                </li>
+                                @foreach ($breadcrumbs as $breadcrumb)
+                                @if (!$loop->last)
+                                <li class="breadcrumb-item fw-bold" aria-current="page">
+                                    <a href="{{ route('category.show', ['categorySlug' => $breadcrumb->slug]) }}">{{ $breadcrumb->name }}</a>
+                                </li>
+                                @else
+                                <li class="breadcrumb-item fw-bold" aria-current="page">{{ $breadcrumb->name }}</li>
+                                @endif
+                                @endforeach
+                            </ol>
                         </nav>
                     </div>
                     <h1 class="mb-2 mt-4 mt-lg-0">{{ $category ? $category->name : ($tag ? $tag->name : localize('Products')) }} </h1>
@@ -44,7 +47,7 @@ $agent = new \Jenssegers\Agent\Agent;
             </div>
             <div class="col-12 col-md-6 p-0">
                 <div class="hero-image">
-                  <img src="{{uploadedAsset($category->thumbnail_image)}}" alt="{{$category->name}}">
+                    <img src="{{uploadedAsset($category->thumbnail_image)}}" alt="{{$category->name}}">
                 </div>
             </div>
         </div>
@@ -55,8 +58,8 @@ $agent = new \Jenssegers\Agent\Agent;
 
 <!-- Blocco sezioni prima delle categorie -->
 @php
-    // Crea il percorso breadcrumb concatenando gli slug delle categorie
-    $breadcrumbPath = $breadcrumbs->pluck('slug')->implode('/');
+// Crea il percorso breadcrumb concatenando gli slug delle categorie
+$breadcrumbPath = $breadcrumbs->pluck('slug')->implode('/');
 @endphp
 <form class="filter-form" action="{{ Request::fullUrl() }}" method="GET">
     <!--shop grid section start-->
@@ -72,7 +75,7 @@ $agent = new \Jenssegers\Agent\Agent;
                             <div class="card border-0">
                                 <img src="{{ uploadedAsset($subCategory->thumbnail_image) }}" class="card-img-top img-category" alt="{{ $subCategory->name }}">
                                 <div class="card-body text-center">
-                                <a href="{{ route('category.breadcrumb.show', ['any' => $breadcrumbPath, 'categorySlug' => $subCategory->slug]) }}" class="name-category">{{ $subCategory->name }}</a>
+                                    <a href="{{ route('category.breadcrumb.show', ['any' => $breadcrumbPath, 'categorySlug' => $subCategory->slug]) }}" class="name-category">{{ $subCategory->name }}</a>
                                 </div>
                             </div>
                         </div>
@@ -203,7 +206,7 @@ $agent = new \Jenssegers\Agent\Agent;
                 <!--rightbar-->
 
             </div>
-          
+
             @endif
             <!-- Categorie correlate -->
             @if (isset($category) && $category->relatedCategories->isNotEmpty())
@@ -228,7 +231,7 @@ $agent = new \Jenssegers\Agent\Agent;
             </div>
             @endif
             <div class="row">
-            <div class="col-12">{!! $category->long_description !!}</div>
+                <div class="col-12">{!! $category->long_description !!}</div>
             </div>
         </div>
     </section>
@@ -246,7 +249,7 @@ $agent = new \Jenssegers\Agent\Agent;
 
 <!-- Recensioni start -->
 @include('frontend.default.pages.partials.sections.reviews')
-    <!-- Recensioni end -->
+<!-- Recensioni end -->
 
 @endsection
 

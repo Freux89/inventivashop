@@ -1,8 +1,8 @@
 <header class="gheader position-relative z-2 header-sticky pb-6 pb-lg-0">
     
     <div class="ghead-topbar bg-gray d-none d-lg-block">
-        <div class="container">
-            <div class="row align-items-center px-6 m-0">
+        <div class="content-wrapper">
+            <div class="row align-items-center m-0">
                 <div class="col-12 p-0">
                     <div class="topbar-nav fw-bold">
                         <ul class="nav">
@@ -108,8 +108,8 @@
         </div>
     </div>
     </div>
-    <div class="container">
-        <div class="gshop-navbar rounded position-relative pt-6 px-2 px-md-6">
+    <div class="content-wrapper">
+        <div class="gshop-navbar rounded position-relative pt-6 px-2 px-md-0">
             <div class="row align-items-center justify-content-between m-0">
 <div class="mobile-nav-icon col-4 d-block d-md-none">
           <a class="" href="#">
@@ -119,7 +119,7 @@
                 <div class="col-xxl-2 col-xl-3 col-md-3 col-4 p-0">
                     <a href="{{ route('home') }}" class="logo">
                         <img src="{{ uploadedAsset(getSetting('navbar_logo')) }}" alt="logo" class="img-fluid logo-light">
-                        <img src="{{ asset('public/frontend/default/assets/img/logo-dark.svg') }}" alt="logo" class="img-fluid logo-dark">
+                        <!-- <img src="{{ asset('public/frontend/default/assets/img/logo-dark.svg') }}" alt="logo" class="img-fluid logo-dark"> -->
                     </a>
                 </div>
                 <div class="col-xxl-5 col-xl-6 col-md-5 col-3 d-none d-md-block ps-6">
