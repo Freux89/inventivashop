@@ -10,6 +10,7 @@ use App\Models\Location;
 use App\Models\Language;
 use App\Models\MaterialLocalization;
 use App\Models\Variation;
+use App\Models\MaterialCondition;
 
 class MaterialController extends Controller
 {
@@ -53,6 +54,8 @@ class MaterialController extends Controller
         'price_tiers' => 'nullable|array',
         'price_tiers.*.min_quantity' => 'required_with:price_tiers|numeric|min:0',
         'price_tiers.*.price' => 'required_with:price_tiers|numeric|min:0',
+        'condition_operator' => 'nullable|array',
+        'condition_operator.*' => 'in:AND,OR',
     ]);
 
     // Crea il materiale
@@ -65,12 +68,30 @@ class MaterialController extends Controller
     ]);
 
     // Sincronizza i valori variante selezionati
-    $material->variationValues()->sync($validatedData['variation_values'] ?? []);
+    // $material->variationValues()->sync($validatedData['variation_values'] ?? []);
 
     // Aggiungi scaglioni di prezzo
     if (!empty($validatedData['price_tiers'])) {
         foreach ($validatedData['price_tiers'] as $tier) {
             $material->priceTiers()->create($tier);
+        }
+    }
+
+
+     // Gestione delle condizioni dei materiali (gruppi di valori varianti)
+     if (!empty($validatedData['variation_values'])) {
+        foreach ($validatedData['variation_values'] as $group => $values) {
+            $conditionOperator = $validatedData['condition_operator'][$group] ?? 'AND';
+
+            // Salva ogni valore variante associato al gruppo
+            foreach ($values as $valueId) {
+                MaterialCondition::create([
+                    'material_id' => $material->id,
+                    'variation_value_id' => $valueId,
+                    'condition_group' => $group,
+                    'condition_operator' => $conditionOperator,
+                ]);
+            }
         }
     }
 
@@ -103,6 +124,8 @@ class MaterialController extends Controller
         'price_tiers' => 'nullable|array',
         'price_tiers.*.min_quantity' => 'required_with:price_tiers|numeric|min:0',
         'price_tiers.*.price' => 'required_with:price_tiers|numeric|min:0',
+        'condition_operator' => 'nullable|array',
+        'condition_operator.*' => 'in:AND,OR',
     ]);
 
     // Aggiorna il materiale
@@ -115,13 +138,35 @@ class MaterialController extends Controller
     ]);
     
     // Sincronizza i valori variante selezionati
-    $material->variationValues()->sync($validatedData['variation_values'] ?? []);
+    // $material->variationValues()->sync($validatedData['variation_values'] ?? []);
 
     // Gestione degli scaglioni di prezzo
     $material->priceTiers()->delete(); // Elimina gli scaglioni esistenti
     if (!empty($validatedData['price_tiers'])) {
         foreach ($validatedData['price_tiers'] as $tier) {
             $material->priceTiers()->create($tier);
+        }
+    }
+
+
+
+     // Gestione delle condizioni dei materiali
+    // Prima eliminiamo tutte le condizioni esistenti per questo materiale
+    $material->conditions()->delete();
+
+    // Se ci sono gruppi di condizioni, salviamoli
+    if (!empty($validatedData['variation_values'])) {
+        foreach ($validatedData['variation_values'] as $group => $values) {
+            $conditionOperator = $validatedData['condition_operator'][$group] ?? 'AND';
+
+            // Salviamo ogni valore variante associato a questo gruppo
+            foreach ($values as $valueId) {
+                $material->conditions()->create([
+                    'variation_value_id' => $valueId,
+                    'condition_group' => $group,
+                    'condition_operator' => $conditionOperator,
+                ]);
+            }
         }
     }
 

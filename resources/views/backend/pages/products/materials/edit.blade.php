@@ -94,10 +94,10 @@
 
                             <div class="row g-3">
                                 <div class="col-lg-12">
-                                <div class="mb-3">
-    <label for="purchase_price" class="form-label">{{ localize('Prezzo di Acquisto') }}</label>
-    <input type="number" min="0" step="0.0001" id="purchase_price" name="purchase_price" placeholder="{{ localize('Prezzo di acquisto') }}" class="form-control" value="{{ old('purchase_price', $material->purchase_price ?? '') }}">
-</div>
+                                    <div class="mb-3">
+                                        <label for="purchase_price" class="form-label">{{ localize('Prezzo di Acquisto') }}</label>
+                                        <input type="number" min="0" step="0.0001" id="purchase_price" name="purchase_price" placeholder="{{ localize('Prezzo di acquisto') }}" class="form-control" value="{{ old('purchase_price', $material->purchase_price ?? '') }}">
+                                    </div>
 
                                 </div>
                                 <div class="col-lg-12">
@@ -157,32 +157,52 @@
 
                     <div class="card mb-4" id="section-6">
                         <div class="card-body">
-                            <h5 class="mb-4">{{ localize('Seleziona uno o più valori variante che vuoi collegare a questo materiale') }}</h5>
+                            <h5 class="mb-4">{{ localize('Definisci le condizioni di attivazione del materiale') }}</h5>
                             <span class="text-muted">
-                                Se uno dei valori variante associati a questo materiale viene selezionato dal cliente durante la configurazione del prodotto, le regole di prezzo definite per questo materiale avranno la precedenza su tutte le altre regole di prezzo associate ai valori variante, al template del prodotto o alle varianti specifiche.
+                                Imposta gruppi di condizioni per attivare questo materiale in base ai valori variante selezionati dal cliente.
                             </span>
-                            <div class="row g-3 mt-1">
-                                <div class="col-lg-12">
-                                    <select class="form-select select2" name="variation_values[]" id="variation_value-select" multiple>
-                                        @foreach ($variations as $variation)
-                                        <optgroup label="{{ $variation->name }}">
-                                            @foreach ($variation->variationValues as $value)
-                                            <option value="{{ $value->id }}"
-                                                @if (in_array($value->id, $material->variationValues->pluck('id')->toArray())) selected @endif>
-                                                {{ $variation->name }}: {{ $value->name }}
-                                            </option>
-                                            @endforeach
-                                        </optgroup>
-                                        @endforeach
-                                    </select>
 
-
+                            <div id="condition-groups">
+                                @foreach ($material->conditions->groupBy('condition_group') as $groupNumber => $groupConditions)
+                                <div class="condition-group my-3" data-group="{{ $groupNumber }}">
+                                    <h6>Gruppo Condizioni #{{ $groupNumber + 1 }}</h6>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <label for="variation_values_{{ $groupNumber }}">Valori Varianti</label>
+                                            <select class="form-select select2" name="variation_values[{{ $groupNumber }}][]" multiple>
+                                                @foreach ($variations as $variation)
+                                                <optgroup label="{{ $variation->name }}">
+                                                    @foreach ($variation->variationValues as $value)
+                                                    <option value="{{ $value->id }}"
+                                                        @if (in_array($value->id, $groupConditions->pluck('variation_value_id')->toArray())) selected @endif>
+                                                        {{ $variation->name }}: {{ $value->name }}
+                                                    </option>
+                                                    @endforeach
+                                                </optgroup>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="condition_operator_{{ $groupNumber }}">Operatore Condizione</label>
+                                            <select class="form-select" name="condition_operator[{{ $groupNumber }}]">
+                                                <option value="AND" @if ($groupConditions->first()->condition_operator == 'AND') selected @endif>AND</option>
+                                                <option value="OR" @if ($groupConditions->first()->condition_operator == 'OR') selected @endif>OR</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-center">
+                                        <button type="button" class="btn btn-danger mt-2 remove-group">Rimuovi Gruppo</button>
+                                        </div>
+                                    </div>
+                                   
+                                    <hr class="mt-2">
                                 </div>
-
-
+                                @endforeach
                             </div>
+
+                            <button type="button" class="btn btn-primary mt-3" id="add-condition-group">Aggiungi Gruppo</button>
                         </div>
                     </div>
+
 
                     <div class="row mt-7">
                         <div class="col-12">
@@ -251,6 +271,57 @@
     document.addEventListener('click', function(event) {
         if (event.target.classList.contains('remove-price-tier')) {
             event.target.closest('.row').remove();
+        }
+    });
+</script>
+
+
+<script>
+    document.getElementById('add-condition-group').addEventListener('click', function() {
+        let groupIndex = document.querySelectorAll('.condition-group').length;
+        let newGroupHtml = `
+        <div class="condition-group my-3" data-group="${groupIndex}">
+            <h6>Gruppo Condizioni #${groupIndex + 1}</h6>
+            <div class="row">
+                <div class="col-md-8">
+                    <label for="variation_values_${groupIndex}">Valori Varianti</label>
+                    <select class="form-select select2" name="variation_values[${groupIndex}][]" multiple>
+                        @foreach ($variations as $variation)
+                            <optgroup label="{{ $variation->name }}">
+                                @foreach ($variation->variationValues as $value)
+                                    <option value="{{ $value->id }}">
+                                        {{ $variation->name }}: {{ $value->name }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="condition_operator_${groupIndex}">Operatore Condizione</label>
+                    <select class="form-select" name="condition_operator[${groupIndex}]">
+                        <option value="AND">AND</option>
+                        <option value="OR">OR</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-center">
+                    <button type="button" class="btn btn-danger mt-2 remove-group">Rimuovi Gruppo</button>
+                </div>
+            </div>
+            
+            <hr class="mt-2">
+        </div>
+    `;
+
+        document.getElementById('condition-groups').insertAdjacentHTML('beforeend', newGroupHtml);
+
+        // Inizializza Select2 per la nuova select
+        $('.select2').select2();
+    });
+
+    document.getElementById('condition-groups').addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove-group')) {
+            event.target.closest('.condition-group').remove();
         }
     });
 </script>

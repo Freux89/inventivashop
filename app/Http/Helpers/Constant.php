@@ -11,6 +11,7 @@ use App\Models\Variation;
 use App\Models\VariationValue;
 use App\Models\OrderState;
 use App\Models\LogisticZone;
+use App\Models\Material;
 use Illuminate\Http\Request;
 use App\Models\Condition;
 use Illuminate\Support\Facades\Log;
@@ -235,35 +236,9 @@ function findProductVariationWithDimensions($productVariations)
 if (!function_exists('calculateVariationPrice')) {
     function calculateVariationPrice($product_price, $productVariation,$productVariations)
     {
-        $productVariationWithDimensions = findProductVariationWithDimensions($productVariations);
-
-        // Inizializza larghezza e altezza
-        $height_mm = 1;
-        $width_mm = 1;
-
-        if ($productVariationWithDimensions) {
-            $height_mm = $productVariationWithDimensions->variationValue->height;
-            $width_mm = $productVariationWithDimensions->variationValue->width;
-        }
+        
        
-        // Verifica se il valore variante ha un materiale collegato
-        if (hasMaterial($productVariation->variationValue)) {
-            
-            // Recupera tutti i materiali associati
-            $materials = $productVariation->variationValue->materials;
         
-            // Inizializza la variabile del prezzo totale del materiale
-            $total_material_price = 0;
-        
-            // Itera su ogni materiale associato e calcola il prezzo
-            foreach ($materials as $material) {
-                $material_price = calculateMaterialPrice($material, $height_mm, $width_mm);
-                $total_material_price += $material_price;
-            }
-        
-            // Somma il prezzo totale dei materiali al prezzo base del prodotto
-            return $product_price + $total_material_price;
-        }
 
         // Se non c'è un materiale collegato, calcola il prezzo basato sulla variante del prodotto
         $price_change_type = $productVariation->price_change_type;
@@ -1085,15 +1060,134 @@ if (!function_exists('variationPrice')) {
             
         }
         
-        foreach ($product->taxes as $product_tax) {
-            if ($product_tax->tax_type == 'percent') {
-                $price += ($price * $product_tax->tax_value) / 100;
-            } elseif ($product_tax->tax_type == 'flat') {
-                $price += $product_tax->tax_value;
-            }
-        }
+        // Recupera i materiali che soddisfano le condizioni e calcola il prezzo dei materiali
+        $price =  calculatePriceForMaterials($product, $variations, $price);
+
+        $price = applyTaxes($product, $price);
+
         return $price;
     }
+}
+if (!function_exists('calculatePriceForMaterials')) {
+
+function calculatePriceForMaterials($product, $variations, $price)
+{
+    $selectedVariationValues = collect($variations)->pluck('variationValue.id')->toArray(); 
+
+    // Verifica se uno o più materiali soddisfano le condizioni
+    $materials = getMatchingMaterials($selectedVariationValues);
+
+    // Se ci sono materiali che soddisfano le condizioni, calcola il prezzo
+    if ($materials->isNotEmpty()) {
+        $dimensions = getDimensionsFromVariations($variations);
+        $price = calculateMaterialPriceForMatchingMaterials($materials, $price, $dimensions['height'], $dimensions['width']);
+    }
+
+    return $price;
+}
+}
+if (!function_exists('getDimensionsFromVariations')) {
+function getDimensionsFromVariations($variations)
+{
+    $productVariationWithDimensions = findProductVariationWithDimensions($variations);
+
+    $height_mm = 1;
+    $width_mm = 1;
+
+    if ($productVariationWithDimensions) {
+        $height_mm = $productVariationWithDimensions->variationValue->height;
+        $width_mm = $productVariationWithDimensions->variationValue->width;
+    }
+
+    return [
+        'height' => $height_mm,
+        'width' => $width_mm
+    ];
+}
+}
+if (!function_exists('applyTaxes')) {
+function applyTaxes($product, $price)
+{
+    foreach ($product->taxes as $product_tax) {
+        if ($product_tax->tax_type == 'percent') {
+            $price += ($price * $product_tax->tax_value) / 100;
+        } elseif ($product_tax->tax_type == 'flat') {
+            $price += $product_tax->tax_value;
+        }
+    }
+
+    return $price;
+}
+}
+if (!function_exists('getMatchingMaterials')) {
+function getMatchingMaterials($selectedVariationValues)
+{
+    // Recupera tutti i materiali che hanno delle condizioni definite
+    $materials = Material::where('is_active', 1) // Filtra solo i materiali attivi
+    ->whereHas('conditions', function($query) use ($selectedVariationValues) {
+        $query->whereIn('variation_value_id', $selectedVariationValues);
+    })
+    ->get();
+
+
+    $matchingMaterials = collect(); // Collezione di materiali che soddisfano le condizioni
+
+    foreach ($materials as $material) {
+        $materialConditions = $material->conditions->groupBy('condition_group');
+
+        foreach ($materialConditions as $groupConditions) {
+            $conditionOperator = $groupConditions->first()->condition_operator;
+
+            // Verifica se tutte le condizioni del gruppo sono soddisfatte (AND)
+            if ($conditionOperator == 'AND') {
+                $allMatch = true;
+                foreach ($groupConditions as $condition) {
+                    if (!in_array($condition->variation_value_id, $selectedVariationValues)) {
+                        $allMatch = false;
+                        break;
+                    }
+                }
+
+                if ($allMatch) {
+                    $matchingMaterials->push($material);
+                    break; // Se un gruppo soddisfa, non serve controllare altri gruppi
+                }
+            }
+
+            // Verifica se almeno una condizione del gruppo è soddisfatta (OR)
+            if ($conditionOperator == 'OR') {
+                $anyMatch = false;
+                foreach ($groupConditions as $condition) {
+                    if (in_array($condition->variation_value_id, $selectedVariationValues)) {
+                        $anyMatch = true;
+                        break;
+                    }
+                }
+
+                if ($anyMatch) {
+                    $matchingMaterials->push($material);
+                    break; // Se un gruppo soddisfa, non serve controllare altri gruppi
+                }
+            }
+        }
+    }
+
+    return $matchingMaterials;
+}
+}
+if (!function_exists('calculateMaterialPriceForMatchingMaterials')) {
+function calculateMaterialPriceForMatchingMaterials($materials, $productPrice, $height_mm, $width_mm)
+{
+    $totalMaterialPrice = 0;
+
+    foreach ($materials as $material) {
+        $materialPrice = calculateMaterialPrice($material, $height_mm, $width_mm);
+        $totalMaterialPrice += $materialPrice;
+    }
+
+    // Somma il prezzo totale dei materiali al prezzo base del prodotto
+    return $productPrice + $totalMaterialPrice;
+}
 }
 
 if (!function_exists('variationDiscountedPrice')) {
@@ -1107,6 +1201,7 @@ if (!function_exists('variationDiscountedPrice')) {
             $price = calculateVariationPrice($price, $variation,$variations);
         }
 
+        $price = calculatePriceForMaterials($product, $variations, $price);
         $discount_applicable = false;
 
         // Verifica se ci sono sconti per quantità
@@ -1136,16 +1231,8 @@ if (!function_exists('variationDiscountedPrice')) {
             }
         }
 
-        // Aggiungi le tasse, se applicabile
-        if ($addTax) {
-            foreach ($product->taxes as $product_tax) {
-                if ($product_tax->tax_type == 'percent') {
-                    $price += ($price * $product_tax->tax_value) / 100;
-                } elseif ($product_tax->tax_type == 'flat') {
-                    $price += $product_tax->tax_value;
-                }
-            }
-        }
+        // Applica le tasse al prezzo
+        $price = applyTaxes($product, $price);
 
         return $price;
     }

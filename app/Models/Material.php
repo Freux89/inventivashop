@@ -58,4 +58,9 @@ class Material extends Model
         return $this->hasMany(MaterialPriceTier::class)->orderBy('min_quantity', 'asc');
 
     }
+
+    public function conditions()
+    {
+        return $this->hasMany(MaterialCondition::class);
+    }
 }
