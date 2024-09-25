@@ -267,6 +267,7 @@ $breadcrumbPath = $breadcrumbs->pluck('slug')->implode('/');
         setupToggleView();
         initializeInfoIconEvents();
         initializeGridInfoIconEvents();
+        initializeSelectInfoIconEvents();
     });
 
 
@@ -416,7 +417,72 @@ if (infoGridModal) {
 }
 
 
+// Funzione per inizializzare l'evento del click sull'icona info
+function initializeSelectInfoIconEvents() {
+        document.querySelectorAll('.info-icon-select').forEach(function (element) {
+            element.addEventListener('click', function (event) {
+                event.stopPropagation(); // Impedisce la propagazione dell'evento
+                var valueId = this.getAttribute('data-value-id');
+                var variantContainer = this.closest('.variant-select-block'); 
+                var modalContainer = variantContainer.nextElementSibling; // Il div immediatamente successivo
+            if (!modalContainer || !modalContainer.classList.contains('modal-container')) {
+                modalContainer = document.createElement('div');
+                modalContainer.classList.add('modal-container');
+                variantContainer.insertAdjacentElement('afterend', modalContainer);
+            }
+                var existingModal = variantContainer.querySelector('#info-description-modal');
 
+                // Controlla se il modal è già aperto per questa icona
+                if (existingModal && existingModal.getAttribute('data-info-id') === valueId) {
+                    $(existingModal).stop(true, true).slideUp(500, function () {
+                        existingModal.remove();
+                    });
+                    return; // Esci dalla funzione perché il modal è stato chiuso
+                }
+
+                // Fetch dei dati del valore selezionato
+                fetch(`/variation-value-info/${valueId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.html) {
+                            // Rimuovi eventuali vecchi modali per evitare duplicati
+                            document.querySelectorAll('#info-description-modal').forEach(function (modal) {
+                                modal.remove();
+                            });
+
+                            // Inserisci l'HTML del modal restituito dal server
+                            const modal = document.createElement('div');
+                            modal.id = 'info-description-modal'; // Assegna l'ID qui
+                            modal.setAttribute('data-info-id', valueId); // Salva l'id dell'info nel modal
+                            modal.innerHTML = data.html;
+                            modalContainer.appendChild(modal);
+
+                            $(modal).stop(true, true).slideDown(500);
+
+                            // Inizializza Swiper per lo slider delle immagini info se presente
+                            new Swiper('.info-swiper', {
+                                slidesPerView: 1,
+                                centeredSlides: true,
+                                speed: 700,
+                                loop: true,
+                                loopedSlides: 6,
+                                navigation: {
+                                    nextEl: '.swiper-button-next',
+                                    prevEl: '.swiper-button-prev',
+                                },
+                            });
+
+                            // Aggiungi l'evento di chiusura al bottone del modal
+                            modal.querySelector('#close-info-description').addEventListener('click', function () {
+                                $(modal).stop(true, true).slideUp(500, function () {
+                                    modal.remove();
+                                });
+                            });
+                        }
+                    });
+            });
+        });
+    }
 
 
 function initializeGridInfoIconEvents() {

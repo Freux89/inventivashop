@@ -28986,6 +28986,7 @@ button.accordion-button {
     width: 100%;
     color: #555;
     font-size: 16px;
+    cursor:pointer;
 }
 
 .gallery-item-block input[type="radio"] {

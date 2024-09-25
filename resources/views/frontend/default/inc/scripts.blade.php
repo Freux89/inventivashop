@@ -206,6 +206,7 @@
                 initializeGrid();
                 setupToggleView();
                 initializeInfoIconEvents();
+                initializeSelectInfoIconEvents();
                 initializeGridInfoIconEvents();
                 initializeToggleDetails();
                 initializeQuantityDiscounts();
@@ -616,9 +617,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     initTooltip();
 
-    // document.addEventListener("DOMContentLoaded", function () {
-    //         $(".summary").stick_in_parent();
-    //     });
+    document.addEventListener("DOMContentLoaded", function () {
+            $(".summary").stick_in_parent();
+        });
 
 
         document.addEventListener('DOMContentLoaded', function() {
