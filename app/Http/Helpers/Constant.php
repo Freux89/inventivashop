@@ -246,7 +246,8 @@ if (!function_exists('calculateVariationPrice')) {
         if ($productVariation->price != 0) {
             $price = $productVariation->price;
         } else {
-            $default_price = $productVariation->variationValue->default_price;
+            $variationValue = $productVariation->variationValue ?? null;
+            $default_price = $variationValue ? $variationValue->default_price : 0;
             $price = $default_price ? $default_price : 0;
         }
 
