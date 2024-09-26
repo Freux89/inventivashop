@@ -44,6 +44,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\LanguageMiddleware::class,
             \App\Http\Middleware\CurrencyMiddleware::class,
             StockLocation::class,
+            \App\Http\Middleware\FrontendMiddleware::class,
         ],
 
         'api' => [

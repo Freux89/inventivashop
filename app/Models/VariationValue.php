@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Scopes\OrderByPositionScope;
+use Illuminate\Database\Eloquent\Builder;
 use App;
 
 class VariationValue extends Model
@@ -48,6 +49,15 @@ class VariationValue extends Model
 
     protected static function booted()
     {
+
+
+        if (app()->has('isFrontend') && app('isFrontend') === true) {
+            
+            static::addGlobalScope('active', function (Builder $builder) {
+                $builder->where('is_active', 1);
+            });
+        }
+
         static::deleted(function ($variationValue) {
             
                 // Gestisci il soft delete

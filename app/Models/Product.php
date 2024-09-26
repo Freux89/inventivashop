@@ -67,21 +67,33 @@ class Product extends Model
     }
 
     public function combinedVariations()
-    {
-        // Recupera le varianti prodotto
-        $productVariations = $this->variations;
+{
+    // Recupera le varianti prodotto
+    $productVariations = $this->variations;
+
+    // Recupera le varianti template, ma escludi quelle già presenti nelle varianti prodotto
+    $templateVariations = ProductVariation::whereNotNull('template_id')
+        ->whereIn('template_id', $this->templates->pluck('id'))
+        ->get()
+        ->filter(function ($templateVariation) use ($productVariations) {
+            return !$productVariations->contains('variation_key', $templateVariation->variation_key);
+        });
+
+    // Unisci le varianti prodotto e template
+    $allVariations = $productVariations->merge($templateVariations);
+
+    // Filtra le varianti in base allo stato attivo di varianti e valori varianti
+    $filteredVariations = $allVariations->filter(function ($variation) {
+        return $variation->variation && $variation->variation->is_active && 
+               $variation->variationValue && $variation->variationValue->is_active;
+    });
+
+    // Esegui il dump delle varianti filtrate
     
-        // Recupera le varianti template, ma escludi quelle che sono già presenti nelle varianti prodotto
-        $templateVariations = ProductVariation::whereNotNull('template_id')
-            ->whereIn('template_id', $this->templates->pluck('id'))
-            ->get()
-            ->filter(function ($templateVariation) use ($productVariations) {
-                return !$productVariations->contains('variation_key', $templateVariation->variation_key);
-            });
-    
-        // Unisci le varianti prodotto e template
-        return $productVariations->merge($templateVariations);
-    }
+
+    return $filteredVariations;
+}
+
     
 
 

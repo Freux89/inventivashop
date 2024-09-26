@@ -6,6 +6,7 @@ use App\Scopes\OrderByPositionScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\VariationValue;
+use Illuminate\Database\Eloquent\Builder;
 use App; 
 
 class Variation extends Model
@@ -64,6 +65,14 @@ class Variation extends Model
 
     protected static function booted()
     {
+
+        if (app()->has('isFrontend') && app('isFrontend') === true) {
+            
+            static::addGlobalScope('active', function (Builder $builder) {
+                $builder->where('is_active', 1);
+            });
+        }
+
         static::deleted(function ($variant) {
             // Recupera tutti i ProductVariation
             $productVariations = ProductVariation::all();

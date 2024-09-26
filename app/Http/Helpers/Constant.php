@@ -881,13 +881,16 @@ if (!function_exists('generateVariationOptions')) {
            
             $variation = Variation::find($id);
             
-            $data['id'] = $id;
-            $data['name'] = $variation->collectLocalization('name');
-            $data['alias'] = $variation->collectLocalization('alias');
-            $data['display_type'] = $variation->display_type;
-            $data['values'] = $variationValues;
+            if ($variation) {
+                $data['id'] = $id;
+                $data['name'] = $variation->collectLocalization('name');
+                $data['alias'] = $variation->collectLocalization('alias');
+                $data['display_type'] = $variation->display_type;
+                $data['values'] = $variationValues;
+            
 
             array_push($options, $data);
+        }
         }
 
         return $options;
