@@ -16,11 +16,12 @@ class FrontendMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->is('admin/*')) {
+        if (!$request->is('admin/*') && !$request->is('backend/*')) {
             app()->instance('isFrontend', true);
         } else {
             app()->instance('isFrontend', false);
         }
+    
 
         return $next($request);
     }

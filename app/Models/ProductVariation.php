@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use App\Models\Variation;
 use App\Models\VariationValue;
 
@@ -12,6 +13,36 @@ class ProductVariation extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
+    protected static function booted()
+    {
+        static::saving(function ($productVariation) {
+            if (!is_null($productVariation->variation_key)) {
+                // Estrai variation_id e variation_value_id dalla variation_key
+                $parts = explode(':', rtrim($productVariation->variation_key, '/'));
+                
+                // Assicurati che ci siano sia variation_id che variation_value_id
+                if (count($parts) == 2) {
+                    $productVariation->variation_id = $parts[0]; // Primo numero è il variation_id
+                    $productVariation->variation_value_id = $parts[1]; // Secondo numero è il variation_value_id
+                }
+            }
+        });
+
+
+        if (app()->has('isFrontend') && app('isFrontend') === true) {
+
+            // Applica il global scope per filtrare solo le varianti attive e i valori varianti attivi
+            static::addGlobalScope('active', function (Builder $builder) {
+                $builder->whereHas('variation', function ($query) {
+                    $query->where('is_active', 1);
+                })
+                ->whereHas('variationValue', function ($query) {
+                    $query->where('is_active', 1);
+                });
+            });
+        }
+    }
 
     public function product()
     {
@@ -110,14 +141,12 @@ class ProductVariation extends Model
 
     public function variation()
     {
-        return $this->belongsTo(Variation::class, 'variation_id', 'id')
-            ->where('id', $this->variation_id);
+        return $this->belongsTo(Variation::class, 'variation_id', 'id');
     }
 
     public function variationValue()
     {
-        return $this->belongsTo(VariationValue::class, 'variation_value_id', 'id')
-            ->where('id', $this->variation_value_id);
+        return $this->belongsTo(VariationValue::class, 'variation_value_id', 'id');
     }
 
     

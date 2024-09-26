@@ -11,7 +11,7 @@
 
         <h6 class="mb-0">{{ $cart->product->collectLocalization('name') }}</h6>
         <ul style="margin: 0; padding-left: 0; list-style-type: none;">
-      
+    
             @foreach ($cart->product_variations as $product_variation)
             <li style="margin: 0; padding: 0; font-size: 0.85em;">
                 {{ $product_variation->variation_name }}: {{ $product_variation->variation_value_name }}

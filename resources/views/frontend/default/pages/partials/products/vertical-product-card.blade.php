@@ -41,7 +41,7 @@
             </span>
         @endif
         
-
+        
         <a href="{{ $productUrl  }}"
             class="card-title fw-semibold mb-2 tt-line-clamp tt-clamp-1">{{ $product->collectLocalization('name') }}
         </a>
@@ -72,15 +72,7 @@
         @endisset
 
 
-        @php
-            $isVariantProduct = 0;
-            $stock = 0;
-            if ($product->variations()->count() > 1) {
-                $isVariantProduct = 1;
-            } else {
-                $stock = $product->variations[0]->product_variation_stock ? $product->variations[0]->product_variation_stock->stock_qty : 0;
-            }
-        @endphp
+       
 
         
             
