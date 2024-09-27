@@ -36,9 +36,9 @@ class MenuItemController extends Controller
             'title' => 'required|string|max:255',
             'menu_id' => 'required|exists:menus,id',
             'link_type' => 'nullable|in:url,product,category', // Il tipo di collegamento è opzionale
-            'url' => 'nullable|required_if:link_type,url|string',
-            'product_id' => 'nullable|required_if:link_type,product|exists:products,id',
-            'category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
+            'link_url' => 'nullable|required_if:link_type,url|string',
+            'link_product_id' => 'nullable|required_if:link_type,product|exists:products,id',
+            'link_category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
             'menu_type' => 'nullable|in:dropdown,columns', // Il tipo di menu è opzionale
         ]);
     
@@ -49,11 +49,11 @@ class MenuItemController extends Controller
     
         // Gestione del tipo di collegamento
         if ($request->link_type === 'url') {
-            $menuItem->url = $request->url;
+            $menuItem->url = $request->link_url;
         } elseif ($request->link_type === 'product') {
-            $menuItem->product_id = $request->product_id;
+            $menuItem->product_id = $request->link_product_id;
         } elseif ($request->link_type === 'category') {
-            $menuItem->category_id = $request->category_id;
+            $menuItem->category_id = $request->link_category_id;
         }
     
         // Assegnazione posizione
@@ -91,9 +91,9 @@ public function update(Request $request, $id)
         'title' => 'required|string|max:255',
         'menu_id' => 'required|exists:menus,id',
         'link_type' => 'nullable|in:url,product,category', // Il tipo di collegamento è opzionale
-        'url' => 'nullable|required_if:link_type,url|string',
-        'product_id' => 'nullable|required_if:link_type,product|exists:products,id',
-        'category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
+        'link_url' => 'nullable|required_if:link_type,url|string',
+        'link_product_id' => 'nullable|required_if:link_type,product|exists:products,id',
+        'link_category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
         'menu_type' => 'nullable|in:dropdown,columns', // Il tipo di menu è opzionale
     ]);
 
@@ -108,11 +108,11 @@ public function update(Request $request, $id)
     $menuItem->category_id = null;
     
     if ($request->link_type === 'url') {
-        $menuItem->url = $request->url;
+        $menuItem->url = $request->link_url;
     } elseif ($request->link_type === 'product') {
-        $menuItem->product_id = $request->product_id;
+        $menuItem->product_id = $request->link_product_id;
     } elseif ($request->link_type === 'category') {
-        $menuItem->category_id = $request->category_id;
+        $menuItem->category_id = $request->link_category_id;
     }
 
    

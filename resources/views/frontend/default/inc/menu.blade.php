@@ -5,8 +5,11 @@
             <ul>
                 @foreach($menu->items as $item)
                 <li>
-                    @if($item->url || $item->product_id || $item->category_id)
-                    <a data-submenu="{{ str_replace(' ', '-', strtolower($item->title)) }}" href="{{ $item->url ?? ($item->product_id ? route('product.show', $item->product->slug) : route('category.show', $item->category->slug)) }}">
+                    @if($item->url || ($item->product && $item->product->slug) || ($item->category && $item->category->slug))
+                    <a data-submenu="{{ str_replace(' ', '-', strtolower($item->title)) }}"
+                        href="{{ $item->url 
+                ?? ($item->product ? route('products.show', $item->product->slug) 
+                : ($item->category ? route('category.show', $item->category->slug) : '#')) }}">
                         {{ $item->title }}
                     </a>
                     @else

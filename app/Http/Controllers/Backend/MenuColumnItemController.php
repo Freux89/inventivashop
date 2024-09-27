@@ -43,9 +43,9 @@ class MenuColumnItemController extends Controller
         'margin_top' => 'nullable|integer|min:0|max:5',
         'margin_bottom' => 'nullable|integer|min:0|max:5',
         'link_type' => 'nullable|in:url,product,category',
-        'url' => 'nullable|required_if:link_type,url|string',
-        'product_id' => 'nullable|required_if:link_type,product|exists:products,id',
-        'category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
+        'link_url' => 'nullable|required_if:link_type,url|string',
+        'link_product_id' => 'nullable|required_if:link_type,product|exists:products,id',
+        'link_category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
         'link_title' => 'nullable|string|max:255',
         'description' => 'nullable|string',
         'image_id' => 'nullable|integer',
@@ -67,11 +67,11 @@ class MenuColumnItemController extends Controller
 
     // Gestione del tipo di collegamento
     if ($request->link_type === 'url') {
-        $menuColumnItem->url = $request->url;
+        $menuColumnItem->url = $request->link_url;
     } elseif ($request->link_type === 'product') {
-        $menuColumnItem->product_id = $request->product_id;
+        $menuColumnItem->product_id = $request->link_product_id;
     } elseif ($request->link_type === 'category') {
-        $menuColumnItem->category_id = $request->category_id;
+        $menuColumnItem->category_id = $request->link_category_id;
     }
 
     // Assegnazione posizione
@@ -125,9 +125,9 @@ class MenuColumnItemController extends Controller
         'margin_top' => 'nullable|integer|min:0|max:5', // Margine superiore, valori da 0 a 5
         'margin_bottom' => 'nullable|integer|min:0|max:5', // Margine inferiore, valori da 0 a 5
         'link_type' => 'nullable|in:url,product,category',
-        'url' => 'nullable|required_if:link_type,url|string',
-        'product_id' => 'nullable|required_if:link_type,product|exists:products,id',
-        'category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
+        'link_url' => 'nullable|required_if:link_type,url|string',
+        'link_product_id' => 'nullable|required_if:link_type,product|exists:products,id',
+        'link_category_id' => 'nullable|required_if:link_type,category|exists:categories,id',
         'link_title' => 'nullable|string|max:255', // Titolo del link opzionale
         'description' => 'nullable|string', // Descrizione opzionale che può contenere HTML
         'image_id' => 'nullable|integer', // File immagine opzionale
@@ -153,15 +153,15 @@ class MenuColumnItemController extends Controller
 
     // Gestione del tipo di collegamento
     if ($request->link_type === 'url') {
-        $menuColumnItem->url = $request->url;
+        $menuColumnItem->url = $request->link_url;
         $menuColumnItem->product_id = null;
         $menuColumnItem->category_id = null;
     } elseif ($request->link_type === 'product') {
-        $menuColumnItem->product_id = $request->product_id;
+        $menuColumnItem->product_id = $request->link_product_id;
         $menuColumnItem->url = null;
         $menuColumnItem->category_id = null;
     } elseif ($request->link_type === 'category') {
-        $menuColumnItem->category_id = $request->category_id;
+        $menuColumnItem->category_id = $request->link_category_id;
         $menuColumnItem->url = null;
         $menuColumnItem->product_id = null;
     } else {

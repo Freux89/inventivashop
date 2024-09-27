@@ -113,8 +113,21 @@ class HeroController extends Controller
             $slider->title      = $request->title;
             $slider->text       = $request->text;
             $slider->image      = $request->image;
-            $slider->link       = $request->link;
-
+             // Resetta i campi link
+             $slider->link = null;
+             $slider->product_id = null;
+             $slider->category_id = null;
+             switch ($request->input('slider_type')) {
+                case 'url':
+                    $slider->link = $request->input('slider_url');
+                    break;
+                case 'product':
+                    $slider->product_id = $request->input('slider_product_id');
+                    break;
+                case 'category':
+                    $slider->category_id = $request->input('slider_category_id');
+                    break;
+            }
             // Aggiungi gli stili come JSON per ogni campo
             $slider->sub_title_style = [
                 'font_size' => $request->input('sub_title_style.font_size'),

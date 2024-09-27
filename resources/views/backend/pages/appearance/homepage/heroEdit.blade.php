@@ -206,8 +206,15 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label for="link" class="form-label">{{ localize('Link') }}</label>
-                        <input type="url" name="link" id="link" placeholder="{{ env('APP_URL') }}/example" class="form-control" value="{{ $slider->link ?? '' }}">
+                    <x-link-input
+    name="slider"
+    label="Collega a"
+    :value="[
+        'url' => $slider->link ?? '', 
+        'product_id' => $slider->product_id ?? '', 
+        'category_id' => $slider->category_id ?? ''
+    ]"
+/>
                         <label for="link_text" class="form-label mt-2">{{ localize('Testo pulsante') }}</label>
                         <input type="text" name="link_text" class="form-control" placeholder="{{ localize('Testo del link') }}" value="{{ $slider->link_text ?? '' }}">
                         <label for="link_title" class="form-label mt-2">{{ localize('Titolo link') }}</label>

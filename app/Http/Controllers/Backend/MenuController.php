@@ -51,7 +51,7 @@ class MenuController extends Controller
 
         // Recupera tutti i menu items associati a questo menu
         $menuItems = MenuItem::where('menu_id', $id)->get();
-
+        
         return view('backend.pages.menus.edit', compact('menu', 'menuItems'));
     }
 

@@ -97,13 +97,31 @@
                     @endif
 
                     {{-- Pulsanti --}}
-                    @if(!empty($slider->link))
-                        <div class="hero-btns d-flex align-items-center gap-3 flex-wrap">
-                            <a href="{{ $slider->link }}" class="btn btn-primary" style="{{ $buttonStyle }}">
-                                {{ $slider->link_text ?? localize('Scopri') }}
-                            </a>
-                        </div>
-                    @endif
+                    @php
+    $link = null; // Default
+
+    // Controlla quale tipo di link è presente
+    if (!empty($slider->link)) {
+        $link = $slider->link; // URL personalizzato
+    } elseif (!empty($slider->product_id)) {
+        // Recupera il prodotto e usa lo slug per l'URL del prodotto
+        $product = App\Models\Product::find($slider->product_id);
+        $link = route('products.show', ['slug' => $product->slug]);
+    } elseif (!empty($slider->category_id)) {
+        // Recupera la categoria e usa lo slug per l'URL della categoria
+        $category = App\Models\Category::find($slider->category_id);
+        $link = route('category.show', ['categorySlug' => $category->slug]);
+    }
+@endphp
+
+@if($link)
+    <div class="hero-btns d-flex align-items-center gap-3 flex-wrap">
+        <a href="{{ $link }}" class="btn btn-primary" style="{{ $buttonStyle }}">
+            {{ $slider->link_text ?? localize('Scopri') }}
+        </a>
+    </div>
+@endif
+
                 </div>
             </div>
         </div>
