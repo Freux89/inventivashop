@@ -30,7 +30,6 @@
                                         <tr>
                                             <th class="text-center" width="7%">{{ localize('S/L') }}</th>
                                             <th>{{ localize('Image') }}</th>
-                                            <th>{{ localize('Sub Title') }}</th>
                                             <th data-breakpoints="xs sm">{{ localize('Title') }}</th>
                                             <th data-breakpoints="xs sm md lg xl">{{ localize('Text') }}</th>
                                             <th data-breakpoints="xs sm" class="text-end">
@@ -51,17 +50,14 @@
                                                             alt="" />
                                                     </div>
                                                 </td>
-                                                <td class="align-middle">
-                                                    <h6 class="fs-sm mb-0">
-                                                        {{ $slider->sub_title }}</h6>
-                                                </td>
+                                               
                                                 <td class="align-middle">
                                                     <h6 class="fs-sm mb-0">
                                                         {{ $slider->title }}</h6>
                                                 </td>
 
                                                 <td class="align-middle">
-                                                    {{ $slider->text }}
+                                                    {!! $slider->text !!}
                                                 </td>
 
                                                 <td class="text-end align-middle">

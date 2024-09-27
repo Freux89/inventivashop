@@ -91,36 +91,87 @@ class HeroController extends Controller
     public function edit($id)
     {
         $sliders = $this->getSliders();
+        
         return view('backend.pages.appearance.homepage.heroEdit', compact('sliders', 'id'));
     }
 
     # update hero slider
     public function update(Request $request)
-    {
-        $sliderImage = SystemSetting::where('entity', 'hero_sliders')->first();
+{
+    // Recupera la riga che contiene gli slider
+    $sliderImage = SystemSetting::where('entity', 'hero_sliders')->first();
 
-        $sliders = $this->getSliders();
-        $tempSliders = [];
+    // Decodifica il valore JSON degli slider esistenti
+    $sliders = $this->getSliders();
+    $tempSliders = [];
 
-        foreach ($sliders as $slider) {
-            if ($slider->id == $request->id) {
-                $slider->sub_title  = $request->sub_title;
-                $slider->title      = $request->title;
-                $slider->text       = $request->text;
-                $slider->image      = $request->image;
-                $slider->link       = $request->link;
-                array_push($tempSliders, $slider);
-            } else {
-                array_push($tempSliders, $slider);
-            }
+    // Cicla tra gli slider per aggiornare quello con l'ID corrispondente
+    foreach ($sliders as $slider) {
+        if ($slider->id == $request->id) {
+            // Aggiorna i campi normali
+            $slider->sub_title  = $request->sub_title;
+            $slider->title      = $request->title;
+            $slider->text       = $request->text;
+            $slider->image      = $request->image;
+            $slider->link       = $request->link;
+
+            // Aggiungi gli stili come JSON per ogni campo
+            $slider->sub_title_style = [
+                'font_size' => $request->input('sub_title_style.font_size'),
+                'is_bold' => $request->input('sub_title_style.is_bold'),
+                'tag' => $request->input('sub_title_style.tag'),
+                'color' => $request->input('sub_title_style.color'),
+                'margin_top' => $request->input('sub_title_style.margin_top'),
+                'margin_bottom' => $request->input('sub_title_style.margin_bottom'),
+            ];
+
+            $slider->title_style = [
+                'font_size' => $request->input('title_style.font_size'),
+                'is_bold' => $request->input('title_style.is_bold'),
+                'tag' => $request->input('title_style.tag'),
+                'color' => $request->input('title_style.color'),
+                'margin_top' => $request->input('title_style.margin_top'),
+                'margin_bottom' => $request->input('title_style.margin_bottom'),
+            ];
+
+            $slider->link_style = [
+                'font_size' => $request->input('link_style.font_size'),
+                'button_color' => $request->input('link_style.button_color'),
+            ];
+
+            // Aggiorna anche i campi del testo e titolo del link
+            $slider->link_text = $request->link_text;
+            $slider->link_title = $request->link_title;
+
+            // Aggiungi i nuovi campi per lo stile del box di testo
+            $slider->box_style = [
+                'background_color' => $request->input('box_style.background_color'),
+                'gradient_color2' => $request->input('box_style.gradient_color2'),
+            ];
+
+            // Aggiungi il dato relativo alla disposizione delle colonne (column_layout)
+            $slider->column_layout = $request->input('column_layout');
+
+            array_push($tempSliders, $slider);
+        } else {
+            // Mantieni gli slider non modificati
+            array_push($tempSliders, $slider);
         }
-
-        $sliderImage->value = json_encode($tempSliders);
-        $sliderImage->save();
-        cacheClear();
-        flash(localize('Slider updated successfully'))->success();
-        return redirect()->route('admin.appearance.homepage.hero');
     }
+
+    // Salva il nuovo JSON con gli slider aggiornati
+    $sliderImage->value = json_encode($tempSliders);
+    $sliderImage->save();
+
+    // Pulisci la cache
+    cacheClear();
+
+    flash(localize('Slider updated successfully'))->success();
+
+    return redirect()->route('admin.appearance.homepage.hero');
+}
+
+
 
     # delete hero slider
     public function delete($id)

@@ -25301,20 +25301,16 @@ body {
     overflow: hidden;
 }
 .hero-left img {
-    top: 50% !important;
-    left: 50%;
-   
-    transform: translate(-50%, -50%) !important;
-  
-
+    top: auto !important;
+    bottom: 0 !important; /* Ancoriamo l'immagine al fondo */
+    left: 0 !important; /* Ancoriamo l'immagine a sinistra */
+    transform: none !important; /* Rimuoviamo il trasformazione di centraggio */
     width: auto;
     height: auto;
     min-width: 100%;
     min-height: 100%;
-    max-width: 200%; /* Può estendersi fino al doppio della larghezza del contenitore se necessario */
-    max-height: 200%; /* Può estendersi fino al doppio dell'altezza del contenitore se necessario */
-    
-    object-fit: cover;
+    object-fit: cover; /* Ridimensiona l'immagine per riempire lo spazio senza distorsioni */
+    object-position: left bottom; 
 }
 .hero-right-content {
     height: 355px;
