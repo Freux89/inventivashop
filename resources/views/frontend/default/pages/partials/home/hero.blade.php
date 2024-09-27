@@ -6,13 +6,12 @@
         <div class="gshop-hero-slider swiper d-none d-lg-block">
             <div class="swiper-wrapper">
 
-                @foreach ($sliders as $slider)
-                @php
-        // Definisci le classi dinamiche per le colonne
+            @foreach ($sliders as $slider)
+    @php
+        // Definisci le classi dinamiche per le colonne con un controllo preventivo
         $columnClassText = 'col-6'; // Default se il layout non è impostato
         $columnClassImage = 'col-6'; // Default se il layout non è impostato
 
-        // Controlla il layout selezionato e assegna le classi corrette
         if (isset($slider->column_layout)) {
             switch ($slider->column_layout) {
                 case '6-6':
@@ -36,79 +35,81 @@
                     $columnClassImage = 'col-5';
                     break;
                 default:
-                    // Default nel caso di nessun layout
                     $columnClassText = 'col-6';
                     $columnClassImage = 'col-6';
                     break;
             }
         }
+
+        // Verifica l'esistenza delle proprietà necessarie per evitare errori
+        $slider->image = $slider->image ?? 'default-image.jpg'; // Immagine di default se mancante
+
+        // Crea lo stile del box di sfondo verificando l'esistenza delle proprietà
+        $backgroundStyle = '';
+        if (!empty($slider->box_style->gradient_color2)) {
+            $backgroundStyle = "background: linear-gradient(to right, " . ($slider->box_style->background_color ?? '#ffffff') . ", " . $slider->box_style->gradient_color2 . ");";
+        } else {
+            $backgroundStyle = "background-color: " . ($slider->box_style->background_color ?? '#ffffff') . ";";
+        }
+
+        // Stile per il sottotitolo
+        $subTitleTag = $slider->sub_title_style->tag ?? 'span';
+        $subTitleStyle = "font-size: " . ($slider->sub_title_style->font_size ?? '16') . "px; color: " . ($slider->sub_title_style->color ?? '#000') . ";";
+        $subTitleStyle .= !empty($slider->sub_title_style->is_bold) ? 'font-weight: bold;' : '';
+        $subTitleStyle .= "margin-top: " . ($slider->sub_title_style->margin_top ?? '0') . "px; margin-bottom: " . ($slider->sub_title_style->margin_bottom ?? '0') . "px;";
+
+        // Stile per il titolo
+        $titleTag = $slider->title_style->tag ?? 'h1';
+        $titleStyle = "font-size: " . ($slider->title_style->font_size ?? '32') . "px; color: " . ($slider->title_style->color ?? '#000') . ";";
+        $titleStyle .= !empty($slider->title_style->is_bold) ? 'font-weight: bold;' : '';
+        $titleStyle .= "margin-top: " . ($slider->title_style->margin_top ?? '0') . "px; margin-bottom: " . ($slider->title_style->margin_bottom ?? '0') . "px;";
+
+        // Stile per il pulsante/link
+        $buttonStyle = "font-size: " . ($slider->link_style->font_size ?? '16') . "px; color: " . ($slider->link_style->button_color ?? '#fff') . "; border-color: " . ($slider->link_style->button_color ?? '#fff') . ";";
     @endphp
-                    <div class="swiper-slide gshop-hero-single">
-                        <div class="row align-items-center justify-content-between">
-                        <div class="{{ $columnClassImage }} p-0">
-                                <div class="hero-left text-center position-relative z-1 ">
 
-                                    <img src="{{ uploadedAsset($slider->image) }}" alt=""
-                                        class="img-fluid position-absolute end-0 top-50 hero-img">
+    <div class="swiper-slide gshop-hero-single">
+        <div class="row align-items-center justify-content-between">
+            <div class="{{ $columnClassImage }} p-0">
+                <div class="hero-left text-center position-relative z-1 ">
+                    <img src="{{ uploadedAsset($slider->image) }}" alt="" class="img-fluid position-absolute end-0 top-50 hero-img">
+                </div>
+            </div>
+            <div class="{{ $columnClassText }} p-0">
+                <div class="hero-right-content p-6 p-xl-9" style="{{ $backgroundStyle }}">
+                    {{-- Sottotitolo --}}
+                    @if(!empty($slider->sub_title))
+                        <{{ $subTitleTag }} class="d-block" style="{{ $subTitleStyle }}">
+                            {{ $slider->sub_title }}
+                        </{{ $subTitleTag }}>
+                    @endif
 
-                                   
-                                </div>
-                            </div>
-                            <div class="{{ $columnClassText }} p-0">
-                            @php
-    // Crea lo stile del box di sfondo
-    $backgroundStyle = '';
-    if (!empty($slider->box_style->gradient_color2)) {
-        // Usa linear-gradient da sinistra a destra
-        $backgroundStyle = "background: linear-gradient(to right, {$slider->box_style->background_color}, {$slider->box_style->gradient_color2});";
-    } else {
-        $backgroundStyle = "background-color: {$slider->box_style->background_color};";
-    }
+                    {{-- Titolo --}}
+                    @if(!empty($slider->title))
+                        <{{ $titleTag }} style="{{ $titleStyle }}">
+                            {{ $slider->title }}
+                        </{{ $titleTag }}>
+                    @endif
 
-    // Stile per il sottotitolo
-    $subTitleTag = $slider->sub_title_style->tag ?? 'span'; // Usa il tag salvato
-    $subTitleStyle = "font-size: {$slider->sub_title_style->font_size}px; color: {$slider->sub_title_style->color};";
-    $subTitleStyle .= $slider->sub_title_style->is_bold ? 'font-weight: bold;' : '';
-    $subTitleStyle .= "margin-top: {$slider->sub_title_style->margin_top}px; margin-bottom: {$slider->sub_title_style->margin_bottom}px;";
+                    {{-- Testo --}}
+                    @if(!empty($slider->text))
+                        <p class="mb-9 fs-6">{!! $slider->text !!}</p>
+                    @endif
 
-    // Stile per il titolo
-    $titleTag = $slider->title_style->tag ?? 'h1'; // Usa il tag salvato
-    $titleStyle = "font-size: {$slider->title_style->font_size}px; color: {$slider->title_style->color};";
-    $titleStyle .= $slider->title_style->is_bold ? 'font-weight: bold;' : '';
-    $titleStyle .= "margin-top: {$slider->title_style->margin_top}px; margin-bottom: {$slider->title_style->margin_bottom}px;";
-
-    // Stile per il pulsante/link
-    $buttonStyle = "font-size: {$slider->link_style->font_size}px; color: {$slider->link_style->button_color}; border-color: {$slider->link_style->button_color};";
-@endphp
-
-<div class="hero-right-content p-6 p-xl-9" style="{{ $backgroundStyle }}">
-    {{-- Sottotitolo --}}
-    @if(!empty($slider->sub_title))
-        <{{ $subTitleTag }} class="d-block" style="{{ $subTitleStyle }}">
-            {{ $slider->sub_title }}
-        </{{ $subTitleTag }}>
-    @endif
-
-    {{-- Titolo --}}
-    <{{ $titleTag }} style="{{ $titleStyle }}">
-        {{ $slider->title }}
-    </{{ $titleTag }}>
-
-    {{-- Testo --}}
-    <p class="mb-9 fs-6">{!! $slider->text !!}</p>
-
-    {{-- Pulsanti --}}
-    <div class="hero-btns d-flex align-items-center gap-3 flex-wrap">
-        <a href="{{ $slider->link }}" class="btn btn-primary" style="{{ $buttonStyle }}">{{ $slider->link_text ?? localize('Scopri') }}</a>
-        <!-- <a href="{{ route('home.pages.aboutUs') }}" class="btn btn-primary">{{ localize('Crea') }}</a> -->
-    </div>
-</div>
-
-                            </div>
-                            
+                    {{-- Pulsanti --}}
+                    @if(!empty($slider->link))
+                        <div class="hero-btns d-flex align-items-center gap-3 flex-wrap">
+                            <a href="{{ $slider->link }}" class="btn btn-primary" style="{{ $buttonStyle }}">
+                                {{ $slider->link_text ?? localize('Scopri') }}
+                            </a>
                         </div>
-                    </div>
-                @endforeach
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
+
             </div>
         </div>
         <div class="features-strip justify-content-around align-items-center d-none d-lg-flex">
