@@ -425,12 +425,15 @@ function initializeSelectInfoIconEvents() {
                 var valueId = this.getAttribute('data-value-id');
                 var variantContainer = this.closest('.variant-select-block'); 
                 var modalContainer = variantContainer.nextElementSibling; // Il div immediatamente successivo
+
+
+                
             if (!modalContainer || !modalContainer.classList.contains('modal-container')) {
                 modalContainer = document.createElement('div');
                 modalContainer.classList.add('modal-container');
                 variantContainer.insertAdjacentElement('afterend', modalContainer);
             }
-                var existingModal = variantContainer.querySelector('#info-description-modal');
+                var existingModal = modalContainer.querySelector('#info-description-modal');
 
                 // Controlla se il modal è già aperto per questa icona
                 if (existingModal && existingModal.getAttribute('data-info-id') === valueId) {
