@@ -1236,8 +1236,10 @@ if (!function_exists('variationDiscountedPrice')) {
         }
 
         // Applica le tasse al prezzo
-        $price = applyTaxes($product, $price);
-
+        if ($addTax) {
+            $price = applyTaxes($product, $price);
+        }
+        
         return $price;
     }
 }
@@ -1371,6 +1373,7 @@ if (!function_exists('getSubTotal')) {
     // return sub total price
     function getSubTotal($carts, $couponDiscount = true, $couponCode = '', $addTax = true, $shippingCost = 0, $insuranceCost = 0)
     {
+        
         $price = 0;
         $amount = 0;
         if (count($carts) > 0) {
@@ -1379,6 +1382,7 @@ if (!function_exists('getSubTotal')) {
                 if (!$productVariations->isEmpty()) {
                     $product = $cart->product;  // Assuming that all variations belong to the same product
                     $discountedVariationPriceWithTax = variationDiscountedPrice($product, $productVariations, $addTax, $cart->qty);
+                   
                     $price += (float) $discountedVariationPriceWithTax * $cart->qty;
                 } else {
                     // Handle the case where the product or product variation does not exist
