@@ -1759,3 +1759,28 @@ if (!function_exists('isColorLight')) {
         return $brightness > 155;
     }
 }
+
+if (!function_exists('getProductImage')) {
+    /**
+     * Restituisce l'immagine corretta da mostrare per un prodotto, sia nel carrello che nell'ordine.
+     *
+     * @param mixed $item - Può essere un carrello o un ordine
+     * @return string
+     */
+    function getProductImage($item): string
+    {
+        $imageToShow = $item->product->thumbnail_image; // Immagine di default del prodotto
+
+        foreach ($item->product_variations as $productVariation) {
+            $variation = $productVariation->variation;
+            $variationValue = $productVariation->variationValue;
+
+            if ($variation && $variation->replace_product_image && $variationValue && $variationValue->image) {
+                $imageToShow = $variationValue->image;
+                break;
+            }
+        }
+
+        return $imageToShow;
+    }
+}

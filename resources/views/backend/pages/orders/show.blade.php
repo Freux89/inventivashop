@@ -158,7 +158,7 @@
                     <table class="table tt-footable border-top" data-use-parent-width="true">
                         <thead>
                             <tr>
-                                <th class="text-center" width="7%">{{ localize('S/L') }}</th>
+                               
                                 <th>{{ localize('Products') }}</th>
                                 <th data-breakpoints="xs sm">{{ localize('Unit Price') }}</th>
                                 <th data-breakpoints="xs sm">{{ localize('QTY') }}</th>
@@ -173,10 +173,10 @@
                             $informations = json_decode($item->informations, true); // Decodifica JSON in array
                             @endphp
                             <tr>
-                                <td class="text-center">{{ $key + 1 }}</td>
+                               
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar avatar-sm"> <img src="{{ uploadedAsset($product->thumbnail_image) }}" alt="{{ $product->collectLocalization('name') }}" class="rounded-circle">
+                                        <div class="avatar avatar-lg"> <img src="{{ uploadedAsset(getProductImage($item)) }}" alt="{{ $product->collectLocalization('name') }}" class="rounded-circle">
                                         </div>
                                         <div class="ms-2">
                                             <h6 class="fs-sm mb-0">

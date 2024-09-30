@@ -8,7 +8,7 @@ $firstVariation = $cart->product_variations->first();
     <div class="thumb-wrapper">
        
         <a href="{{ route('products.show', $cart->product->slug) }}">
-            <img src="{{ uploadedAsset($cart->product->thumbnail_image) }}" alt="products" class="img-fluid rounded-circle">
+            <img src="{{ uploadedAsset(getProductImage($cart)) }}" alt="products" class="img-fluid">
         </a>
        
     </div>

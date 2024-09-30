@@ -1,25 +1,10 @@
 @forelse ($carts as $cart)
 <tr>
     <td class="h-100px">
-    @php
-    $imageToShow = $cart->product->thumbnail_image; // Immagine di default del prodotto
-    $productName = $cart->product->collectLocalization('name'); // Nome del prodotto per l'alt
+   
 
-    // Cicla su tutte le varianti del carrello
-    foreach ($cart->product_variations as $productVariation) {
-        $variation = $productVariation->variation;
-        $variationValue = $productVariation->variationValue;
-
-        // Controlla se la variante ha attiva l'opzione replace_product_image e se il valore della variante ha un'immagine
-        if ($variation && $variation->replace_product_image && $variationValue && $variationValue->image) {
-            $imageToShow = $variationValue->image; // Se trovi un'immagine, la sostituisci
-            break; // Esci dal ciclo una volta trovata la variante con immagine
-        }
-    }
-@endphp
-
-@if($cart->product && $cart->product->deleted_at == null)
-    <img src="{{ uploadedAsset($imageToShow) }}" alt="{{ $productName }}" class="img-fluid" width="100">
+    @if($cart->product && $cart->product->deleted_at == null)
+    <img src="{{ uploadedAsset(getProductImage($cart)) }}" alt="{{ $cart->product->collectLocalization('name') }}" class="img-fluid" width="100">
 @endif
     </td>
     <td class="text-start product-title">
