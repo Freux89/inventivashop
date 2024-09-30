@@ -111,6 +111,7 @@ class VariationsController extends Controller
 
     $variation->display_type = $data['display_type']; 
     $variation->material_feature = $request->has('material_feature') ? 1 : 0;
+    $variation->replace_product_image = $request->has('replace_product_image') ? 1 : 0;
     $variation->save();
     $variationLocalization->save();
 
