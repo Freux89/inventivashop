@@ -52,10 +52,7 @@
         <div class="price mt-3">
             {{localize('da')}}
             <strong class="big-price">
-            @include('frontend.default.pages.partials.products.pricing', [
-                'product' => $product,
-                'onlyPrice' => true,
-            ])
+            @include('frontend.default.pages.partials.products.starting-pricing')
             </strong>
           
         </div>

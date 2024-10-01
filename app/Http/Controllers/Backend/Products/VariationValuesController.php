@@ -179,10 +179,11 @@ class VariationValuesController extends Controller
 
     public function updatePositions(Request $request)
     {
-        
         try {
             foreach ($request->positions as $position => $id) {
-                VariationValue::find($id)->update(['position' => $position]);
+                $variationValue = VariationValue::find($id);
+                $variationValue->position = $position;
+                $variationValue->save();  // Questo attiverà l'Observer
             }
             return response()->json(['status' => 'success']);
         } catch (\Exception $e) {

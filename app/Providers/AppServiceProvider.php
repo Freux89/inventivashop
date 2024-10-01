@@ -7,6 +7,13 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cart;
 use App\Models\Menu;
+use App\Models\Product;
+use App\Models\Variation;
+use App\Models\VariationValue;
+use App\Models\Material;
+use App\Models\Template;
+use App\Models\QuantityDiscount;
+use App\Observers\PriceRelatedObserver;
 use Illuminate\Support\Facades\View;
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +35,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrap();
+        Product::observe(PriceRelatedObserver::class);
+        Variation::observe(PriceRelatedObserver::class);
+        VariationValue::observe(PriceRelatedObserver::class);
+        Material::observe(PriceRelatedObserver::class);
+        Template::observe(PriceRelatedObserver::class);
+        QuantityDiscount::observe(PriceRelatedObserver::class);
 
         $this->composeCartData();
 
