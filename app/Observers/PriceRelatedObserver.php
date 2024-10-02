@@ -8,6 +8,7 @@ use App\Models\VariationValue;
 use App\Models\Material;
 use App\Models\Template;
 use App\Models\QuantityDiscount;
+use App\Models\QuantityDiscountTier;
 use App\Events\ProductUpdated;
 
 class PriceRelatedObserver
@@ -23,7 +24,7 @@ class PriceRelatedObserver
         }
 
         // Per tutti gli altri modelli (Material, Template, QuantityDiscount), aggiorna tutti i prodotti
-        if ($model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof Variation || $model instanceof VariationValue) {
+        if ($model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
             
             // Aggiorna tutti i prodotti (per ora)
             $this->updateAllProducts();
@@ -41,7 +42,7 @@ class PriceRelatedObserver
         }
 
         // Per tutti gli altri modelli, aggiorna tutti i prodotti
-        if ($model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof Variation || $model instanceof VariationValue) {
+        if ($model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
             $this->updateAllProducts();
         }
     }
@@ -52,7 +53,7 @@ class PriceRelatedObserver
     public function deleted($model)
     {
         // Stessa logica per la cancellazione - aggiorniamo tutti i prodotti
-        if ($model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof Variation || $model instanceof VariationValue) {
+        if ($model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
             $this->updateAllProducts();
         }
     }
