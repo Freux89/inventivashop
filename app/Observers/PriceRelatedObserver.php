@@ -52,6 +52,7 @@ class PriceRelatedObserver
      */
     public function deleted($model)
     {
+        
         // Stessa logica per la cancellazione - aggiorniamo tutti i prodotti
         if ($model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
             $this->updateAllProducts();
@@ -64,11 +65,7 @@ class PriceRelatedObserver
      */
     protected function updateAllProducts()
     {
-        $products = Product::all();  // Prendi tutti i prodotti
-
-        foreach ($products as $product) {
-            event(new ProductUpdated($product));  // Lancia l'evento per ogni prodotto
-        }
+        event(new ProductUpdated(null));
     }
 }
 

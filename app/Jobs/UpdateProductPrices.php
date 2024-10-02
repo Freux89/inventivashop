@@ -13,13 +13,20 @@ class UpdateProductPrices implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $product;
+
+    public function __construct($product = null)
+    {
+        $this->product = $product;
+    }
+
     /**
      * Execute the job.
      */
     public function handle()
     {
         // Prendi tutti i prodotti da aggiornare (puoi modificare questa logica per filtrare i prodotti rilevanti)
-        $products = Product::all();
+        $products = $this->product ? collect([$this->product]) : Product::all();
         
         foreach ($products as $product) {
             // Logica per calcolare il prezzo di partenza del prodotto

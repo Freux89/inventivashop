@@ -13,6 +13,7 @@ use App\Models\VariationValue;
 use App\Models\Material;
 use App\Models\Template;
 use App\Models\QuantityDiscount;
+use App\Models\QuantityDiscountTier;
 use App\Observers\PriceRelatedObserver;
 use Illuminate\Support\Facades\View;
 class AppServiceProvider extends ServiceProvider
@@ -41,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
         Material::observe(PriceRelatedObserver::class);
         Template::observe(PriceRelatedObserver::class);
         QuantityDiscount::observe(PriceRelatedObserver::class);
-
+        QuantityDiscountTier::observe(PriceRelatedObserver::class);
         $this->composeCartData();
 
 

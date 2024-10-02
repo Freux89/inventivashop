@@ -22,7 +22,7 @@ class ProductUpdated
      *
      * @return void
      */
-    public function __construct(Product $product)
+    public function __construct(?Product $product)
     {
         $this->product = $product;
     }
