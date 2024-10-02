@@ -15,59 +15,35 @@ use App\Models\ProductVariation;
 class PriceRelatedObserver
 {
     /**
-     * Handle the updated event for all models.
+     * Intercetta il salvataggio di tutti i modelli, anche quando non ci sono modifiche.
      */
-    public function updated($model)
+    public function saved($model)
     {
-        // Gestione per il prodotto - solo il prodotto specifico viene aggiornato
-        if ($model instanceof Product) {
-            event(new ProductUpdated($model));
-        }
+        // Se il modello è uno dei seguenti, lancia il ricalcolo per tutti i prodotti
+        if ($model instanceof ProductVariation || $model instanceof Material || $model instanceof Template || 
+            $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || 
+            $model instanceof Variation || $model instanceof VariationValue) {
 
-        // Per tutti gli altri modelli (Material, Template, QuantityDiscount), aggiorna tutti i prodotti
-        if ($model instanceof ProductVariation || $model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
-            
-            // Aggiorna tutti i prodotti (per ora)
-            $this->updateAllProducts();
+            // Lancia l'evento per aggiornare tutti i prodotti
+            event(new ProductUpdated(null));
         }
     }
 
     /**
-     * Handle the created event for all models.
+     * Intercetta la creazione di nuovi modelli
      */
     public function created($model)
     {
-        // Stessa logica per la creazione
-        if ($model instanceof Product) {
-            event(new ProductUpdated($model));
-        }
-
-        // Per tutti gli altri modelli, aggiorna tutti i prodotti
-        if ($model instanceof ProductVariation || $model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
-            $this->updateAllProducts();
-        }
+        // Logica per la creazione, uguale a quella del salvataggio
+        $this->saved($model);
     }
 
     /**
-     * Handle the deleted event for all models.
+     * Intercetta la cancellazione di modelli
      */
     public function deleted($model)
     {
-        
-        // Stessa logica per la cancellazione - aggiorniamo tutti i prodotti
-        if ($model instanceof ProductVariation || $model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
-            $this->updateAllProducts();
-        }
-    }
-
-
-    /**
-     * Metodo per aggiornare tutti i prodotti
-     */
-    protected function updateAllProducts()
-    {
+        // Lancia l'evento per aggiornare tutti i prodotti in caso di cancellazione
         event(new ProductUpdated(null));
     }
 }
-
-

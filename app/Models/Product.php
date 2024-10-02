@@ -10,6 +10,7 @@ use Auth;
 class Product extends Model
 {
     use HasFactory;
+    
 
     protected $guarded = [];
 
