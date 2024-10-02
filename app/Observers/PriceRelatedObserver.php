@@ -10,6 +10,7 @@ use App\Models\Template;
 use App\Models\QuantityDiscount;
 use App\Models\QuantityDiscountTier;
 use App\Events\ProductUpdated;
+use App\Models\ProductVariation;
 
 class PriceRelatedObserver
 {
@@ -24,7 +25,7 @@ class PriceRelatedObserver
         }
 
         // Per tutti gli altri modelli (Material, Template, QuantityDiscount), aggiorna tutti i prodotti
-        if ($model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
+        if ($model instanceof ProductVariation || $model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
             
             // Aggiorna tutti i prodotti (per ora)
             $this->updateAllProducts();
@@ -42,7 +43,7 @@ class PriceRelatedObserver
         }
 
         // Per tutti gli altri modelli, aggiorna tutti i prodotti
-        if ($model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
+        if ($model instanceof ProductVariation || $model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
             $this->updateAllProducts();
         }
     }
@@ -54,7 +55,7 @@ class PriceRelatedObserver
     {
         
         // Stessa logica per la cancellazione - aggiorniamo tutti i prodotti
-        if ($model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
+        if ($model instanceof ProductVariation || $model instanceof Material || $model instanceof Template || $model instanceof QuantityDiscount || $model instanceof QuantityDiscountTier || $model instanceof Variation || $model instanceof VariationValue) {
             $this->updateAllProducts();
         }
     }
