@@ -146,6 +146,7 @@ class ProductVariationInfoResource extends JsonResource
                 'conditionEffects' => $conditionEffects['valuesToDisable'],
                 'motivationalMessages' => $conditionEffects['motivationalMessages'],
                 'disableVariationValuesMap' => $conditionEffects['disableVariationValuesMap'],
+                'productshow' => false, 
             ])->render(),
         ];
     }
