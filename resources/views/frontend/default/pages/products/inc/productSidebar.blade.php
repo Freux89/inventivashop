@@ -1,6 +1,6 @@
 <div class="gshop-sidebar bg-white rounded-2 overflow-hidden">
     <!--Filter by search-->
-    <div class="sidebar-widget search-widget bg-white py-5">
+    <!-- <div class="sidebar-widget search-widget bg-white py-5">
         <div class="widget-title d-flex">
             <h6 class="mb-0 flex-shrink-0">{{ localize('Search Now') }}</h6>
             <span class="hr-line w-100 position-relative d-block align-self-end ms-1"></span>
@@ -15,35 +15,52 @@
             <button type="submit" class="submit-icon-btn-secondary"><i
                     class="fa-solid fa-magnifying-glass"></i></button>
         </div>
-    </div>
+    </div> -->
     <!--Filter by search-->
     <!--Filter by Categories-->
-    <div class="sidebar-widget category-widget bg-white py-5 px-4 border-top mobile-menu-wrapper scrollbar h-400px">
+    <div class="sidebar-widget category-widget bg-white py-5 mobile-menu-wrapper scrollbar h-400px">
         <div class="widget-title d-flex">
-            <h6 class="mb-0 flex-shrink-0">{{ localize('Categories') }}</h6>
-            <span class="hr-line w-100 position-relative d-block align-self-end ms-1"></span>
+            <div class="mb-0 flex-shrink-0 sidebar-title">{{ localize('Categories') }}</div>
         </div>
         <ul class="widget-nav mt-4">
 
-            @php
-                $product_listing_categories = getSetting('product_listing_categories') != null ? json_decode(getSetting('product_listing_categories')) : [];
-                $categories = \App\Models\Category::whereIn('id', $product_listing_categories)->get();
-            @endphp
-            @foreach ($categories as $category)
-                @php
-                    $productsCount = \App\Models\ProductCategory::where('category_id', $category->id)->count();
-                @endphp
-                <li><a href="{{ route('category.show', ['categorySlug' => $category->slug]) }}"
-                        class="d-flex justify-content-between align-items-center">{{ $category->collectLocalization('name') }}<span
-                            class="fw-bold fs-xs total-count">{{ $productsCount }}</span></a></li>
-            @endforeach
+        <ul class="widget-nav mt-4">
+
+@php
+// Recupera la categoria attuale (assumendo che passi il parametro nel route o controller)
+$currentCategory = \App\Models\Category::where('slug', request()->categorySlug)->first();
+
+// Recupera le categorie fratello (stesso genitore della categoria attuale)
+$siblingCategories = \App\Models\Category::where('parent_id', $currentCategory->parent_id)->get();
+@endphp
+
+@foreach ($siblingCategories as $category)
+    @php
+    // Conta i prodotti per ogni categoria
+    $productsCount = \App\Models\ProductCategory::where('category_id', $category->id)->count();
+
+    // Verifica se questa è la categoria attuale
+    $isCurrent = $category->id === $currentCategory->id;
+    @endphp
+
+    <li>
+        <a href="{{ route('category.show', ['categorySlug' => $category->slug]) }}"
+           class="d-flex justify-content-between align-items-center {{ $isCurrent ? 'fw-bold' : '' }}">
+            {{ $category->collectLocalization('name') }}
+            <span class="fw-bold fs-xs total-count">{{ $productsCount }}</span>
+        </a>
+    </li>
+@endforeach
+
+</ul>
+
 
         </ul>
     </div>
     <!--Filter by Categories-->
 
     <!--Filter by Price-->
-    <div class="sidebar-widget price-filter-widget bg-white py-5 px-4 border-top">
+    <!-- <div class="sidebar-widget price-filter-widget bg-white py-5 px-4 border-top">
         <div class="widget-title d-flex">
             <h6 class="mb-0 flex-shrink-0">{{ localize('Filter by Price') }}</h6>
             <span class="hr-line w-100 position-relative d-block align-self-end ms-1"></span>
@@ -66,11 +83,11 @@
                 <button type="submit" class="btn btn-primary btn-sm mt-3">{{ localize('Filter') }}</button>
             </form>
         </div>
-    </div>
+    </div> -->
     <!--Filter by Price-->
 
     <!--Filter by Tags-->
-    <div class="sidebar-widget tags-widget py-5 px-4 bg-white">
+    <!-- <div class="sidebar-widget tags-widget py-5 px-4 bg-white">
         <div class="widget-title d-flex">
             <h6 class="mb-0">{{ localize('Tags') }}</h6>
             <span class="hr-line w-100 position-relative d-block align-self-end ms-1"></span>
@@ -81,6 +98,6 @@
                     class="btn btn-outline btn-sm">{{ $tag->name }}</a>
             @endforeach
         </div>
-    </div>
+    </div> -->
     <!--Filter by Tags-->
 </div>

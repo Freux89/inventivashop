@@ -25516,9 +25516,14 @@ body {
 .breadcrumb .breadcrumb-item.fw-bold {
     font-weight: 500 !important;
 }
+.sidebar-title{
+    font-size:24px;
+    color:var(--in-primary-dark-5);
+    font-weight: 800;
+}
 .widget-title .hr-line {
     height: 2px;
-    background-color: #fff8f2;
+    background-color: var(--in);
     -webkit-transform: translateY(-10px);
     transform: translateY(-10px);
 }
@@ -25529,7 +25534,7 @@ body {
     height: 2px;
     left: 0;
     top: 0;
-    background-color: rgba(255, 124, 8, 0.8);
+    background-color: var(--in-primary-dark-3);
 }
 .search-form{
     position:relative;
