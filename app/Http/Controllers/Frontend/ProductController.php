@@ -252,7 +252,8 @@ class ProductController extends Controller
             'maxPrice' => $basePrice,
             'discountedMaxPrice' => $discountedBasePrice,
             'tiers' => $tiers,
-            'productshow' => true
+            'productshow' => true,
+            'productVariations' => isset($cart) && $cart->product_variations->isNotEmpty() ? $cart->product_variations : null
         ];
 
         return getView('pages.products.show', $data);
