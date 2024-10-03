@@ -11,6 +11,7 @@ use App\Models\ProductVariation;
 use App\Models\VariationValue;
 use App\Models\Tag;
 use App\Models\Category;
+use App\Models\Cart;
 use App\Models\LogisticZone;
 use Illuminate\Http\Request;
 
@@ -98,7 +99,7 @@ class ProductController extends Controller
     }
 
     # product show
-    public function show($slug)
+    public function show($slug, Request $request)
     {
         $product = Product::where('slug', $slug)->first();
         
@@ -122,7 +123,7 @@ class ProductController extends Controller
         }
 
         $currentUrl = url()->current();
-    $canonicalUrl = route('products.show', ['slug' => $slug]);
+        $canonicalUrl = route('products.show', ['slug' => $slug]);
 
     // Se l'URL corrente è l'URL canonical, sovrascrivi i breadcrumb
     if ($currentUrl === $canonicalUrl) {
@@ -138,7 +139,20 @@ class ProductController extends Controller
         
         $productVariations = $product->combinedOrderedVariations;
        
-        $productVariationIds = [];
+
+      // Recuperare l'id del carrello dalla request
+      $cartId = $request->query('cart_id');
+    
+      // Recuperare il carrello
+      $cart = Cart::find($cartId);
+  
+      // Se il carrello esiste e ha varianti prodotto, popolare subito $variationsSel e $productVariationIds
+      if ($cart && $cart->product_variations->isNotEmpty()) {
+          $variationsSel = $cart->product_variations;
+          $productVariationIds = $variationsSel->pluck('variation_id')->toArray();
+      } else {
+
+        
         $processedVariationIds = [];
         $variationsSel = [];
 
@@ -155,7 +169,8 @@ class ProductController extends Controller
 
             }
         }
-
+    }
+    
         $conditionEffects = prepareConditionsForVariations($product, $variationsSel);
 
 
@@ -168,17 +183,29 @@ class ProductController extends Controller
         $uniqueFilteredVariations = collect();
         $uniqueFilteredVariationValues = collect();
         $processedVariationIds = [];
-        
-        foreach ($filteredProductVariations as $variation) {
-            $variationKeyParts = explode(':', rtrim($variation->variation_key, '/'));
-            $variationId = $variationKeyParts[0];
-
-            if (!in_array($variationId, $processedVariationIds)) {
+        if ($cart && $cart->product_variations->isNotEmpty()) {
+            // Riempire le collezioni con i dati delle varianti del carrello
+            foreach ($cart->product_variations as $variation) {
+                // Aggiungiamo la variante alla collezione $uniqueFilteredVariations
                 $uniqueFilteredVariations->push($variation);
+    
+                // Aggiungiamo il valore variante alla collezione $uniqueFilteredVariationValues
                 $uniqueFilteredVariationValues->push($variation->variation_value_id);
-                $processedVariationIds[] = $variationId;
             }
         }
+        else{
+            foreach ($filteredProductVariations as $variation) {
+                $variationKeyParts = explode(':', rtrim($variation->variation_key, '/'));
+                $variationId = $variationKeyParts[0];
+    
+                if (!in_array($variationId, $processedVariationIds)) {
+                    $uniqueFilteredVariations->push($variation);
+                    $uniqueFilteredVariationValues->push($variation->variation_value_id);
+                    $processedVariationIds[] = $variationId;
+                }
+            }
+        }
+       
 
         $indicativeDeliveryDays = indicativeDeliveryDays($product, $uniqueFilteredVariations,1);
 
@@ -224,7 +251,8 @@ class ProductController extends Controller
             'discountedBasePrice' => $discountedBasePrice,
             'maxPrice' => $basePrice,
             'discountedMaxPrice' => $discountedBasePrice,
-            'tiers' => $tiers
+            'tiers' => $tiers,
+            'productshow' => true
         ];
 
         return getView('pages.products.show', $data);

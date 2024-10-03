@@ -80,7 +80,7 @@ return $aDisabled <=> $bDisabled;
                 @endphp
                 @if(!($isDisabled && $isCompletelyDisabled ))
 
-                <div class="swiper-slide">
+                <div class="swiper-slide" @if ($productshow == true && (in_array($value['id'], $variation_value_ids ?? []) || ($key === 0 && empty($variation_value_ids)))) data-selected="true" @endif>
                     <div class="gallery-item-block @if (in_array($value['id'], $variation_value_ids ?? []) || ($key === 0 && empty($variation_value_ids))) selected @endif @if ($isDisabled) disabled {{$isCompletelyDisabled}} @endif" data-value-id="{{ $value['id'] }}" @if ($isDisabled && $message) data-bs-toggle="tooltip" title="{{ $message }}" @endif>
                         <div class="picture-box" data-test="select-Substrate-{{ $value['name'] }}">
                             <div class="inner">

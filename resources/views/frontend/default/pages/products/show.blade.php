@@ -242,7 +242,15 @@ $breadcrumbPath = $breadcrumbs->pluck('slug')->implode('/');
                     },
                 }
             });
+            const selectedSlide = swiperContainer.querySelector('.swiper-slide[data-selected="true"]');
 
+if (selectedSlide) {
+    // Trovare l'indice dell'elemento selezionato
+    const selectedIndex = Array.from(swiperContainer.querySelectorAll('.swiper-slide')).indexOf(selectedSlide);
+
+    // Scorrere verso l'elemento selezionato
+    swiper.slideTo(selectedIndex);
+}
 
             // Ripristina la modalità di visualizzazione corretta
             if (viewModes[variationId] === 'grid') {

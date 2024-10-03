@@ -10,7 +10,11 @@
     <td class="text-start product-title">
     @if($cart->product_variations->first() && $cart->product)
 
-        <h6 class="mb-0">{{ $cart->product->collectLocalization('name') }}</h6>
+    <h6 class="mb-0">
+    <a href="{{ route('products.show', ['slug' => $cart->product->slug]) }}?cart_id={{ $cart->id }}">
+        {{ $cart->product->collectLocalization('name') }}
+    </a>
+</h6>
         <ul style="margin: 0; padding-left: 0; list-style-type: none;">
     
             @foreach ($cart->product_variations as $product_variation)
