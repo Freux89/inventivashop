@@ -12,20 +12,20 @@ class SectionController extends Controller
 {
     public function index(Request $request)
     {
-        
+
         $query = Section::query();
 
-    // Controlla se è stato fornito un termine di ricerca
-    if ($request->has('search') && !empty($request->search)) {
-        $searchKey = $request->search;
+        // Controlla se è stato fornito un termine di ricerca
+        if ($request->has('search') && !empty($request->search)) {
+            $searchKey = $request->search;
 
-        $query->where(function ($q) use ($searchKey) {
-            $q->where('name', 'LIKE', "%{$searchKey}%") ;
-        });
-    }
+            $query->where(function ($q) use ($searchKey) {
+                $q->where('name', 'LIKE', "%{$searchKey}%");
+            });
+        }
 
-    // Esegui la query
-    $sections = $query->orderBy('created_at', 'desc')->paginate(10);
+        // Esegui la query
+        $sections = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return view('backend.pages.sections.index', compact('sections'));
     }
@@ -54,37 +54,60 @@ class SectionController extends Controller
         $section->settings = json_encode($settings); // Conversione dell'array in JSON
         $section->save();
         return redirect()->route('admin.sections.index')->with('success', 'Section creato con successo!');
-
     }
 
     public function edit($id)
     {
+        // Recupera la sezione
         $section = Section::findOrFail($id);
-        return view('backend.pages.sections.edit', compact('section'));
+
+        // Verifica se settings è già un array o una stringa JSON
+        $settings = is_array($section->settings) ? $section->settings : json_decode($section->settings, true);
+
+        // Estrai le categorie dalla sezione
+        $categories = [];
+        if ($section->type == 'filtergrid') {
+            $sectionCategories = $settings['categories'] ?? '';
+            $categories = explode(',', $sectionCategories);
+        }
+
+
+
+        return view('backend.pages.sections.edit', compact('section', 'categories'));
     }
+
 
     public function update(Request $request, $id)
     {
 
         // Valida e aggiorna il nome della sezione
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-    ]);
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
 
-    $section = Section::findOrFail($id);
+        $section = Section::findOrFail($id);
 
-    $section->name = $validatedData['name'];
+        $section->name = $validatedData['name'];
 
-    // Prendi tutti i dati di settings dal form
-    $settings = $request->input('settings', []);
+        // Prendi tutti i dati di settings dal form
+        $settings = $request->input('settings', []);
 
-    
+        // Estrai le vecchie e nuove categorie
+        $oldCategories = isset($section->settings['categories']) ? explode(',', $section->settings['categories']) : [];
+        $newCategories = isset($settings['categories']) ? explode(',', $settings['categories']) : [];
 
-    // Salva i settings come JSON
-    $section->settings = json_encode($settings);
+        // Trova le categorie rimosse
+        $removedCategories = array_diff($oldCategories, $newCategories);
 
-    // Salva la sezione
-    $section->save();
+        // Rimuovi le categorie obsolete dagli items
+        $this->removeObsoleteCategories($section, $removedCategories);
+
+        // Salva i settings come JSON
+        $section->settings = json_encode($settings);
+
+        // Salva la sezione
+        $section->save();
+
         return redirect()->route('admin.sections.edit', $id);
     }
 
@@ -92,7 +115,7 @@ class SectionController extends Controller
     {
         $section = Section::findOrFail($id);
 
-      
+
 
         // Elimina la lavorazione
         $section->delete();
@@ -131,5 +154,30 @@ class SectionController extends Controller
         }
 
         return redirect()->route('admin.sections.index')->with('success', 'Sezione duplicata con successo.');
+    }
+
+
+
+    protected function removeObsoleteCategories($section, $removedCategories)
+    {
+        // Se ci sono categorie rimosse, aggiorna gli items
+        if (!empty($removedCategories)) {
+            // Recupera tutti gli items della sezione
+            $items = $section->items()->get();
+
+            foreach ($items as $item) {
+                // Decodifica il campo settings dell'item
+                $itemSettings = is_array($item->settings) ? $item->settings : json_decode($item->settings, true);
+
+                // Rimuovi le categorie rimosse dall'array 'categories_item'
+                if (isset($itemSettings['categories_item'])) {
+                    $itemSettings['categories_item'] = array_diff($itemSettings['categories_item'], $removedCategories);
+
+                    // Salva nuovamente le categorie aggiornate nell'item
+                    $item->settings = json_encode($itemSettings);
+                    $item->save();
+                }
+            }
+        }
     }
 }

@@ -1,10 +1,10 @@
 @php
-   
-    $columnLayout = isset($section->settings['columnLayout']) && !empty($section->settings['columnLayout']) ? $section->settings['columnLayout'] : '0';
-    $maxColumns = ($columnLayout === '0' || empty($columnLayout)) ? [] : explode('-', $columnLayout);
 
-    $maxColumnsCount = count($maxColumns); // Numero massimo di colonne permesso
-   
+$columnLayout = isset($section->settings['columnLayout']) && !empty($section->settings['columnLayout']) ? $section->settings['columnLayout'] : '0';
+$maxColumns = ($columnLayout === '0' || empty($columnLayout)) ? [] : explode('-', $columnLayout);
+
+$maxColumnsCount = count($maxColumns); // Numero massimo di colonne permesso
+
 @endphp
 @section('extra-head')
 <script src="{{ staticAsset('backend/assets/js/vendors/Sortable.min.js') }}"></script>
@@ -15,9 +15,9 @@
             <div class="tt-page-title">
                 <h5 class="mb-lg-0">
                     @if($section->type == 'columns')
-                    {{ localize('Colonne') }} -  {{$currentItemsCount}}/{{$maxColumnsCount}}
+                    {{ localize('Colonne') }} - {{$currentItemsCount}}/{{$maxColumnsCount}}
                     @else
-                    {{ localize('Elementi') }} 
+                    {{ localize('Elementi') }}
                     @endif
                 </h5>
             </div>
@@ -25,7 +25,7 @@
 
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-primary" onclick="showColumnModal()">
-                    <i data-feather="plus"></i> 
+                    <i data-feather="plus"></i>
                     @if($section->type == 'columns')
                     {{ localize('Aggiungi colonna') }}
                     @else
@@ -37,107 +37,148 @@
 
         </div>
     </div>
-  
+
     <div class="card mb-4 mt-">
-    <div class="card-body">
-        <table class="table tt-footable border-top" data-use-parent-width="true">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>{{ localize('ID') }}</th>
-                    <th>{{ localize('Titolo') }}</th>
-                    <th>{{ localize('Tipo') }}</th>
-                    <th>{{ localize('Stato') }}</th>
-                    <!-- <th data-breakpoints="xs sm">{{ localize('Active') }}</th> -->
-                    <th data-breakpoints="xs sm" class="text-end">
-                        {{ localize('Action') }}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="card-body">
+            @if($section->type == 'filtergrid')
+            <div class="form-group mb-4">
+                <label for="category_filter">Filtra per categoria</label>
+                <select id="category_filter" class="form-control  mt-2">
+                    <option value="all">Tutte le categorie</option>
+                    @foreach($categories as $category)
+                    <option value="{{ $category }}">{{ $category }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
+            <table class="table tt-footable border-top" id="items_table" data-use-parent-width="true">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>{{ localize('ID') }}</th>
+                        <th>{{ localize('Titolo') }}</th>
+                        <th>{{ localize('Tipo') }}</th>
+                        @if($section->type == 'filtergrid')
+                        <th>Categorie</th>
+                        @endif
+                        <th>{{ localize('Stato') }}</th>
+                        <!-- <th data-breakpoints="xs sm">{{ localize('Active') }}</th> -->
+                        <th data-breakpoints="xs sm" class="text-end">
+                            {{ localize('Action') }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
 
-                @foreach ($section->items as $key => $item)
-                <tr data-id="{{ $item->id }}">
-                    <td class="handle"> <i class="fa-solid fa-bars"></i></td>
-                    <td>{{$item->id}}</td>
-                   
+                    @foreach ($section->items as $key => $item)
+                    <tr data-id="{{ $item->id }}" @if($section->type == 'filtergrid') data-categories="{{ implode(', ', $item->settings['categories_item']) }}" @endif>
+                        <td class="handle"> <i class="fa-solid fa-bars"></i></td>
+                        <td>{{$item->id}}</td>
+
                         <td class="text-start">
-                        <a href="{{ route('admin.items.edit', ['sectionId' => $section->id, 'id' => $item->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}" class="d-inline-block">
+                            <a href="{{ route('admin.items.edit', ['sectionId' => $section->id, 'id' => $item->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}" class="d-inline-block">
 
-                            <h6 class="fs-sm mb-0">
-                            {{ $item->settings['title'] ?? 'Titolo non presente' }}
-                            </h6>
+                                <h6 class="fs-sm mb-0">
+                                    {{ $item->settings['title'] ?? 'Titolo non presente' }}
+                                </h6>
                         </td>
                         </a>
-               
-                    <td class="text-start fs-sm">
-                                {{localize($item->type)}}
-                         
-                    </td>
-                    <td>
-                    <div class="form-check form-switch">
-                        <input type="checkbox" class="form-check-input" onchange="updateStatus(this)" @if ($item->is_active) checked @endif
-                        value="{{ $item->id }}">
-                    </div>
-                    </td>
-                    <td class="text-end">
-                        <div class="dropdown tt-tb-dropdown">
-                            <button type="button" class="btn p-0" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i data-feather="more-vertical"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end shadow">
 
-                                <a class="dropdown-item" href="{{ route('admin.items.edit', ['id' => $item->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize">
-                                    <i data-feather="edit-3" class="me-2"></i>{{ localize('Edit') }}
-                                </a>
-                                <a class="dropdown-item" href="{{ route('admin.items.duplicate', $item->id) }}">
-                                    <i data-feather="copy" class="me-2"></i>{{ localize('Duplica') }}
-                                </a>
-                                <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.items.delete', $item->id) }}" title="{{ localize('Delete') }}">
-                                    <i data-feather="trash" class="me-2"></i>{{ localize('Delete') }}
-                                </a>
+                        <td class="text-start fs-sm">
+                            {{localize($item->type)}}
 
+                        </td>
+                        @if($section->type == 'filtergrid')
+                        <td>{{ implode(', ', $item->settings['categories_item']) }}</td>
+                        @endif
+                        <td>
+                            <div class="form-check form-switch">
+                                <input type="checkbox" class="form-check-input" onchange="updateStatus(this)" @if ($item->is_active) checked @endif
+                                value="{{ $item->id }}">
                             </div>
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                        </td>
+                        <td class="text-end">
+                            <div class="dropdown tt-tb-dropdown">
+                                <button type="button" class="btn p-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i data-feather="more-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end shadow">
+
+                                    <a class="dropdown-item" href="{{ route('admin.items.edit', ['id' => $item->id, 'lang_key' => env('DEFAULT_LANGUAGE')]) }}&localize">
+                                        <i data-feather="edit-3" class="me-2"></i>{{ localize('Edit') }}
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('admin.items.duplicate', $item->id) }}">
+                                        <i data-feather="copy" class="me-2"></i>{{ localize('Duplica') }}
+                                    </a>
+                                    <a href="#" class="dropdown-item confirm-delete" data-href="{{ route('admin.items.delete', $item->id) }}" title="{{ localize('Delete') }}">
+                                        <i data-feather="trash" class="me-2"></i>{{ localize('Delete') }}
+                                    </a>
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
     </div>
+    @if($section->type == 'columns')
+    @include('backend.pages.sections.items.partials.modals.columns')
+    @elseif($section->type == 'carousel')
+    @include('backend.pages.sections.items.partials.modals.carousel')
+    @elseif($section->type == 'filtergrid')
+    @include('backend.pages.sections.items.partials.modals.filtergrid')
+    @endif
 
-</div>
-@if($section->type == 'columns')
-@include('backend.pages.sections.items.partials.modals.columns')
-@elseif($section->type == 'carousel')
-@include('backend.pages.sections.items.partials.modals.carousel')
-@elseif($section->type == 'filtergrid')
-@include('backend.pages.sections.items.partials.modals.filtergrid')
-@endif
-    
-<script>
+    @if($section->type = "filtergrid")
+    <script>
+        document.getElementById('category_filter').addEventListener('change', function() {
+            var selectedCategory = this.value;
+            var rows = document.querySelectorAll('#items_table tbody tr');
 
-function updateStatus(el) {
-        if (el.checked) {
-            var is_active = 1;
-        } else {
-            var is_active = 0;
-        }
-        $.post('{{ route("admin.items.updateStatus") }}', {
-                _token: '{{ csrf_token() }}',
-                id: el.value,
-                is_active: is_active
-            },
-            function(data) {
-                if (data == 1) {
-                    notifyMe('success', '{{ localize("Status updated successfully") }}');
+            rows.forEach(function(row) {
+                var categories = row.getAttribute('data-categories');
+
+                // Mostra tutte le righe se "Tutte le categorie" è selezionato
+                if (selectedCategory === 'all') {
+                    row.style.display = '';
                 } else {
-                    notifyMe('danger', '{{ localize("Something went wrong") }}');
+                    // Verifica se la categoria selezionata è presente tra le categorie dell'item
+                    if (categories.includes(selectedCategory)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
                 }
             });
-    }
+        });
+    </script>
+    @endif
 
- 
+    <script>
+        function updateStatus(el) {
+            if (el.checked) {
+                var is_active = 1;
+            } else {
+                var is_active = 0;
+            }
+            $.post('{{ route("admin.items.updateStatus") }}', {
+                    _token: '{{ csrf_token() }}',
+                    id: el.value,
+                    is_active: is_active
+                },
+                function(data) {
+                    if (data == 1) {
+                        notifyMe('success', '{{ localize("Status updated successfully") }}');
+                    } else {
+                        notifyMe('danger', '{{ localize("Something went wrong") }}');
+                    }
+                });
+        }
+
+
 
 
         function redirectToCreateItem() {
@@ -146,42 +187,42 @@ function updateStatus(el) {
                 var url = "{{ route('admin.items.create', ['sectionId' => $section->id, 'type' => '_type_']) }}";
                 window.location.href = url.replace('_type_', type);
             } else {
-                alert('{{ localize('  Seleziona un tipo prima di procedere.') }}');
+                alert('Seleziona un tipo prima di procedere.');
             }
         }
     </script>
 
-<script>
-    // table-sort.js
-    document.addEventListener('DOMContentLoaded', (event) => {
-    const tableBody = document.querySelector('.table tbody');
-    const sortable = new Sortable(tableBody, {
-        handle: '.handle',  // Class name of the handle
-        animation: 150,  // Animation speed when sorting
-        onUpdate() {
-            const order = this.toArray();
-            // Send the new order to the server
-            fetch('{{ route("admin.items.positions") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add your Laravel CSRF token here
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ positions: order })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    console.log('Positions updated successfully');
-                } else {
-                    console.error('Failed to update positions');
+    <script>
+        // table-sort.js
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const tableBody = document.querySelector('.table tbody');
+            const sortable = new Sortable(tableBody, {
+                handle: '.handle', // Class name of the handle
+                animation: 150, // Animation speed when sorting
+                onUpdate() {
+                    const order = this.toArray();
+                    // Send the new order to the server
+                    fetch('{{ route("admin.items.positions") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                // Add your Laravel CSRF token here
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                positions: order
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                console.log('Positions updated successfully');
+                            } else {
+                                console.error('Failed to update positions');
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
                 }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    });
-});
-
-</script>
-
+            });
+        });
+    </script>
