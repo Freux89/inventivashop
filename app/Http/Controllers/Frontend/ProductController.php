@@ -439,7 +439,7 @@ public function showWithBreadcrumb(Request $request, $any, $slug)
     }
 
     // Passa il controllo al metodo show
-    return $this->show($slug);
+    return $this->show($slug, $request);
 }
 
 private function verifyProductBreadcrumb($product, $breadcrumbSlugs)
