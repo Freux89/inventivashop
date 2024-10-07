@@ -195,7 +195,7 @@
                     ["style", ["style"]],
                     ['fontsize', ['fontsize']],
                     ["color", ["color"]],
-                    ["insert", ["link", "picture", "video"]],
+                    ["insert", ["link"]],
                     ["view", ["undo", "redo"]],
                     ['codeview', ['codeview']],
                 ] :
