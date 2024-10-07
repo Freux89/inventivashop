@@ -19,7 +19,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!--favicon icon-->
-    <link rel="icon" href="{{ staticAsset('frontend/default/assets/img/favicon.png') }}" type="image/png"
+    <link rel="icon" href="{{ staticAsset('/favicon.ico') }}" type="image/png"
         sizes="16x16">
 
     <!--title-->

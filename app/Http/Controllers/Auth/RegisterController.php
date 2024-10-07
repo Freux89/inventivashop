@@ -56,14 +56,14 @@ class RegisterController extends Controller
 
     # make new registration here
     protected function create(array $data)
-    {
+    { 
         if (filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'phone' => validatePhone($data['phone']),
                 'password' => Hash::make($data['password']),
             ]);
+           
             // set guest_user_id to user_id from carts 
             if (isset($_COOKIE['guest_user_id'])) {
                 $carts  = Cart::where('guest_user_id', (int) $_COOKIE['guest_user_id'])->get();
@@ -95,17 +95,12 @@ class RegisterController extends Controller
 
         if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
             if (User::where('email', $request->email)->first() != null) {
-                flash(localize('Email or Phone already exists.'))->error();
+                flash(localize('Email già esistente.'))->error();
                 return back()->withInput();
             }
         }
 
-        if ($request->phone != null) {
-            if (User::where('phone', $request->phone)->first() != null) {
-                flash(localize('An user already exists with this phone number.'))->error();
-                return back()->withInput();
-            }
-        }
+       
 
         $validator = $this->validator($request->all());
 
@@ -127,15 +122,15 @@ class RegisterController extends Controller
             $user->email_or_otp_verified = 1;
             $user->email_verified_at = Carbon::now();
             $user->save();
-            flash(localize('Registration successful.'))->success();
+            flash(localize('Registrazione effettuata con successo.'))->success();
         } else {
             if (getSetting('registration_verification_with') == 'email') {
                 try {
                     $user->sendVerificationNotification();
-                    flash(localize('Registration successful. Please verify your email.'))->success();
+                    flash(localize('Registrazione riuscita. Verifica la tua email.'))->success();
                 } catch (\Throwable $th) {
                     $user->delete();
-                    flash(localize('Registration failed. Please try again later.'))->error();
+                    flash(localize('Registrazione non riuscita. Riprova più tardi.'))->error();
                 }
             }
             // else being handled in verification controller

@@ -10,20 +10,16 @@
     <section class="login-section py-5">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-5 col-12 tt-login-img"
-                    data-background="{{ staticAsset('frontend/default/assets/img/banner/login-banner.jpg') }}"></div>
                 <div class="col-lg-5 col-12 bg-white d-flex p-0 tt-login-col shadow">
                     <form class="tt-login-form-wrap p-3 p-md-6 p-lg-6 py-7 w-100" action="{{ route('login') }}" method="POST"
                         id="login-form">
                         @csrf
-                        <div class="mb-7">
+                        <div class="mb-7 text-center">
                             <a href="{{ route('home') }}">
-                                <img src="{{ uploadedAsset(getSetting('navbar_logo')) }}" alt="logo">
+                                <img src="{{ uploadedAsset(getSetting('navbar_logo')) }}" width="250" alt="logo">
                             </a>
                         </div>
-                        <h2 class="mb-4 h3">{{ localize('Hey there!') }}
-                            <br>{{ localize('Welcome back to Grostore.') }}
-                        </h2>
+                        
 
                         <div class="row g-3">
                             <div class="col-sm-12">
@@ -32,14 +28,9 @@
 
                                     <span class="login-email @if (old('login_with') == 'phone') d-none @endif">
                                         <label class="fw-bold text-dark fs-sm mb-1">{{ localize('Email') }}</label>
-                                        <input type="email" id="email" name="email"
-                                            placeholder="{{ localize('Enter your email') }}" class="theme-input mb-1"
+                                        <input type="email" id="email" name="email" class="theme-input mb-1"
                                             value="{{ old('email') }}" required>
-                                        <small class="">
-                                            <a href="javascript:void(0);" class="fs-sm login-with-phone-btn"
-                                                onclick="handleLoginWithPhone()">
-                                                {{ localize('Login with phone?') }}</a>
-                                        </small>
+                                        
                                     </span>
 
                                     <span class="login-phone @if (old('login_with') == 'email' || old('login_with') == '') d-none @endif">
@@ -74,9 +65,9 @@
                                     <input type="checkbox" id="save-password">
                                     <span class="checkbox-field"><i class="fa-solid fa-check"></i></span>
                                 </div>
-                                <label for="save-password" class="fs-sm"> {{ localize('Remember me') }}</label>
+                                <label for="save-password" class="fs-sm"> {{ localize('Ricordami') }}</label>
                             </div>
-                            <a href="{{ route('password.request') }}" class="fs-sm">{{ localize('Forgot Password') }}</a>
+                            <a href="{{ route('password.request') }}" class="fs-sm">{{ localize('Password dimenticata') }}</a>
                         </div>
 
                         @if (env('DEMO_MODE') == 'On')
@@ -108,7 +99,7 @@
                         <div class="row g-4 mt-3">
                             <div class="col-sm-12">
                                 <button type="submit" class="btn btn-primary w-100 sign-in-btn"
-                                    onclick="handleSubmit()">{{ localize('Sign In') }}</button>
+                                    onclick="handleSubmit()">{{ localize('Accedi') }}</button>
                             </div>
 
                         </div>
@@ -119,8 +110,8 @@
                             <!--social login-->
 
                         </div>
-                        <p class="mb-0 fs-xs mt-3">{{ localize("Don't have an Account?") }} <a
-                                href="{{ route('register') }}">{{ localize('Sign Up') }}</a></p>
+                        <p class="mb-0 fs-xs mt-3">{{ localize("Non hai un Account?") }} <a
+                                href="{{ route('register') }}">{{ localize('Registrati') }}</a></p>
                     </form>
                 </div>
             </div>

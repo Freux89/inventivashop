@@ -1,14 +1,14 @@
 {
-    "name": "Grostore",
-    "short_name": "Grostore",
+    "name": "Inventivashop",
+    "short_name": "Inventivashop",
     "start_url": "/",
-    "background_color": "#6777ef",
-    "description": "Grostore",
+    "background_color": "#801854",
+    "description": "Inventivashop",
     "display": "fullscreen",
-    "theme_color": "#6eb356",
+    "theme_color": "#801854",
     "icons": [
         {
-            "src": "pwa.png",
+            "src": "icon.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
