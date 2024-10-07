@@ -207,4 +207,39 @@ class HeroController extends Controller
         flash(localize('Slider deleted successfully'))->success();
         return redirect()->route('admin.appearance.homepage.hero');
     }
+
+
+    public function duplicate($id)
+{
+    // Recupera la riga che contiene gli slider
+    $sliderImage = SystemSetting::where('entity', 'hero_sliders')->first();
+
+    // Decodifica il valore JSON degli slider esistenti
+    $sliders = $this->getSliders();
+    $tempSliders = [];
+
+    // Cerca lo slider con l'ID corrispondente per duplicarlo
+    foreach ($sliders as $slider) {
+        array_push($tempSliders, $slider); // Aggiungi sempre gli slider esistenti
+        if ($slider->id == $id) {
+            // Crea un nuovo ID per la duplicazione
+            $newSlider = clone $slider;
+            $newSlider->id = uniqid();
+
+            // Aggiungi lo slider duplicato
+            array_push($tempSliders, $newSlider);
+        }
+    }
+
+    // Salva il nuovo JSON con lo slider duplicato
+    $sliderImage->value = json_encode($tempSliders);
+    $sliderImage->save();
+
+    // Pulisci la cache
+    cacheClear();
+
+    flash('Slide duplicata con successo')->success();
+
+    return redirect()->route('admin.appearance.homepage.hero');
+} 
 }

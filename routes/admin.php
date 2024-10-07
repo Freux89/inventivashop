@@ -605,6 +605,7 @@ Route::group(
             Route::get('/homepage/hero/edit/{id}', [HeroController::class, 'edit'])->name('admin.appearance.homepage.editHero');
             Route::post('/homepage/hero/update', [HeroController::class, 'update'])->name('admin.appearance.homepage.updateHero');
             Route::get('/homepage/hero/delete/{id}', [HeroController::class, 'delete'])->name('admin.appearance.homepage.deleteHero');
+            Route::get('/homepage/hero/duplicate/{id}', [HeroController::class, 'duplicate'])->name('admin.appearance.homepage.duplicateHero');
 
             # homepage - top category 
             Route::get('/homepage/top-category', [TopCategoriesController::class, 'index'])->name('admin.appearance.homepage.topCategories');

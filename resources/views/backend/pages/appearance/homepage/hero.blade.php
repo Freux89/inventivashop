@@ -73,7 +73,9 @@
                                                                 <i data-feather="edit-3"
                                                                     class="me-2"></i>{{ localize('Edit') }}
                                                             </a>
-
+                                                            <a href="{{ route('admin.appearance.homepage.duplicateHero', $slider->id) }}" class="dropdown-item">
+                <i data-feather="copy" class="me-2"></i>{{ localize('Duplicate') }}
+            </a>
                                                             <a href="#" class="dropdown-item confirm-delete"
                                                                 data-href="{{ route('admin.appearance.homepage.deleteHero', $slider->id) }}"
                                                                 title="{{ localize('Delete') }}">
