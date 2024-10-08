@@ -29431,3 +29431,10 @@ body.megamenu-visible .megamenu-dim {
     min-height: 355px;
 }
 }
+
+.content-wrapper section{
+    position: relative;
+  margin-left: calc(-50vw + 50%); /* Estende la sezione a sinistra */
+  margin-right: calc(-50vw + 50%); /* Estende la sezione a destra */
+  width: 100vw; /* Larghezza dell'intero viewport */
+}
