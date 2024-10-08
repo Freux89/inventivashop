@@ -20,15 +20,20 @@
                             </a>
                         </div>
                         
+                        <div class="row g-4 mb-7">
+                            <!--social login-->
+                            @include('frontend.default.inc.social')
+                            <!--social login-->
 
+                        </div>
                         <div class="row g-3">
                             <div class="col-sm-12">
+                                <h5 class="text-center mb-4">{{ localize('Oppure accedi con il tuo indirizzo e-mail.') }}</h5>
                                 <div class="input-field">
                                     <input type="hidden" name="login_with" class="login_with" value="email">
 
                                     <span class="login-email @if (old('login_with') == 'phone') d-none @endif">
-                                        <label class="fw-bold text-dark fs-sm mb-1">{{ localize('Email') }}</label>
-                                        <input type="email" id="email" name="email" class="theme-input mb-1"
+                                        <input type="email" id="email" name="email" class="theme-input mb-1" placeholder="E-mail"
                                             value="{{ old('email') }}" required>
                                         
                                     </span>
@@ -48,10 +53,9 @@
                             </div>
                             <div class="col-sm-12">
                                 <div class="input-field check-password">
-                                    <label class="fw-bold text-dark fs-sm mb-1">{{ localize('Password') }}</label>
                                     <div class="check-password">
-                                        <input type="password" name="password" id="password"
-                                            placeholder="{{ localize('Password') }}" class="theme-input" required>
+                                        <input type="password" name="password" id="password" placeholder="Password"
+                                             class="theme-input" required>
                                         <span class="eye eye-icon"><i class="fa-solid fa-eye"></i></span>
                                         <span class="eye eye-slash"><i class="fa-solid fa-eye-slash"></i></span>
                                     </div>
@@ -104,12 +108,7 @@
 
                         </div>
 
-                        <div class="row g-4 mt-3">
-                            <!--social login-->
-                            @include('frontend.default.inc.social')
-                            <!--social login-->
-
-                        </div>
+                      
                         <p class="mb-0 fs-xs mt-3">{{ localize("Non hai un Account?") }} <a
                                 href="{{ route('register') }}">{{ localize('Registrati') }}</a></p>
                     </form>
