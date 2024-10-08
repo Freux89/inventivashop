@@ -231,7 +231,8 @@ $breadcrumbPath = $breadcrumbs->pluck('slug')->implode('/');
             </div>
             @endif
             <div class="row">
-                <div class="col-12">{!! $category->long_description !!}</div>
+                <div class="col-12">{!! Shortcode::parse($category->long_description) !!}
+                </div>
             </div>
         </div>
     </section>

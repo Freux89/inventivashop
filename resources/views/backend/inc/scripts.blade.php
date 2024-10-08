@@ -180,56 +180,155 @@
             $this.flatpickr(options);
         });
 
-        // summernote
-        $(".editor").each(function(el) {
-            var $this = $(this);
-            var buttons = $this.data("buttons");
-            var minHeight = $this.data("min-height");
-            var placeholder = $this.attr("placeholder");
-            var format = $this.data("format");
+        @php
+            $sections = \App\Models\Section::all(['id', 'name']);
+        @endphp
 
-            buttons = !buttons ? [
-                    ["font", ["bold", "underline", "italic", "clear"]],
-                    ['fontname', ['fontname']],
-                    ["para", ["ul", "ol", "paragraph"]],
-                    ["style", ["style"]],
-                    ['fontsize', ['fontsize']],
-                    ["color", ["color"]],
-                    ["insert", ["link"]],
-                    ["view", ["undo", "redo"]],
-                    ['codeview', ['codeview']],
-                ] :
-                buttons;
-            placeholder = !placeholder ? "" : placeholder;
-            minHeight = !minHeight ? 150 : minHeight;
-            format = typeof format == "undefined" ? false : format;
+        var sections = @json($sections);
 
-            $this.summernote({
-                toolbar: buttons,
-                placeholder: placeholder,
-                height: minHeight,
-                codeviewFilter: false,
-                codeviewIframeFilter: true,
-                disableDragAndDrop: true,
-                callbacks: {
+    $(".editor").each(function(el) {
+    var $this = $(this);
+    var buttons = $this.data("buttons");
+    var minHeight = $this.data("min-height");
+    var placeholder = $this.attr("placeholder");
+    var format = $this.data("format");
 
-                },
-            });
+    buttons = !buttons ? [
+        ["font", ["bold", "underline", "italic", "clear"]],
+        ['fontname', ['fontname']],
+        ["para", ["ul", "ol", "paragraph"]],
+        ["style", ["style"]],
+        ['fontsize', ['fontsize']],
+        ["color", ["color"]],
+        ["insert", ["link", "insertSection"]],
+        ["view", ["undo", "redo"]],
+        ['codeview', ['codeview']],
+    ] : buttons;
 
-            var nativeHtmlBuilderFunc = $this.summernote(
-                "module",
-                "videoDialog"
-            ).createVideoNode;
+    placeholder = !placeholder ? "" : placeholder;
+    minHeight = !minHeight ? 150 : minHeight;
+    format = typeof format == "undefined" ? false : format;
 
-            $this.summernote("module", "videoDialog").createVideoNode = function(url) {
-                var wrap = $(
-                    '<div class="embed-responsive embed-responsive-16by9"></div>'
-                );
-                var html = nativeHtmlBuilderFunc(url);
-                html = $(html).addClass("embed-responsive-item");
-                return wrap.append(html)[0];
-            };
-        });
+    $.extend($.summernote.options.icons, {
+        insertSection: '<i class="note-icon-plus"/>'
+    });
+
+    var lastRange = null;
+
+    $this.summernote({
+        toolbar: buttons,
+        placeholder: placeholder,
+        height: minHeight,
+        codeviewFilter: false,
+        codeviewIframeFilter: true,
+        disableDragAndDrop: true,
+        buttons: {
+    insertSection: function() {
+        var ui = $.summernote.ui;
+        var button = ui.buttonGroup([
+            ui.button({
+                className: 'dropdown-toggle',
+                contents: '<i class="note-icon-plus"/> Sezioni <span class="caret"></span>',
+                tooltip: 'Inserisci Sezione',
+                data: {
+                    toggle: 'dropdown'
+                }
+            }),
+            ui.dropdown({
+                className: 'custom-dropdown-style dropdown-style',
+                contents: function() {
+                    var dropdown = `
+                        <div class="note-section-search">
+                            <input type="text" class="form-control section-search-input" placeholder="Cerca sezione...">
+                        </div>
+                        <ul class="note-dropdown-menu list-unstyled section-list">`;
+                    sections.forEach(function(section) {
+                        dropdown += `<li><a href="#" class="note-section" data-id="${section.id}" data-name="${section.name}">${section.name}</a></li>`;
+                    });
+                    dropdown += '</ul>';
+                    return dropdown;
+                }
+            })
+        ]);
+        return button.render();
+    }
+},
+        callbacks: {
+            onInit: function() {
+                var editor = $this;
+
+                // Prevenire la chiusura del dropdown quando si clicca sul campo di ricerca o all'interno del dropdown
+                $(document).on('click', '.section-search-input, .section-list li', function(e) {
+                    e.stopPropagation();
+                });
+
+                // Salva il range corrente (posizione del cursore) ogni volta che clicchi o interagisci con l'editor specifico
+                editor.on('summernote.keyup summernote.mouseup summernote.change', function() {
+                    lastRange = editor.summernote('createRange');
+                });
+
+                // Assicurati che l'evento di click sia associato solo all'editor corrente
+                $this.parent().on('click', '.note-section', function(e) {
+                    e.preventDefault();
+                    var sectionId = $(this).data('id');
+                    var sectionName = $(this).data('name');
+                    var shortcode = `[section id="${sectionId}" name="${sectionName}"]`;
+
+                    // Ripristina il range salvato e inserisce lo shortcode nella posizione del cursore
+                    if (lastRange) {
+                        lastRange.select();
+                        editor.summernote('editor.pasteHTML', shortcode);
+                    } else {
+                        // Se per qualche motivo il range non è stato salvato, inserisce alla fine del contenuto
+                        editor.summernote('editor.pasteHTML', shortcode);
+                    }
+                });
+
+                // Ascolta l'input nel campo di ricerca per filtrare le sezioni
+                $(document).on('input', '.section-search-input', function() {
+                    var searchText = $(this).val().toLowerCase();
+
+                    // Filtra le sezioni in base al testo inserito
+                    $('.section-list li').each(function() {
+                        var sectionName = $(this).text().toLowerCase();
+                        if (sectionName.includes(searchText)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                });
+            }
+        }
+    });
+
+    var nativeHtmlBuilderFunc = $this.summernote("module", "videoDialog").createVideoNode;
+    $this.summernote("module", "videoDialog").createVideoNode = function(url) {
+        var wrap = $('<div class="embed-responsive embed-responsive-16by9"></div>');
+        var html = nativeHtmlBuilderFunc(url);
+        html = $(html).addClass("embed-responsive-item");
+        return wrap.append(html)[0];
+    };
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // add more
         $('[data-toggle="add-more"]').each(function() {

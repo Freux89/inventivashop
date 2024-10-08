@@ -40,3 +40,39 @@
 .handle {
     cursor: grab;
 }
+
+.note-editor .custom-dropdown-style {
+    min-width: 300px; /* Imposta una larghezza minima per evitare che il testo vada a capo */
+    max-width: 400px; /* Imposta una larghezza massima per evitare che diventi troppo ampio */
+    padding: 10px;
+}
+
+.note-editor .note-dropdown-menu.list-unstyled {
+    max-height: 300px; /* Limita l'altezza per evitare un dropdown troppo grande */
+    overflow-y: auto; /* Aggiungi lo scroll verticale se necessario */
+    padding: 5px;
+    margin: 0;
+}
+
+.note-editor .note-section {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #333;
+    white-space: nowrap; /* Impedisce al testo di andare a capo */
+}
+
+.note-editor .note-section:hover {
+    background-color: #f1f1f1; /* Cambia il colore di sfondo quando l'elemento viene hoverato */
+    color: #007bff; /* Colore del testo durante l'hover */
+}
+
+.note-editor .note-section-search {
+    margin-bottom: 10px;
+}
+
+.note-editor .note-section-search input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box; /* Assicura che il padding non aumenti la larghezza complessiva dell'input */
+}

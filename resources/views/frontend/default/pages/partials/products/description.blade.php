@@ -8,7 +8,8 @@
     <div class="tab-content">
         <div class="tab-pane fade show active px-4 py-5" id="description">
             @if ($product->description)
-                {!! $product->collectLocalization('description') !!}
+                
+                {!! Shortcode::parse($product->collectLocalization('description')) !!}
             @else
                 <div class="text-dark text-center border py-2">{{ localize('Not Available') }}
                 </div>
