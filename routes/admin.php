@@ -21,6 +21,7 @@ use App\Http\Controllers\Backend\SubscribersController;
 use App\Http\Controllers\Backend\CustomersController;
 use App\Http\Controllers\Backend\AddressController;
 use App\Http\Controllers\Backend\StaffsController;
+use App\Http\Controllers\Backend\AlertController;
 use App\Http\Controllers\Backend\Products\VariationsController;
 use App\Http\Controllers\Backend\Products\VariationValuesController;
 use App\Http\Controllers\Backend\Products\MaterialController;
@@ -486,6 +487,14 @@ Route::group(
         Route::post('/section-positions/update-positions', [SectionPositionController::class, 'updatePositions'])->name('admin.section_positions.positions');
         Route::get('/section-positions/entities/{type}', [SectionPositionController::class, 'getEntities'])->name('admin.section_positions.entities');
 
+
+        Route::get('/alerts', [AlertController::class, 'index'])->name('admin.alerts.index');
+Route::get('/alerts/create', [AlertController::class, 'create'])->name('admin.alerts.create');
+Route::get('/alerts/edit/{id}', [AlertController::class, 'edit'])->name('admin.alerts.edit');
+Route::post('/alerts', [AlertController::class, 'store'])->name('admin.alerts.store');
+Route::put('/alerts/update/{id}', [AlertController::class, 'update'])->name('admin.alerts.update');
+Route::get('/alerts/delete/{id}', [AlertController::class, 'delete'])->name('admin.alerts.delete');
+Route::post('/alerts/update-status', [AlertController::class, 'updateStatus'])->name('admin.alerts.updateStatus');
         # bulk-emails
         Route::controller(NewslettersController::class)->group(function () {
             Route::get('/bulk-emails', 'index')->name('admin.newsletters.index');

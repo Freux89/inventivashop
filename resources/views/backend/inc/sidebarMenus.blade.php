@@ -350,7 +350,14 @@
             </div>
     </li>
 @endcan
-
+@can('alerts')
+    <li class="side-nav-item nav-item {{ areActiveRoutes(['admin.alerts.index', 'admin.alerts.create', 'admin.alerts.edit'], 'tt-menu-item-active') }}">
+        <a href="{{ route('admin.alerts.index') }}" class="side-nav-link">
+            <span class="tt-nav-link-icon"><i data-feather="bell"></i></span>
+            <span class="tt-nav-link-text">Avvisi</span>
+        </a>
+    </li>
+@endcan
     <!-- tags -->
     @php
         $tagsActiveRoutes = ['admin.tags.index', 'admin.tags.edit'];

@@ -12,8 +12,11 @@ use App\Models\VariationValue;
 use App\Models\OrderState;
 use App\Models\LogisticZone;
 use App\Models\Material;
+use App\Models\Alert;
 use Illuminate\Http\Request;
 use App\Models\Condition;
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 
@@ -1783,4 +1786,17 @@ if (!function_exists('getProductImage')) {
 
         return $imageToShow;
     }
+
+    if (!function_exists('getAlertsForPage')) {
+        function getAlertsForPage()
+        {
+            $currentUri = request()->path();
+            $alerts = Alert::all();
+    
+            return $alerts->filter(function ($alert) use ($currentUri) {
+                return $alert->shouldDisplayOnPage($currentUri);
+            });
+        }
+    }
+    
 }

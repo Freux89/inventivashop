@@ -97,6 +97,8 @@
         @else
             @include('frontend.default.inc.header')
         @endif
+        
+        @include('frontend.default.inc.alert')
         <!--header section end-->
 
         <!--breadcrumb section start-->
