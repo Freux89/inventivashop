@@ -1,5 +1,5 @@
 <div class="row align-items-center g-4 mt-3">
-    <form action="{{ route('address.update') }}" method="POST">
+<div id="editAddressForm-{{ $address->id }}">
         @csrf
         <input type="hidden" name="id" value="{{ $address->id }}">
         <div class="col my-5 billing-field">
@@ -122,7 +122,11 @@
             </div>
         </div>
         <div class="mt-6 d-flex">
-            <button type="submit" class="btn btn-secondary btn-md me-3">{{ localize('Update') }}</button>
-        </div>
+    <!-- Pulsante per annullare e chiudere l'accordion -->
+    <button type="button" class="btn btn-secondary btn-md me-3" onclick="closeAccordion({{ $address->id }})">{{ localize('Annulla') }}</button>
+
+    <!-- Pulsante per salvare l'indirizzo -->
+    <button type="button" class="btn btn-primary btn-md px-6" onclick="submitDivAsForm({{ $address->id }})">{{ localize('Usa questo indirizzo') }}</button>
+</div>
     </form>
 </div>

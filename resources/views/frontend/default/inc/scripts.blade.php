@@ -534,7 +534,18 @@
         });
     }
 
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const selectedRadio = document.querySelector('input[name="shipping_address_id"]:checked');
+
+    if (selectedRadio) {
+        const countryId = selectedRadio.getAttribute('data-country_id');
+        getLogistics(countryId); // Esegui getLogistics per il radio selezionato
+    }
+});
+
     //  submit checkout form
+    
     $(document).on('submit', '.checkout-form', function(e) {
         // shipping address not selected
         if ($('.checkout-form input[name=shipping_address_id]:checked').length == 0) {

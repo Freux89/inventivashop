@@ -10630,7 +10630,11 @@ progress {
     width:100%;
     margin:0 auto;
 }
-
+.content-wrapper-small{
+    max-width:1440px;
+    width:100%;
+    margin:0 auto;
+}
 .row {
     --bs-gutter-x: 1.5rem;
     --bs-gutter-y: 0;
@@ -28698,11 +28702,12 @@ text-decoration: underline;
     padding-left: calc((1920px - 1680px) / 2);
     padding-right:80px;
     padding-top: 40px;
+    padding-bottom: 40px;
     font-size: 20px;
     color:var(--in-primary-dark-3);
 }
 
-.hero-image img {
+/* .hero-image img {
     top: 50% !important;
     left: 50%;
     transform: translate(-50%, -50%) !important;
@@ -28714,6 +28719,16 @@ text-decoration: underline;
     max-height: 200%;
     object-fit: cover;
     position:absolute;
+} */
+
+.hero-image img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* L'immagine copre tutto il contenitore, tagliando se necessario */
 }
 .hero-category .hero-image {
     width: 100%;
@@ -29487,4 +29502,41 @@ body.megamenu-visible .megamenu-dim {
 }
 .checkout-radio .text-muted{
     font-size:16px;
+}
+
+body.checkout {
+    background-color: var(--in-primary-dark-6);
+}
+.checkout address{
+    font-size:20px;
+}
+.checkout address span {
+    font-weight: normal;
+    color: var(--in-secondary-6);
+}
+.tt-address-content .collapsed, .tt-edit-address  {
+    border: none !important;
+    background-color: transparent !important;
+}
+.checkout .accordion-item {
+    border: 1px solid #707070;
+    border-radius: 10px !important;
+    padding: 2px;
+}
+
+.accordion-item.active {
+    border: 3px solid var(--in-primary-3) !important; /* Cambia il colore qui */
+}
+
+.accordion .accordion-item .accordion-header .tt-edit-address{
+    color:var(--in-primary-3);
+}
+.accordion .accordion-item .accordion-header .tt-delete-address{
+    color:#707070;
+}
+.tt-edit-address svg{
+    width: 21px;  /* Dimensione desiderata per le icone */
+}
+.tt-delete-address svg{
+    width:20px;
 }

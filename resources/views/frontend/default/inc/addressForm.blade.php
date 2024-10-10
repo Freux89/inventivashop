@@ -367,5 +367,113 @@
              });
          }
      }
+
+
+
+    // Nuova funzione per gestire l'apertura e chiusura dell'accordion con il form di modifica indirizzo
+function openAccordionForEditAddress(addressId) {
+    const accordion = document.querySelector(`#collapse-${addressId}`);
+    const accordionBody = accordion.querySelector('.accordion-body');
+
+    // Controlla se l'accordion è aperto
+    const isExpanded = accordion.classList.contains('show');
+
+    // Se l'accordion è aperto, chiudilo e ritorna
+    if (isExpanded) {
+        const accordionInstance = bootstrap.Collapse.getInstance(accordion);
+        accordionInstance.hide();
+        return;
+    }
+
+    // Mostra uno spinner o un indicatore di caricamento mentre attendiamo la risposta
+    accordionBody.innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>';
+
+    // Effettua la chiamata AJAX per ottenere il form di modifica indirizzo
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        url: "{{ route('address.edit') }}",
+        type: 'POST',
+        data: {
+            addressId: addressId
+        },
+        success: function(response) {
+            // Quando riceviamo il form, sostituiamo lo spinner con il form
+            accordionBody.innerHTML = response.content;
+
+            // Dopo che il form è stato caricato, apri l'accordion
+            const accordionInstance = new bootstrap.Collapse(accordion, {
+                toggle: true
+            });
+
+            accordionInstance.show();
+
+            // Esegui altre funzioni, come select2 o toggle degli indirizzi
+            addressModalSelect2(`#collapse-${addressId}`);
+            toggleAddressFields(response.addressType);
+            if (response.documentType == 1) {
+                $('#billingTypeCompany').prop('checked', true);
+                toggleBillingFields('company');
+            } else if (response.documentType == 2) {
+                $('#billingTypePrivate').prop('checked', true);
+                toggleBillingFields('private');
+            }
+        },
+        error: function() {
+            // Gestione degli errori in caso di problemi con la chiamata AJAX
+            accordionBody.innerHTML = '<div class="alert alert-danger">Error loading address form. Please try again.</div>';
+        }
+    });
+}
+// Funzione per inviare i campi del div come se fossero inviati tramite un form
+function submitDivAsForm(addressId) {
+    // Trova il div che contiene i campi
+    const addressDiv = document.querySelector(`#editAddressForm-${addressId}`);
+
+    // Crea un form temporaneo
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = "{{ route('address.update') }}"; // L'endpoint verso cui inviare i dati
+
+    // Aggiunge il token CSRF
+    const csrfToken = document.querySelector('input[name="_token"]').value;
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_token';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    // Raccoglie tutti i campi presenti nel div e li aggiunge al form temporaneo
+    const inputs = addressDiv.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = input.name;
+        hiddenInput.value = input.value;
+        form.appendChild(hiddenInput);
+    });
+
+    // Aggiunge il form temporaneo al body e lo invia
+    document.body.appendChild(form);
+    form.submit();
+}
+// Funzione per chiudere l'accordion
+function closeAccordion(addressId) {
+    const accordion = document.querySelector(`#collapse-${addressId}`);
+    const accordionInstance = bootstrap.Collapse.getInstance(accordion);
+    accordionInstance.hide(); // Chiude l'accordion
+}
+
+// Aggiunge o rimuove la classe "active" quando un accordion si apre o chiude
+document.querySelectorAll('.accordion-collapse').forEach(accordion => {
+    accordion.addEventListener('show.bs.collapse', function () {
+        this.closest('.accordion-item').classList.add('active');
+    });
+    
+    accordion.addEventListener('hide.bs.collapse', function () {
+        this.closest('.accordion-item').classList.remove('active');
+    });
+});
  </script>
  @endsection

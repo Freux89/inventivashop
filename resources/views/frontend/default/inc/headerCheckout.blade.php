@@ -1,7 +1,7 @@
 <header class="gheader py-6">
-    <div class="content-wrapper">
+    <div class="content-wrapper-small">
         <div class="gshop-navbar">
-            <div class="row align-items-center">
+            <div class="row m-0 align-items-center">
                 <div class="col-12 col-md-6 p-0 text-center text-md-start">
                     <a href="{{ route('home') }}" class="logo">
                         <img src="{{ uploadedAsset(getSetting('navbar_logo')) }}" alt="logo" class="img-fluid logo-light">

@@ -12,7 +12,7 @@
 <!--breadcrumb-->
 
 <!--checkout form start-->
-<div class="content-wrapper">
+<div class="content-wrapper-small">
     <form class="checkout-form" action="{{ route('checkout.complete') }}" method="POST">
         @csrf
         <div class="checkout-section ptb-120">
@@ -21,88 +21,99 @@
                     <!-- form data -->
                     <div class="col-xl-7">
                         <div class="checkout-steps">
-                        <div class="d-flex flex-row align-items-start gap-4 mb-4">
-    <div class="checkout-radio d-flex bg-white rounded px-4 ps-0 ">
-        <div class="theme-radio">
-            <input type="radio" name="delivery_method" id="shipping" value="shipping" checked>
-            <span class="custom-radio me-2"></span>
-        </div>
-        <label for="shipping" class="mb-0 ms-3 align-self-center">
-            {{ localize('Spediamo noi') }}
-        </label>
-    </div>
+                            <div class="d-flex flex-row align-items-start gap-4 mb-8">
 
-    <div class="d-flex flex-column">
-        <div class="checkout-radio d-flex bg-white rounded px-4">
-            <div class="theme-radio">
-                <input type="radio" name="delivery_method" id="pickup" value="pickup">
-                <span class="custom-radio me-2"></span>
-            </div>
-            <div class="ms-3">
-                <!-- Centro solo il label verticalmente con align-self-center -->
-                <label for="pickup" class="mb-0 align-self-center">
-                    {{ localize('Ritiro in sede') }}
-                </label>
-                <!-- Il testo muted viene allineato con il label -->
-                <small class="text-muted d-block">
-                    {{ localize('Via della azienda, 123, Città') }}
-                </small>
-            </div>
+                                <x-radio-input
+                                    name="delivery_method"
+                                    id="shipping"
+                                    value="shipping"
+                                    label="{{ localize('Spediamo noi') }}"
+                                    :checked="true" />
+                                 <x-radio-input
+                                    name="delivery_method"
+                                    id="pickup"
+                                    value="pickup"
+                                    label="{{ localize('Ritiro in sede') }}"
+                                    mutedText="{{ getSetting('site_address') }}"
+                                    :checked="false" />
+
+                            </div>
+
+                            <div id="shipping-address">
+    <div class="d-flex justify-content-between">
+        <h3 class="mb-3">{{ localize('Shipping Address') }}</h3>
+        <a href="javascript:void(0);" onclick="addNewAddress('shipping')" class="fw-semibold">
+            <i class="fas fa-plus me-1"></i> {{ localize('Add Address') }}
+        </a>
+    </div>
+    <div class="accordion" id="shippingAddressAccordion">
+        <div class="row g-4">
+            @php
+            $defaultAddress = $addresses->where('is_default', true)->first();
+            $defaultAddressId = old('shipping_address_id', $defaultAddress ? $defaultAddress->id : ($addresses->isNotEmpty() ? $addresses->first()->id : null));
+
+            $filteredAddresses = $addresses->filter(function ($address) {
+                return $address->document_type == 0;
+            })->values();
+            @endphp
+
+            @forelse ($filteredAddresses as $key => $address)
+                <div class="col-12">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-{{ $address->id }}">
+                            <div class="tt-address-content d-flex align-items-center justify-content-between bg-white rounded px-4 py-4 position-relative">
+                                <!-- Radio Button -->
+                                <x-radio-input 
+                                    name="shipping_address_id" 
+                                    id="shipping-{{ $address->id }}" 
+                                    value="{{ $address->id }}" 
+                                    onchange="getLogistics({{ $address->country_id }})"
+                                    data-country_id="{{ $address->country_id }}"
+                                    :checked="old('shipping_address_id') == $address->id ? true : ($defaultAddressId == $address->id ? true : ($key === 0 ? true : false))"
+                                    :countryId="$address->country_id" />
+
+                                <!-- Address Information -->
+                                <div class="ms-3 d-flex flex-grow-1">
+                                    @include('frontend.default.inc.address', ['address' => $address])
+                                </div>
+
+                                <!-- Edit and Delete Icons -->
+                                <div class="d-flex align-items-center">
+                                    <a href="javascript:void(0);" 
+                                        class="tt-edit-address checkout-radio-link feather-icon me-3 p-0" 
+                                        
+                                        onclick="openAccordionForEditAddress({{ $address->id }})">
+                                        <i data-feather="edit-3"></i>
+                                    </a>
+                                    <a href="javascript:void(0);" onclick="deleteAddress(this)" data-url="{{ route('address.delete', $address->id) }}" class="tt-delete-address checkout-radio-link feather-icon p-0">
+                                        <i data-feather="trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </h2>
+                        <div id="collapse-{{ $address->id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ $address->id }}" data-bs-parent="#shippingAddressAccordion">
+                            <div class="accordion-body">
+                               
+                                 <!-- Il contenuto del form sarà caricato qui tramite AJAX -->
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12 mt-5">
+                    <div class="tt-address-content">
+                        <div class="alert alert-secondary text-center">
+                            {{ localize('Add your address to checkout') }}
+                        </div>
+                    </div>
+                </div>
+            @endforelse
         </div>
     </div>
 </div>
 
 
-
-
-
-
-
-                            <!-- shipping address -->
-                            <div class="d-flex justify-content-between">
-                                <h4 class="mb-3">{{ localize('Shipping Address') }}</h4>
-                                <a href="javascript:void(0);" onclick="addNewAddress('shipping')" class="fw-semibold"><i class="fas fa-plus me-1"></i> {{ localize('Add Address') }}</a>
-                            </div>
-                            <div class="row g-4">
-                                @forelse ($addresses->filter(function ($address) {
-                                return $address->document_type == 0;
-                                }) as $address)
-                                <div class="col-lg-6 col-sm-6">
-                                    <div class="tt-address-content">
-                                        <input type="radio" class="tt-custom-radio" name="shipping_address_id" id="shipping-{{ $address->id }}" value="{{ $address->id }}" onchange="getLogistics({{ $address->country_id }})" @if ($address->is_default) checked @endif
-                                        data-country_id="{{ $address->country_id }}">
-
-                                        <label for="shipping-{{ $address->id }}" class="tt-address-info bg-white rounded p-4 position-relative">
-                                            <!-- address -->
-                                            @include('frontend.default.inc.address', [
-                                            'address' => $address,
-                                            ])
-                                            <!-- address -->
-                                            <!-- address -->
-                                            <a href="javascript:void(0);" onclick="editAddress({{ $address->id }})" class="tt-edit-address checkout-radio-link position-absolute feather-icon" style="top: 10px; right: 34px;">
-                                                <i data-feather="edit-3" class="me-2"></i>
-                                            </a>
-                                            <!-- delete icon -->
-
-
-
-                                            <a href="javascript:void(0);" onclick="deleteAddress(this)" data-url="{{ route('address.delete', $address->id) }}" class="tt-delete-address checkout-radio-link position-absolute feather-icon" style="top: 10px; right: 10px;">
-                                                <i data-feather="trash" class="me-2"></i>
-                                            </a> </label>
-
-                                    </div>
-                                </div>
-                                @empty
-                                <div class="col-12 mt-5">
-                                    <div class="tt-address-content">
-                                        <div class="alert alert-secondary text-center">
-                                            {{ localize('Add your address to checkout') }}
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforelse
-                            </div>
-                            <!-- shipping address -->
 
                             <!-- checkout-logistics -->
                             <div class="checkout-logistics"></div>
@@ -297,9 +308,11 @@
             </div>
         </div>
     </form>
+
+
+    <!--checkout form end-->
 </div>
 
-<!--checkout form end-->
 
 
 <!--add address modal start-->

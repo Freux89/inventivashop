@@ -226,15 +226,12 @@ class AddressController extends Controller
             $newAddress->fiscal_code = $request->fiscal_code;
             $newAddress->document_type = 2;
         }
+         // Rimuovi il flag di default da altri indirizzi di fatturazione (privati)
+         UserAddress::where('user_id', auth()->user()->id)
+         ->where('document_type', 2) // Indirizzi di fatturazione privati
+         ->update(['is_default' => false]);
     }
-
-    // Gestione dell'indirizzo predefinito
-    if ($request->is_default == '1') {
-        UserAddress::where('user_id', $userId)->where('is_default', 1)->update(['is_default' => 0]);
-        $newAddress->is_default = 1;
-    } else {
-        $newAddress->is_default = 0;
-    }
+    $newAddress->is_default = 1;
 
     $newAddress->save();
     flash(localize('Address has been updated successfully'))->success();

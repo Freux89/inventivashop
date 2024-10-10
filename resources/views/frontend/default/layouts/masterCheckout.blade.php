@@ -47,7 +47,7 @@
 </head>
 
 <body class="checkout">
-
+<div class="content-wrapper bg-white mt-9">
     @php
         // for visitors to add to cart
         $tempValue = strtotime('now') . rand(10, 1000);
@@ -85,7 +85,7 @@
         <div class="menu-overlay"></div>
     </div>
 
-
+    </div>
     <!--scroll bottom to top button start-->
     <button class="scroll-top-btn">
         <i class="fa-regular fa-hand-pointer"></i></button>
